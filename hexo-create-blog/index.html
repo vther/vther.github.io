@@ -5,17 +5,18 @@
     
     <title>如何使用Hexo在Github上搭建个人博客 | 蛋黄的天空的博客</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-    <meta name="description" content="之前是想着写博客，一方面是给自己做笔记，可以提升自己的写作、总结能力，一个技术点我们会使用，并不难，但是要做到让让别人也能听懂我们讲得，还是需要一定的技巧和经验的。很多类似于CSDN、博客园也都可以写文章，但是页面的样式我，不是太喜欢，简书还算好点得。最近看到一些大神们的博客（在我的友情链接里有），貌似都是用hexo写得，我也依葫芦画瓢的搭建了一个。不罗嗦了，直接上搭建步骤。">
+    <meta name="description" content="本文主要介绍了在WINDOWS下利用Git Pages和Hexo免费搭建个人博客的方法。 写博客的原因主要有感于为什么要写博客 选择Hexo的原因主要是因为[关于博客技术的选型](https://www.zhihu.com/question/21981094] 千里之行，始于足下。与其感慨路难行，不如马上出发！">
+<meta name="keywords" content="Hexo">
 <meta property="og:type" content="article">
 <meta property="og:title" content="如何使用Hexo在Github上搭建个人博客">
-<meta property="og:url" content="http://yoursite.com/2017/10/15/create-blog/index.html">
+<meta property="og:url" content="http://yoursite.com/hexo-create-blog/index.html">
 <meta property="og:site_name" content="蛋黄的天空的博客">
-<meta property="og:description" content="之前是想着写博客，一方面是给自己做笔记，可以提升自己的写作、总结能力，一个技术点我们会使用，并不难，但是要做到让让别人也能听懂我们讲得，还是需要一定的技巧和经验的。很多类似于CSDN、博客园也都可以写文章，但是页面的样式我，不是太喜欢，简书还算好点得。最近看到一些大神们的博客（在我的友情链接里有），貌似都是用hexo写得，我也依葫芦画瓢的搭建了一个。不罗嗦了，直接上搭建步骤。">
+<meta property="og:description" content="本文主要介绍了在WINDOWS下利用Git Pages和Hexo免费搭建个人博客的方法。 写博客的原因主要有感于为什么要写博客 选择Hexo的原因主要是因为[关于博客技术的选型](https://www.zhihu.com/question/21981094] 千里之行，始于足下。与其感慨路难行，不如马上出发！">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2017-10-15T08:50:54.807Z">
+<meta property="og:updated_time" content="2017-10-15T12:05:37.478Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="如何使用Hexo在Github上搭建个人博客">
-<meta name="twitter:description" content="之前是想着写博客，一方面是给自己做笔记，可以提升自己的写作、总结能力，一个技术点我们会使用，并不难，但是要做到让让别人也能听懂我们讲得，还是需要一定的技巧和经验的。很多类似于CSDN、博客园也都可以写文章，但是页面的样式我，不是太喜欢，简书还算好点得。最近看到一些大神们的博客（在我的友情链接里有），貌似都是用hexo写得，我也依葫芦画瓢的搭建了一个。不罗嗦了，直接上搭建步骤。">
+<meta name="twitter:description" content="本文主要介绍了在WINDOWS下利用Git Pages和Hexo免费搭建个人博客的方法。 写博客的原因主要有感于为什么要写博客 选择Hexo的原因主要是因为[关于博客技术的选型](https://www.zhihu.com/question/21981094] 千里之行，始于足下。与其感慨路难行，不如马上出发！">
     
 
     
@@ -56,15 +57,15 @@
             </a>
             <nav id="main-nav">
                 
-                    <a class="main-nav-link" href="/.">Home</a>
+                    <a class="main-nav-link" href="/.">主页</a>
                 
-                    <a class="main-nav-link" href="/archives">Archives</a>
+                    <a class="main-nav-link" href="/archives">归档</a>
                 
-                    <a class="main-nav-link" href="/categories">Categories</a>
+                    <a class="main-nav-link" href="/categories">分类</a>
                 
-                    <a class="main-nav-link" href="/tags">Tags</a>
+                    <a class="main-nav-link" href="/tags">标签</a>
                 
-                    <a class="main-nav-link" href="/about">About</a>
+                    <a class="main-nav-link" href="/about">关于</a>
                 
             </nav>
             
@@ -121,15 +122,15 @@
         <table class="menu outer">
             <tr>
                 
-                    <td><a class="main-nav-link" href="/.">Home</a></td>
+                    <td><a class="main-nav-link" href="/.">主页</a></td>
                 
-                    <td><a class="main-nav-link" href="/archives">Archives</a></td>
+                    <td><a class="main-nav-link" href="/archives">归档</a></td>
                 
-                    <td><a class="main-nav-link" href="/categories">Categories</a></td>
+                    <td><a class="main-nav-link" href="/categories">分类</a></td>
                 
-                    <td><a class="main-nav-link" href="/tags">Tags</a></td>
+                    <td><a class="main-nav-link" href="/tags">标签</a></td>
                 
-                    <td><a class="main-nav-link" href="/about">About</a></td>
+                    <td><a class="main-nav-link" href="/about">关于</a></td>
                 
                 <td>
                     
@@ -151,10 +152,10 @@
     <div class="inner profile-inner">
         <div class="base-info profile-block">
             <img id="avatar" src="/css/images/avatar.png" />
-            <h2 id="name">PPOffice</h2>
+            <h2 id="name">蛋黄</h2>
             <h3 id="title">Web Developer &amp; Designer</h3>
-            <span id="location"><i class="fa fa-map-marker"></i>Harbin, China</span>
-            <a id="follow" target="_blank" href="https://github.com/ppoffice/">关注我</a>
+            <span id="location"><i class="fa fa-map-marker"></i>ShenZhen, China</span>
+            <a id="follow" target="_blank" href="https://github.com/vther">关注我</a>
         </div>
         <div class="article-info profile-block">
             <div class="article-info-block">
@@ -162,7 +163,7 @@
                 <span>文章</span>
             </div>
             <div class="article-info-block">
-                0
+                1
                 <span>标签</span>
             </div>
         </div>
@@ -173,7 +174,7 @@
                     
                     
                     <td>
-                        <a href="http://github.com/ppoffice/hexo-theme-icarus" target="_blank" title="github" class=tooltip>
+                        <a href="https://github.com/vther" target="_blank" title="github" class=tooltip>
                             <i class="fa fa-github"></i>
                         </a>
                     </td>
@@ -210,7 +211,7 @@
 </aside>
 
             
-            <section id="main"><article id="post-create-blog" class="article article-type-post" itemscope itemprop="blogPost">
+            <section id="main"><article id="post-hexo-create-blog" class="article article-type-post" itemscope itemprop="blogPost">
     <div class="article-inner">
         
         
@@ -227,14 +228,24 @@
                         
     <div class="article-date">
         <i class="fa fa-calendar"></i>
-        <a href="/2017/10/15/create-blog/">
+        <a href="/hexo-create-blog/">
             <time datetime="2017-10-15T08:48:02.240Z" itemprop="datePublished">2017-10-15</time>
         </a>
     </div>
 
 
                         
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/Hexo/">Hexo</a>
+    </div>
+
                         
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/Hexo/">Hexo</a>
+    </div>
+
                     </div>
                 
             </header>
@@ -243,29 +254,72 @@
         <div class="article-entry" itemprop="articleBody">
         
             
-            <p>　之前是想着写博客，一方面是给自己做笔记，可以提升自己的写作、总结能力，一个技术点我们会使用，并不难，但是要做到让让别人也能听懂我们讲得，还是需要一定的技巧和经验的。很多类似于CSDN、博客园也都可以写文章，但是页面的样式我，不是太喜欢，简书还算好点得。最近看到一些大神们的博客（在我的友情链接里有），貌似都是用hexo写得，我也依葫芦画瓢的搭建了一个。不罗嗦了，直接上搭建步骤。</p>
-<a id="more"></a>
-<h3 id="1-安装GIT"><a href="#1-安装GIT" class="headerlink" title="1. 安装GIT"></a>1. 安装GIT</h3><h3 id="2-安装Nodejs"><a href="#2-安装Nodejs" class="headerlink" title="2. 安装Nodejs"></a>2. 安装Nodejs</h3><h3 id="3-安装Hexo"><a href="#3-安装Hexo" class="headerlink" title="3. 安装Hexo"></a>3. 安装Hexo</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">npm install -g hexo</div></pre></td></tr></table></figure>
-<h3 id="4-初始化博客"><a href="#4-初始化博客" class="headerlink" title="4. 初始化博客"></a>4. 初始化博客</h3><p>在E盘新建目录Blog，并执行命令：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">hexo init</div></pre></td></tr></table></figure></p>
+            <p>本文主要介绍了在WINDOWS下利用Git Pages和Hexo免费搭建个人博客的方法。</p>
+<p>写博客的原因主要有感于<a href="https://zhuanlan.zhihu.com/cnfeat/19743861" target="_blank" rel="external">为什么要写博客</a> 选择Hexo的原因主要是因为[关于博客技术的选型](<a href="https://www.zhihu.com/question/21981094" target="_blank" rel="external">https://www.zhihu.com/question/21981094</a>]</p>
+<p>千里之行，始于足下。与其感慨路难行，不如马上出发！<br><a id="more"></a></p>
+<hr>
+<h2 id="本地安装Hexo"><a href="#本地安装Hexo" class="headerlink" title="本地安装Hexo"></a><strong>本地安装Hexo</strong></h2><h3 id="1，安装GIT-amp-amp-安装Nodejs"><a href="#1，安装GIT-amp-amp-安装Nodejs" class="headerlink" title="1，安装GIT &amp;&amp; 安装Nodejs"></a>1，安装GIT &amp;&amp; 安装Nodejs</h3><p><a href="https://hexo.io/zh-cn/docs/index.html" target="_blank" rel="external">安装步骤参考</a><br><a href="http://blog.csdn.net/rongbo_j/article/details/52106580" target="_blank" rel="external">解决国内NPM安装依赖速度慢问题</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">npm install -g hexo-cli</div></pre></td></tr></table></figure>
+<h3 id="2，初始化博客"><a href="#2，初始化博客" class="headerlink" title="2，初始化博客"></a>2，初始化博客</h3><p>在E盘新建目录Blog，并执行命令：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">hexo init</div></pre></td></tr></table></figure></p>
 <p>可能比较耗时，执行完毕后提示：</p>
 <blockquote>
 <p>INFO  Start blogging with Hexo!</p>
 </blockquote>
-<h3 id="4-生成博客"><a href="#4-生成博客" class="headerlink" title="4. 生成博客"></a>4. 生成博客</h3><p>在E盘新建目录，并执行命令：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">hexo generate （或者 hexo g）</div></pre></td></tr></table></figure></p>
+<h3 id="3，生成博客"><a href="#3，生成博客" class="headerlink" title="3，生成博客"></a>3，生成博客</h3><p>在E盘新建目录，并执行命令：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">hexo generate (OR hexo g)</div></pre></td></tr></table></figure></p>
 <p>可能比较耗时，执行完毕后提示： </p>
 <blockquote>
 <p>INFO  Start processing<br>INFO  Files loaded in 197 ms<br>INFO  Generated: index.html INFO<br>INFO  Generated: xxxxxxxxxxxxxx …略去<br>INFO  28 files generated in 545 ms</p>
 </blockquote>
-<h3 id="4-本地启动博客"><a href="#4-本地启动博客" class="headerlink" title="4. 本地启动博客"></a>4. 本地启动博客</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">hexo server</div></pre></td></tr></table></figure>
+<h3 id="4，本地启动博客"><a href="#4，本地启动博客" class="headerlink" title="4，本地启动博客"></a>4，本地启动博客</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">hexo server  (OR hexo s)</div></pre></td></tr></table></figure>
 <p>执行完毕后提示： </p>
 <blockquote>
 <p>INFO  Start processing<br>INFO  Hexo is running at <a href="http://localhost:4000/" target="_blank" rel="external">http://localhost:4000/</a>. Press Ctrl+C to stop.</p>
 </blockquote>
-<p>更多命令，例如如何启动指定端口，如果发布博客，可以参考<a href="https://hexo.io/docs/" target="_blank" rel="external">Hexo官方文档</a></p>
-<h3 id="5-常见的HEXO配置错误"><a href="#5-常见的HEXO配置错误" class="headerlink" title="5. 常见的HEXO配置错误"></a>5. 常见的HEXO配置错误</h3><p>搭建 hexo，在执行 hexo deploy 后,出现 [<strong>ERROR</strong> Deployer not found] 的错误</p>
-<blockquote>
-<p>打开package.json发现，没有安装hexo-deployer-git模块，使用以下命令安装：<br>npm install hexo-deployer-git –save </p>
+<p>更多命令，例如如何启动指定端口，如果发布博客，可以参考<a href="https://hexo.io/zh-cn/docs/index.html" target="_blank" rel="external">Hexo官方文档</a></p>
+<h3 id="5，定制化Hexo"><a href="#5，定制化Hexo" class="headerlink" title="5，定制化Hexo"></a>5，定制化Hexo</h3><blockquote>
+<p>可以参考<a href="https://hexo.io/zh-cn/docs/themes.html" target="_blank" rel="external">Hexo官方文档</a><br>更换主题：<a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="external">hexo-theme-icarus</a> , <a href="https://github.com/luuman/hexo-theme-spfk" target="_blank" rel="external">hexo-theme-spfk</a></p>
 </blockquote>
+<hr>
+<h2 id="发布博客到Github等网站"><a href="#发布博客到Github等网站" class="headerlink" title="发布博客到Github等网站"></a><strong>发布博客到Github等网站</strong></h2><p>由于没有代理，访问Github比较卡，所以使用了coding.net作为博客的托管</p>
+<h3 id="1，在coding-net注册并创建项目"><a href="#1，在coding-net注册并创建项目" class="headerlink" title="1，在coding.net注册并创建项目"></a>1，在coding.net注册并创建项目</h3><p>在这里我创建了两个项目</p>
+<table>
+<thead>
+<tr>
+<th>项目名</th>
+<th>用途</th>
+<th>是否开启Pages服务   </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>vther</td>
+<td>博客发布项目</td>
+<td>是</td>
+</tr>
+<tr>
+<td>blog</td>
+<td>用来存放Hexo的配置和源码</td>
+<td>否</td>
+</tr>
+</tbody>
+</table>
+<p><strong>注意：</strong>使用自己的用户名[vther]作为博客的发布项目可以使访问域名更简洁</p>
+<p>创建完成后，可以本地clone下自己的项目，并且随便修改下再提交，让git保存好账号密码。或者配置SSH公钥。</p>
+<h3 id="2，修改Hexo的deploy配置"><a href="#2，修改Hexo的deploy配置" class="headerlink" title="2，修改Hexo的deploy配置"></a>2，修改Hexo的deploy配置</h3><p>如果使用Github，可以使用注释的配置<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="attr">deploy:</span></div><div class="line"><span class="attr">  type:</span> <span class="string">git</span></div><div class="line"><span class="attr">  repo:</span></div><div class="line"><span class="attr">      coding:</span> <span class="attr">https://git.coding.net/vther/vther.git,master</span></div><div class="line">      <span class="comment">#github: https://github.com/vther/vther.github.io.git,master</span></div></pre></td></tr></table></figure></p>
+<p>修改完成后，使用以下命令来将<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">hexo deploy (OR hexo d)</div></pre></td></tr></table></figure></p>
+<p>最后就可以使用<a href="https://vther.coding.me/来访问自己的博客了！" target="_blank" rel="external">https://vther.coding.me/来访问自己的博客了！</a></p>
+<hr>
+<h3 id="其他"><a href="#其他" class="headerlink" title="其他"></a><strong>其他</strong></h3><h4 id="常见的HEXO配置错误"><a href="#常见的HEXO配置错误" class="headerlink" title="常见的HEXO配置错误"></a><strong>常见的HEXO配置错误</strong></h4><ul>
+<li>搭建 hexo，在执行 hexo deploy 后,出现 [<strong>ERROR</strong> Deployer not found] 的错误。 打开package.json发现，没有安装hexo-deployer-git模块，使用以下<a href="https://hexo.io/zh-cn/docs/deployment.html" target="_blank" rel="external">命令</a>安装：</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">npm install hexo-deployer-git --save</div></pre></td></tr></table></figure>
+<h4 id="关于Markdown"><a href="#关于Markdown" class="headerlink" title="关于Markdown "></a><strong>关于Markdown </strong></h4><ul>
+<li><a href="http://www.appinn.com/markdown/" target="_blank" rel="external">语法介绍</a></li>
+<li><a href="https://www.zybuluo.com/mdeditor" target="_blank" rel="external">在线编辑-作业部落</a></li>
+<li><a href="http://markdown.xiaoshujiang.com/" target="_blank" rel="external">在线编辑-小书匠 - 有很多快捷按钮很方便入门</a></li>
+<li><a href="http://marxi.co/" target="_blank" rel="external">在线编辑-Cmd Markdown - 有很多主题</a></li>
+</ul>
+<h4 id="参考"><a href="#参考" class="headerlink" title="参考"></a><strong>参考</strong></h4><p><a href="http://fanzhenyu.me/categories/Hexo/" target="_blank" rel="external">Github Pages + Hexo搭建博客</a><br><a href="http://www.cnfeat.com/blog/2014/05/10/how-to-build-a-blog/" target="_blank" rel="external">如何搭建一个独立博客——简明 GitHub Pages与 jekyll 教程</a></p>
 
         
         </div>
@@ -276,7 +330,7 @@
 
 </div>
 
-    <a data-url="http://yoursite.com/2017/10/15/create-blog/" data-id="cj8siijqi0000uco0s9ltvwc3" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
+    <a data-url="http://yoursite.com/hexo-create-blog/" data-id="cj8spufy90000bco0pb0zbejk" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
 <script>
     (function ($) {
         // Prevent duplicate binding
@@ -352,7 +406,7 @@
 <nav id="article-nav">
     
     
-        <a href="/2017/10/15/hello-world/" id="article-nav-older" class="article-nav-link-wrap">
+        <a href="/hexo-hello-world/" id="article-nav-older" class="article-nav-link-wrap">
             <strong class="article-nav-caption">下一篇</strong>
             <div class="article-nav-title">Hello World</div>
         </a>
@@ -381,7 +435,7 @@
                     <li>
                         
                         <div class="item-thumbnail">
-                            <a href="/2017/10/15/create-blog/" class="thumbnail">
+                            <a href="/hexo-create-blog/" class="thumbnail">
     
     
         <span class="thumbnail-image thumbnail-none"></span>
@@ -391,8 +445,8 @@
                         </div>
                         
                         <div class="item-inner">
-                            <p class="item-category"></p>
-                            <p class="item-title"><a href="/2017/10/15/create-blog/" class="title">如何使用Hexo在Github上搭建个人博客</a></p>
+                            <p class="item-category"><a class="article-category-link" href="/categories/Hexo/">Hexo</a></p>
+                            <p class="item-title"><a href="/hexo-create-blog/" class="title">如何使用Hexo在Github上搭建个人博客</a></p>
                             <p class="item-date"><time datetime="2017-10-15T08:48:02.240Z" itemprop="datePublished">2017-10-15</time></p>
                         </div>
                     </li>
@@ -400,7 +454,7 @@
                     <li>
                         
                         <div class="item-thumbnail">
-                            <a href="/2017/10/15/hello-world/" class="thumbnail">
+                            <a href="/hexo-hello-world/" class="thumbnail">
     
     
         <span class="thumbnail-image thumbnail-none"></span>
@@ -410,8 +464,8 @@
                         </div>
                         
                         <div class="item-inner">
-                            <p class="item-category"></p>
-                            <p class="item-title"><a href="/2017/10/15/hello-world/" class="title">Hello World</a></p>
+                            <p class="item-category"><a class="article-category-link" href="/categories/Hexo/">Hexo</a></p>
+                            <p class="item-title"><a href="/hexo-hello-world/" class="title">Hello World</a></p>
                             <p class="item-date"><time datetime="2017-10-15T07:56:19.621Z" itemprop="datePublished">2017-10-15</time></p>
                         </div>
                     </li>
@@ -422,6 +476,13 @@
 
     
         
+    <div class="widget-wrap">
+        <h3 class="widget-title">分类</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Hexo/">Hexo</a><span class="category-list-count">2</span></li></ul>
+        </div>
+    </div>
+
     
         
     <div class="widget-wrap">
@@ -433,8 +494,22 @@
 
     
         
+    <div class="widget-wrap">
+        <h3 class="widget-title">标签</h3>
+        <div class="widget">
+            <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hexo/">Hexo</a><span class="tag-list-count">2</span></li></ul>
+        </div>
+    </div>
+
     
         
+    <div class="widget-wrap">
+        <h3 class="widget-title">标签云</h3>
+        <div class="widget tagcloud">
+            <a href="/tags/Hexo/" style="font-size: 10px;">Hexo</a>
+        </div>
+    </div>
+
     
         
     <div class="widget-wrap widget-list">
