@@ -5,18 +5,18 @@
     
     <title>如何使用Hexo在Github上搭建个人博客 | 蛋黄的天空的博客</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-    <meta name="description" content="本文主要介绍了在WINDOWS下利用Git Pages和Hexo免费搭建个人博客的方法。 写博客的原因主要有感于为什么要写博客 选择Hexo的原因主要是因为[关于博客技术的选型](https://www.zhihu.com/question/21981094] 千里之行，始于足下。与其感慨路难行，不如马上出发！">
+    <meta name="description" content="本文主要介绍了在Windows下利用Git Pages和Hexo免费搭建个人博客的方法。 写博客的原因主要有感于为什么要写博客;选择Hexo主要参考了关于博客技术的选型 千里之行，始于足下。与其感慨路难行，不如马上出发！">
 <meta name="keywords" content="Hexo">
 <meta property="og:type" content="article">
 <meta property="og:title" content="如何使用Hexo在Github上搭建个人博客">
 <meta property="og:url" content="http://yoursite.com/hexo-create-blog/index.html">
 <meta property="og:site_name" content="蛋黄的天空的博客">
-<meta property="og:description" content="本文主要介绍了在WINDOWS下利用Git Pages和Hexo免费搭建个人博客的方法。 写博客的原因主要有感于为什么要写博客 选择Hexo的原因主要是因为[关于博客技术的选型](https://www.zhihu.com/question/21981094] 千里之行，始于足下。与其感慨路难行，不如马上出发！">
+<meta property="og:description" content="本文主要介绍了在Windows下利用Git Pages和Hexo免费搭建个人博客的方法。 写博客的原因主要有感于为什么要写博客;选择Hexo主要参考了关于博客技术的选型 千里之行，始于足下。与其感慨路难行，不如马上出发！">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2017-10-15T12:05:37.478Z">
+<meta property="og:updated_time" content="2017-10-15T12:27:58.750Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="如何使用Hexo在Github上搭建个人博客">
-<meta name="twitter:description" content="本文主要介绍了在WINDOWS下利用Git Pages和Hexo免费搭建个人博客的方法。 写博客的原因主要有感于为什么要写博客 选择Hexo的原因主要是因为[关于博客技术的选型](https://www.zhihu.com/question/21981094] 千里之行，始于足下。与其感慨路难行，不如马上出发！">
+<meta name="twitter:description" content="本文主要介绍了在Windows下利用Git Pages和Hexo免费搭建个人博客的方法。 写博客的原因主要有感于为什么要写博客;选择Hexo主要参考了关于博客技术的选型 千里之行，始于足下。与其感慨路难行，不如马上出发！">
     
 
     
@@ -254,8 +254,8 @@
         <div class="article-entry" itemprop="articleBody">
         
             
-            <p>本文主要介绍了在WINDOWS下利用Git Pages和Hexo免费搭建个人博客的方法。</p>
-<p>写博客的原因主要有感于<a href="https://zhuanlan.zhihu.com/cnfeat/19743861" target="_blank" rel="external">为什么要写博客</a> 选择Hexo的原因主要是因为[关于博客技术的选型](<a href="https://www.zhihu.com/question/21981094" target="_blank" rel="external">https://www.zhihu.com/question/21981094</a>]</p>
+            <p>本文主要介绍了在Windows下利用Git Pages和Hexo免费搭建个人博客的方法。</p>
+<p>写博客的原因主要有感于<a href="https://zhuanlan.zhihu.com/cnfeat/19743861" target="_blank" rel="external">为什么要写博客</a>;选择Hexo主要参考了<a href="https://www.zhihu.com/question/21981094" target="_blank" rel="external">关于博客技术的选型</a></p>
 <p>千里之行，始于足下。与其感慨路难行，不如马上出发！<br><a id="more"></a></p>
 <hr>
 <h2 id="本地安装Hexo"><a href="#本地安装Hexo" class="headerlink" title="本地安装Hexo"></a><strong>本地安装Hexo</strong></h2><h3 id="1，安装GIT-amp-amp-安装Nodejs"><a href="#1，安装GIT-amp-amp-安装Nodejs" class="headerlink" title="1，安装GIT &amp;&amp; 安装Nodejs"></a>1，安装GIT &amp;&amp; 安装Nodejs</h3><p><a href="https://hexo.io/zh-cn/docs/index.html" target="_blank" rel="external">安装步骤参考</a><br><a href="http://blog.csdn.net/rongbo_j/article/details/52106580" target="_blank" rel="external">解决国内NPM安装依赖速度慢问题</a></p>
@@ -303,11 +303,10 @@
 </tr>
 </tbody>
 </table>
-<p><strong>注意：</strong>使用自己的用户名[vther]作为博客的发布项目可以使访问域名更简洁</p>
 <p>创建完成后，可以本地clone下自己的项目，并且随便修改下再提交，让git保存好账号密码。或者配置SSH公钥。</p>
 <h3 id="2，修改Hexo的deploy配置"><a href="#2，修改Hexo的deploy配置" class="headerlink" title="2，修改Hexo的deploy配置"></a>2，修改Hexo的deploy配置</h3><p>如果使用Github，可以使用注释的配置<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="attr">deploy:</span></div><div class="line"><span class="attr">  type:</span> <span class="string">git</span></div><div class="line"><span class="attr">  repo:</span></div><div class="line"><span class="attr">      coding:</span> <span class="attr">https://git.coding.net/vther/vther.git,master</span></div><div class="line">      <span class="comment">#github: https://github.com/vther/vther.github.io.git,master</span></div></pre></td></tr></table></figure></p>
 <p>修改完成后，使用以下命令来将<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">hexo deploy (OR hexo d)</div></pre></td></tr></table></figure></p>
-<p>最后就可以使用<a href="https://vther.coding.me/来访问自己的博客了！" target="_blank" rel="external">https://vther.coding.me/来访问自己的博客了！</a></p>
+<p>最后可以使用 <strong><a href="https://vther.coding.me" target="_blank" rel="external">https://vther.coding.me</a></strong> 来访问自己的博客了！<br><strong>注意：</strong>使用自己的用户名[vther]作为博客的发布项目可以使访问域名更简洁。<em>如果不这么做，需要用这个URL才能访问：<a href="https://{用户名}.coding.me/{项目名}" target="_blank" rel="external">https://{用户名}.coding.me/{项目名}</a></em></p>
 <hr>
 <h3 id="其他"><a href="#其他" class="headerlink" title="其他"></a><strong>其他</strong></h3><h4 id="常见的HEXO配置错误"><a href="#常见的HEXO配置错误" class="headerlink" title="常见的HEXO配置错误"></a><strong>常见的HEXO配置错误</strong></h4><ul>
 <li>搭建 hexo，在执行 hexo deploy 后,出现 [<strong>ERROR</strong> Deployer not found] 的错误。 打开package.json发现，没有安装hexo-deployer-git模块，使用以下<a href="https://hexo.io/zh-cn/docs/deployment.html" target="_blank" rel="external">命令</a>安装：</li>
@@ -330,7 +329,7 @@
 
 </div>
 
-    <a data-url="http://yoursite.com/hexo-create-blog/" data-id="cj8spufy90000bco0pb0zbejk" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
+    <a data-url="http://yoursite.com/hexo-create-blog/" data-id="cj8sput1o0000doo0isq65qtr" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
 <script>
     (function ($) {
         // Prevent duplicate binding
