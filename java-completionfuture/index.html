@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <meta charset="utf-8">
+    
+    <title>Java8 之 CompletableFuture | 蛋黄的天空的博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="使用CompletableFuture的有以下好处：  使用CompletableFuture类提供的特性可以创建异步任务、为客户提供异步API。 使用CompletableFuture可以以改善程序的性能，加快程序的响应速度。尤其是在执行比较耗时的操作时，例如调用一个或多个远程服务。 CompletableFuture类还提供了异常管理的机制，让你有机会抛出/管理异步任务执行中发生的异常。 将同">
+<meta name="keywords" content="CompletableFuture,JDK,Java8">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java8 之 CompletableFuture">
+<meta property="og:url" content="http://yoursite.com/java-completionfuture/index.html">
+<meta property="og:site_name" content="蛋黄的天空的博客">
+<meta property="og:description" content="使用CompletableFuture的有以下好处：  使用CompletableFuture类提供的特性可以创建异步任务、为客户提供异步API。 使用CompletableFuture可以以改善程序的性能，加快程序的响应速度。尤其是在执行比较耗时的操作时，例如调用一个或多个远程服务。 CompletableFuture类还提供了异常管理的机制，让你有机会抛出/管理异步任务执行中发生的异常。 将同">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://www.runoob.com/wp-content/uploads/2013/12/java.jpg">
+<meta property="og:updated_time" content="2017-10-29T09:19:46.409Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java8 之 CompletableFuture">
+<meta name="twitter:description" content="使用CompletableFuture的有以下好处：  使用CompletableFuture类提供的特性可以创建异步任务、为客户提供异步API。 使用CompletableFuture可以以改善程序的性能，加快程序的响应速度。尤其是在执行比较耗时的操作时，例如调用一个或多个远程服务。 CompletableFuture类还提供了异常管理的机制，让你有机会抛出/管理异步任务执行中发生的异常。 将同">
+<meta name="twitter:image" content="http://www.runoob.com/wp-content/uploads/2013/12/java.jpg">
+    
+
+    
+        <link rel="alternate" href="/" title="蛋黄的天空的博客" type="application/atom+xml" />
+    
+
+    
+
+    <link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/libs/open-sans/styles.css">
+    <link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+    <link rel="stylesheet" href="/css/style.css">
+
+    <script src="/libs/jquery/2.1.3/jquery.min.js"></script>
+    
+    
+        <link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+    
+    
+        <link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+    
+    
+    
+    
+
+
+</head>
+
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/" id="logo">
+                <i class="logo"></i>
+                <span class="site-title">蛋黄的天空的博客</span>
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/.">主页</a>
+                
+                    <a class="main-nav-link" href="/archives">归档</a>
+                
+                    <a class="main-nav-link" href="/categories">分类</a>
+                
+                    <a class="main-nav-link" href="/tags">标签</a>
+                
+                    <a class="main-nav-link" href="/about">关于</a>
+                
+            </nav>
+            
+                
+                <nav id="sub-nav">
+                    <div class="profile" id="profile-nav">
+                        <a id="profile-anchor" href="javascript:;">
+                            <img class="avatar" src="/css/images/avatar.png" />
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </div>
+                </nav>
+            
+            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+</div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/.">主页</a></td>
+                
+                    <td><a class="main-nav-link" href="/archives">归档</a></td>
+                
+                    <td><a class="main-nav-link" href="/categories">分类</a></td>
+                
+                    <td><a class="main-nav-link" href="/tags">标签</a></td>
+                
+                    <td><a class="main-nav-link" href="/about">关于</a></td>
+                
+                <td>
+                    
+    <div class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        <div class="outer">
+            
+                
+
+<aside id="profile">
+    <div class="inner profile-inner">
+        <div class="base-info profile-block">
+            <img id="avatar" src="/css/images/avatar.png" />
+            <h2 id="name">蛋黄</h2>
+            <h3 id="title">Web Developer &amp; Designer</h3>
+            <span id="location"><i class="fa fa-map-marker"></i>ShenZhen, China</span>
+            <a id="follow" target="_blank" href="https://github.com/vther">关注我</a>
+        </div>
+        <div class="article-info profile-block">
+            <div class="article-info-block">
+                5
+                <span>文章</span>
+            </div>
+            <div class="article-info-block">
+                5
+                <span>标签</span>
+            </div>
+        </div>
+        
+        <div class="profile-block social-links">
+            <table>
+                <tr>
+                    
+                    
+                    <td>
+                        <a href="https://github.com/vther" target="_blank" title="github" class=tooltip>
+                            <i class="fa fa-github"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="/" target="_blank" title="twitter" class=tooltip>
+                            <i class="fa fa-twitter"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="/" target="_blank" title="facebook" class=tooltip>
+                            <i class="fa fa-facebook"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="/" target="_blank" title="dribbble" class=tooltip>
+                            <i class="fa fa-dribbble"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="/" target="_blank" title="rss" class=tooltip>
+                            <i class="fa fa-rss"></i>
+                        </a>
+                    </td>
+                    
+                </tr>
+            </table>
+        </div>
+        
+    </div>
+</aside>
+
+            
+            <section id="main"><article id="post-java-completionfuture" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name">
+            Java8 之 CompletableFuture
+        </h1>
+    
+
+                
+                    <div class="article-meta">
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/java-completionfuture/">
+            <time datetime="2017-10-29T09:19:39.922Z" itemprop="datePublished">2017-10-29</time>
+        </a>
+    </div>
+
+
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/Java/">Java</a>
+    </div>
+
+                        
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/CompletableFuture/">CompletableFuture</a>, <a class="tag-link" href="/tags/JDK/">JDK</a>, <a class="tag-link" href="/tags/Java8/">Java8</a>
+    </div>
+
+                    </div>
+                
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+            
+            <p><strong>使用CompletableFuture的有以下好处：</strong></p>
+<ol>
+<li>使用CompletableFuture类提供的特性可以创建异步任务、为客户提供异步API。</li>
+<li>使用CompletableFuture可以以改善程序的性能，加快程序的响应速度。尤其是在执行比较耗时的操作时，例如调用一个或多个远程服务。</li>
+<li>CompletableFuture类还提供了异常管理的机制，让你有机会抛出/管理异步任务执行中发生的异常。</li>
+<li>将同步API的调用封装到一个CompletableFuture中，你能够以异步的方式使用其结果。</li>
+<li>如果异步任务之间相互独立，或者它们之间某一些的结果是另一些的输入，你可以将这些异步任务构造或者合并成一个。</li>
+<li>你可以为CompletableFuture注册一个回调函数，在Future执行完毕或者它们计算的结果可用时，针对性地执行一些程序。</li>
+<li>你可以决定在任意时候结束程序的运行，是等待由CompletableFuture对象构成的列表中所有的对象都执行完毕，还是只要其中任何一个首先完成就中止程序的运行。</li>
+</ol>
+<a id="more"></a>
+<p><strong>由于CompletableFuture</strong>类实现了<strong>Future</strong>和<strong>CompletionStage</strong>接口，下面我们先来看下两个接口分别提供了什么功能：</p>
+<hr>
+<h1 id="Future"><a href="#Future" class="headerlink" title="Future"></a><strong>Future</strong></h1><p>Future接口在JDK1.5中被引入，用来描述一个异步计算的结果，但是获取一个结果的方法较少，在结果没有真正返回前，<code>future.get()</code>方法会阻塞住调用线程，要么通过轮询<code>future.isDone()</code>，确认完成后，再调用get()获取值。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">ExecutorService executorService = Executors.newSingleThreadExecutor();</div><div class="line">Future&lt;String&gt; future = executorService.submit(<span class="keyword">new</span> Callable&lt;String&gt;() &#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">call</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">        TimeUtils.sleep5Seconds();</div><div class="line">        <span class="keyword">return</span> <span class="string">"I am finished."</span>;</div><div class="line">    &#125;</div><div class="line">&#125;);</div><div class="line"></div><div class="line">System.out.println(<span class="string">"main thread -&gt; I am not blocked"</span>);</div><div class="line"><span class="keyword">try</span> &#123;</div><div class="line">    System.out.println(<span class="string">"-----&gt; "</span> + future.get());</div><div class="line">&#125; <span class="keyword">catch</span> (InterruptedException | ExecutionException e) &#123;</div><div class="line">    e.printStackTrace();<span class="comment">//如果线程内出现异常，则会catch到ExecutionException</span></div><div class="line">&#125;</div><div class="line">System.out.println(<span class="string">"main thread -&gt; I am blocked"</span>);</div><div class="line"></div><div class="line"><span class="comment">//注意：ExecutorService使用的线程默认是非守护线程，所以执行完毕后，测试代码不会停止，要让其结束掉，有两种方式：1，设为守护线程 2，显式调用其shutdown()方法</span></div><div class="line"><span class="comment">//ExecutorService executorService = Executors.newSingleThreadExecutor((r) -&gt; &#123;</span></div><div class="line"><span class="comment">//    Thread thread = new Thread(r);</span></div><div class="line"><span class="comment">//    thread.setDaemon(true);</span></div><div class="line"><span class="comment">//    return thread;</span></div><div class="line"><span class="comment">//&#125;);</span></div><div class="line">executorService.shutdown();<span class="comment">//本例采用方法2</span></div></pre></td></tr></table></figure>
+<p>输出结果为：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">main thread -&gt; I am not blocked</div><div class="line">-----&gt;  This is the result after async process</div><div class="line">main thread -&gt; I am blocked</div></pre></td></tr></table></figure></p>
+<p>或者可以在上述代码第10行后插入以下代码，通过<code>future.isDone()</code>方法来判断future是否完成，然后<code>future.get()</code>方法就能直接拿到结果了。这里只是介绍下<code>future.isDone()</code>方法，其实两者并没有太大区别。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">while</span> (!future.isDone()) &#123; </div><div class="line">    TimeUtils.sleep(<span class="number">10</span>);<span class="comment">//如果还没有完成，则休眠10ms</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>如果future执行的时间很长，那么<code>future.get()</code>方法会一直阻塞下去，这时候，在一些使用场景下可能会出现问题，所以你可以能需要使用 <code>future.get(long timeout, TimeUnit)</code>方法，在给定的时间拿不到结果，则抛出一个TimeoutException<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">try</span> &#123;</div><div class="line">    System.out.println(future.get(<span class="number">2</span>, TimeUnit.SECONDS));</div><div class="line">&#125; <span class="keyword">catch</span> (InterruptedException | ExecutionException | TimeoutException e) &#123;</div><div class="line">    e.printStackTrace();</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>可以看到future并没有我们意料的好用，我们并不能通过future来达成以下目标：</p>
+<ul>
+<li>等待Future集合中的所有任务都完成。  </li>
+<li>仅等待Future集合中最快结束的任务完成（有可能因为它们试图通过不同的方式计算同一个值），并返回它的结果。</li>
+<li>将两个异步计算合并为一个——这两个异步计算之间相互独立，同时第二个又依赖于第一个的结果。</li>
+<li>通过编程方式完成一个Future任务的执行（即以手工设定异步操作结果的方式）。</li>
+<li>应对Future的完成事件（即当Future的完成事件发生时会收到通知，并能使用Future计算的结果进行下一步的操作，不只是简单地阻塞等待操作的结果）</li>
+</ul>
+<p><strong>那么下面，我们看看CompletionStage类是如何将这些都变为可能。</strong></p>
+<hr>
+<h1 id="CompletionStage"><a href="#CompletionStage" class="headerlink" title="CompletionStage"></a><strong>CompletionStage</strong></h1><p>CompletionStage是一个计算阶段（可能同步、也可能是异步），它可以在另外一个CompletionStage完成后执行一个动作(Action)或者去获取一个值，然后还可以去触发其他的CompletionStage。更多API可以参考<a href="https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/CompletionStage.html" target="_blank" rel="external">CompletionStage Docs</a></p>
+<blockquote>
+<p>CompletionStage本身可以进行compose操作。</p>
+<p>CompletionStage产生的结果可以再进行Function、Consumer、Runnable操作，使用哪个函数取决于入参和出参。例如<code>stage.thenApply(x -&gt; square(x)).thenAccept(x -&gt; System.out.print(x)).thenRun(() -&gt; System.out.println())</code></p>
+<p>一个CompletionStage的执行步骤可以由一个CompletionStage触发，或者另外两个全部完成触发，或者另外两个其中一个完成触发。例如分别对应于run、runAfterBoth、runAfterEither方法。当时用either方法时，并不能保证是哪个结果导致的下一个stage的执行。</p>
+<p>CompletionStage可以同步或者异步（Async）执行。并且提供了重载的方法，你可以使用内置的Executor或者自己提供一个。</p>
+<p>whenComplete  handle </p>
+</blockquote>
+<p>由于CompletionStage是接口，其具体实现在CompletionFuture里，我们下面就看看CompletionStage如何应用上面的这些功能</p>
+<hr>
+<h1 id="CompletionFuture"><a href="#CompletionFuture" class="headerlink" title="CompletionFuture"></a><strong>CompletionFuture</strong></h1><h2 id="1，基本用法"><a href="#1，基本用法" class="headerlink" title="1，基本用法"></a>1，基本用法</h2><h3 id="1-1-1-使用new的方式"><a href="#1-1-1-使用new的方式" class="headerlink" title="1.1.1 使用new的方式"></a>1.1.1 使用new的方式</h3><p>启动一个线程，去获取结果。当线程执行完毕调用<code>future.complete(T value)</code>方法，此时<code>future.whenComplete</code>会收到回调.<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">CompletableFuture&lt;Double&gt; future = <span class="keyword">new</span> CompletableFuture&lt;&gt;();</div><div class="line"><span class="keyword">new</span> Thread(() -&gt; future.complete(SomeService.get())).start();</div><div class="line">System.out.println(<span class="string">"main thread -&gt; I am not blocked"</span>);</div><div class="line">future.whenComplete((v, t) -&gt; &#123;</div><div class="line">    Optional.ofNullable(v).ifPresent(System.out::println);</div><div class="line">    Optional.ofNullable(t).ifPresent(Throwable::printStackTrace);</div><div class="line">&#125;);</div><div class="line">System.out.println(<span class="string">"main thread -&gt; I am not blocked"</span>);</div></pre></td></tr></table></figure></p>
+<p>其中SomeService.get()是一个模拟的耗时的任务，其作用是5秒钟后返回一个随机数<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">double</span> <span class="title">get</span><span class="params">()</span> </span>&#123;</div><div class="line">    Random random = <span class="keyword">new</span> Random(System.currentTimeMillis());</div><div class="line">    TimeUtils.sleep5Seconds();</div><div class="line">    <span class="keyword">return</span> random.nextDouble();</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>执行结果<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">main thread -&gt; I am not blocked</div><div class="line">main thread -&gt; I am not blocked</div><div class="line"><span class="number">0.7731229511499652</span></div></pre></td></tr></table></figure></p>
+<h3 id="1-1-2-使用supplyAsync-pipleline的形式"><a href="#1-1-2-使用supplyAsync-pipleline的形式" class="headerlink" title="1.1.2 使用supplyAsync + pipleline的形式"></a>1.1.2 使用supplyAsync + pipleline的形式</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">CompletableFuture.supplyAsync(SomeService::get)</div><div class="line">        .whenComplete((v, t) -&gt; System.out.println(<span class="string">"whenComplete value is -&gt; "</span> + v))</div><div class="line">        .thenCompose(i -&gt; CompletableFuture.supplyAsync(() -&gt; i + <span class="number">10</span>))<span class="comment">//模拟 将结果加10处理</span></div><div class="line">        .thenAccept((v) -&gt; System.out.println(<span class="string">"thenAccept value is -&gt; "</span> + v))</div><div class="line">        .thenRun(() -&gt; System.out.println(<span class="string">"thenRun -&gt; do some end task"</span>));</div></pre></td></tr></table></figure>
+<p>执行结果为：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">whenComplete value is -&gt; <span class="number">0.5416761173806217</span></div><div class="line">thenAccept value is -&gt; <span class="number">10.541676117380621</span></div><div class="line">thenRun -&gt; <span class="keyword">do</span> some end task</div></pre></td></tr></table></figure></p>
+<h3 id="1-1-3-并行Stream-CompletionFuture结合使用。"><a href="#1-1-3-并行Stream-CompletionFuture结合使用。" class="headerlink" title="1.1.3 并行Stream + CompletionFuture结合使用。"></a>1.1.3 并行Stream + CompletionFuture结合使用。</h3><p>这里将4个整数分别乘以获取到的随机数，并统计时间：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">long</span> start = System.currentTimeMillis();</div><div class="line">Stream.of(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>)</div><div class="line">        .map(d -&gt; CompletableFuture.supplyAsync(() -&gt; d * SomeService.get()))</div><div class="line">        .parallel()</div><div class="line">        .map(CompletableFuture::join).forEach(System.out::println);</div><div class="line">System.out.println(<span class="string">"time costs -&gt; "</span> + (System.currentTimeMillis() - start) + <span class="string">"ms"</span>);</div></pre></td></tr></table></figure></p>
+<p>执行结果为：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="number">1.6149546280106335</span></div><div class="line"><span class="number">3.2281176801818123</span></div><div class="line"><span class="number">0.8070294200454531</span></div><div class="line"><span class="number">2.42243194201595</span></div><div class="line">time costs -&gt; <span class="number">5058</span>ms</div></pre></td></tr></table></figure></p>
+<p>可以看到获取一次随机数需要5秒，总共也只需要5秒多点。</p>
+<h2 id="2，CompletableFuture-API"><a href="#2，CompletableFuture-API" class="headerlink" title="2，CompletableFuture API"></a>2，CompletableFuture API</h2><table>
+<thead>
+<tr>
+<th>API</th>
+<th>功能                      </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&lt;U&gt; CompletionStage&lt;U&gt; thenApply(Function&lt;? super T,? extends U&gt; fn)</code></td>
+<td>本stage完成后，执行一个Function，用其结果构建一个新的stage并返回           </td>
+</tr>
+<tr>
+<td><code>CompletionStage&lt;Void&gt; thenAccept(Consumer&lt;? super T&gt; action)</code></td>
+<td>本stage完成后，执行一Consumer，用Void构建一个新的stage并返回</td>
+</tr>
+<tr>
+<td><code>CompletionStage&lt;Void&gt; thenRun(Runnable action)</code></td>
+<td>本stage完成后，执行一个Runnable，用Void构建一个新的stage并返回</td>
+</tr>
+<tr>
+<td><code>&lt;U,V&gt; CompletionStage&lt;V&gt; thenCombine(CompletionStage&lt;? extends U&gt; other,BiFunction&lt;? super T,? super U,? extends V&gt; fn)</code></td>
+<td>本stage和给定的stage都正常完成后，执行一个BiFunction，用其结果构建一个新的stage并返回</td>
+</tr>
+<tr>
+<td><code>&lt;U&gt; CompletableFuture&lt;U&gt;    thenCompose(Function&lt;? super T,? extends CompletionStage&lt;U&gt;&gt; fn)</code></td>
+<td>本stage正常完成后，用其结果构造一个新的stage，和thenApply类似，只不过这个需要自己构造stage，thenApply会自动构造</td>
+</tr>
+<tr>
+<td><code>CompletionStage&lt;Void&gt; thenAccept(Consumer&lt;? super T&gt; action)</code></td>
+<td>本stage完成后，执行一Consumer，用Void构建一个新的stage并返回</td>
+</tr>
+<tr>
+<td><code>CompletionStage&lt;Void&gt; thenAccept(Consumer&lt;? super T&gt; action)</code></td>
+<td>本stage完成后，执行一Consumer，用Void构建一个新的stage并返回</td>
+</tr>
+</tbody>
+</table>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"></div><div class="line"><span class="comment">// </span></div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">// </span></div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">// </span></div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">// 本stage和other stage都完成后，再执行action，其他带有Both的类似</span></div><div class="line">&lt;U&gt; <span class="function">CompletionStage&lt;Void&gt; <span class="title">thenAcceptBoth</span><span class="params">(CompletionStage&lt;? extends U&gt; other,BiConsumer&lt;? <span class="keyword">super</span> T, ? <span class="keyword">super</span> U&gt; action)</span></span>;</div><div class="line"><span class="comment">// 本stage和other stage有一个完成后，就执行action，其他带有Either的类似</span></div><div class="line"><span class="function">CompletableFuture&lt;Void&gt;	<span class="title">runAfterEither</span><span class="params">(CompletionStage&lt;?&gt; other, Runnable action)</span></span></div><div class="line"><span class="function"><span class="comment">// 多个stage有一个完成后，就算完成</span></span></div><div class="line"><span class="function"><span class="keyword">static</span> CompletableFuture&lt;Object&gt; <span class="title">anyOf</span><span class="params">(CompletableFuture&lt;?&gt;... cfs)</span></span></div><div class="line"><span class="function"><span class="comment">// 多个stage党所有完成后，才算完成</span></span></div><div class="line"><span class="function"><span class="keyword">static</span> CompletableFuture&lt;Void&gt; <span class="title">allOf</span><span class="params">(CompletableFuture&lt;?&gt;... cfs)</span></span></div><div class="line"><span class="function">@Test</span></div><div class="line"><span class="function"> <span class="keyword">public</span> <span class="keyword">void</span> <span class="title">thenApply</span><span class="params">()</span> </span>&#123;</div><div class="line">     String result = CompletableFuture.supplyAsync(() -&gt; <span class="string">"hello"</span>).thenApply(s -&gt; s + <span class="string">" world"</span>).join();</div><div class="line">     System.out.println(result);<span class="comment">//结果 hello world</span></div><div class="line"> &#125;</div></pre></td></tr></table></figure>
+<h2 id="2，CompletableFuture的线程"><a href="#2，CompletableFuture的线程" class="headerlink" title="2，CompletableFuture的线程"></a>2，CompletableFuture的线程</h2><p>一般对于CompletableFuture会有多个重载的方法，例如以下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> CompletableFuture&lt;Void&gt; <span class="title">thenRun</span><span class="params">(Runnable action)</span></span></div><div class="line"><span class="function"><span class="keyword">public</span> CompletableFuture&lt;Void&gt; <span class="title">thenRunAsync</span><span class="params">(Runnable action)</span></span></div><div class="line"><span class="function"><span class="keyword">public</span> CompletableFuture&lt;Void&gt; <span class="title">thenRunAsync</span><span class="params">(Runnable action,  Executor executor)</span></span></div></pre></td></tr></table></figure></p>
+<p>那么这三个方法中的代码，分别会处于什么线程中执行呢？（这里只以thenRun为例，其他的方法类似）测试代码如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">ExecutorService executor = Executors.newCachedThreadPool();</div><div class="line">CompletableFuture.supplyAsync(SomeService::get, executor)</div><div class="line">        .thenRun(() -&gt; System.out.println(<span class="string">"thenRun1  -&gt;"</span> + Thread.currentThread()))</div><div class="line">        .thenRunAsync(() -&gt; System.out.println(<span class="string">"thenRunAsync  -&gt;"</span> + Thread.currentThread()))</div><div class="line">        .thenRun(() -&gt; System.out.println(<span class="string">"thenRun2  -&gt;"</span> + Thread.currentThread()))</div><div class="line">        .thenRunAsync(() -&gt; System.out.println(<span class="string">"thenRunAsync in executor  -&gt;"</span> + Thread.currentThread()), executor)</div><div class="line">        .thenRun(() -&gt; System.out.println(<span class="string">"thenRun3  -&gt;"</span> + Thread.currentThread()))</div></pre></td></tr></table></figure></p>
+<p>可以看到如下结果（为了对比，格式上对输出结果加以调整，顺序未变）：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">SomeService get  -&gt;Thread[pool-1-thread-1,5,main]</div><div class="line">thenRun1         -&gt;Thread[pool-1-thread-1,5,main]</div><div class="line">thenRunAsync  -&gt;Thread[ForkJoinPool.commonPool-worker-1,5,main]</div><div class="line">thenRun2      -&gt;Thread[ForkJoinPool.commonPool-worker-1,5,main]</div><div class="line">thenRunAsync in executor  -&gt;Thread[pool-1-thread-1,5,main]</div><div class="line">thenRun3                  -&gt;Thread[pool-1-thread-1,5,main]</div></pre></td></tr></table></figure></p>
+<p><code>thenRun(Runnable action)</code> 是在<strong>上一步骤中的的执行线程中执行</strong><br><code>thenRunAsync(Runnable action)</code> <strong><em>一般</em></strong>是在JDK为提供的默认线程池ForkJoinPool.commonPool()中执行，具体是和CPU核数、JVM配置有关，这里不在多说，可以简单参考：<a href="http://www.jianshu.com/p/1b5f4ea0074a" target="_blank" rel="external">ForkJoinPool的commonPool相关参数配置</a><br><code>thenRunAsync(Runnable action,  Executor executor)</code> 是在提供的线程池中执行</p>
+<h2 id="3，CompletableFuture-pipleline中的执行顺序"><a href="#3，CompletableFuture-pipleline中的执行顺序" class="headerlink" title="3，CompletableFuture pipleline中的执行顺序"></a>3，CompletableFuture pipleline中的执行顺序</h2><p>一般对于CompletableFuture会有多个重载的方法，例如以下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> CompletableFuture&lt;Void&gt; <span class="title">thenRun</span><span class="params">(Runnable action)</span></span></div><div class="line"><span class="function"><span class="keyword">public</span> CompletableFuture&lt;Void&gt; <span class="title">thenRunAsync</span><span class="params">(Runnable action)</span></span></div><div class="line"><span class="function"><span class="keyword">public</span> CompletableFuture&lt;Void&gt; <span class="title">thenRunAsync</span><span class="params">(Runnable action,  Executor executor)</span></span></div></pre></td></tr></table></figure></p>
+<p>那么这三个方法中的代码，分别会处于什么线程中执行呢？（这里只以thenRun为例，其他的方法类似）测试代码如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">ExecutorService executor = Executors.newCachedThreadPool();</div><div class="line">CompletableFuture.supplyAsync(SomeService::get, executor)</div><div class="line">        .thenRun(() -&gt; System.out.println(<span class="string">"thenRun1  -&gt;"</span> + Thread.currentThread()))</div><div class="line">        .thenRunAsync(() -&gt; System.out.println(<span class="string">"thenRunAsync  -&gt;"</span> + Thread.currentThread()))</div><div class="line">        .thenRun(() -&gt; System.out.println(<span class="string">"thenRun2  -&gt;"</span> + Thread.currentThread()))</div><div class="line">        .thenRunAsync(() -&gt; System.out.println(<span class="string">"thenRunAsync in executor  -&gt;"</span> + Thread.currentThread()), executor)</div><div class="line">        .thenRun(() -&gt; System.out.println(<span class="string">"thenRun3  -&gt;"</span> + Thread.currentThread()))</div></pre></td></tr></table></figure></p>
+<p>可以看到如下结果（为了对比，格式上对输出结果加以调整，顺序未变）：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">SomeService get  -&gt;Thread[pool-1-thread-1,5,main]</div><div class="line">thenRun1         -&gt;Thread[pool-1-thread-1,5,main]</div><div class="line">thenRunAsync  -&gt;Thread[ForkJoinPool.commonPool-worker-1,5,main]</div><div class="line">thenRun2      -&gt;Thread[ForkJoinPool.commonPool-worker-1,5,main]</div><div class="line">thenRunAsync in executor  -&gt;Thread[pool-1-thread-1,5,main]</div><div class="line">thenRun3                  -&gt;Thread[pool-1-thread-1,5,main]</div></pre></td></tr></table></figure></p>
+<p><code>thenRun(Runnable action)</code> 是在<strong>上一步骤中的的执行线程中执行</strong><br><code>thenRunAsync(Runnable action)</code> <strong><em>一般</em></strong>是在JDK为提供的默认线程池ForkJoinPool.commonPool()中执行，具体是和CPU核数、JVM配置有关，这里不在多说，可以简单参考：<a href="http://www.jianshu.com/p/1b5f4ea0074a" target="_blank" rel="external">ForkJoinPool的commonPool相关参数配置</a><br><code>thenRunAsync(Runnable action,  Executor executor)</code> 是在提供的线程池中执行<br><strong><em>flatMap</em></strong>：用法和map类似，但是参数需要提供使用Optional包裹的Function，调用后，返回的也是有Optional包裹的结果。简单而言就是：<strong><em>map需要的Function是T到U，而flatMap是T到Optional<u></u></em></strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span>&lt;U&gt; Optional&lt;U&gt; <span class="title">flatMap</span><span class="params">(Function&lt;? <span class="keyword">super</span> T, Optional&lt;U&gt;&gt; mapper)</span> </span>&#123;</div><div class="line">    Objects.requireNonNull(mapper);</div><div class="line">    <span class="keyword">if</span> (!isPresent())</div><div class="line">        <span class="keyword">return</span> empty();</div><div class="line">    <span class="keyword">else</span> &#123;</div><div class="line">        <span class="keyword">return</span> Objects.requireNonNull(mapper.apply(value));</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="3，orElse、orElse、orElseThrow"><a href="#3，orElse、orElse、orElseThrow" class="headerlink" title="3，orElse、orElse、orElseThrow"></a>3，orElse、orElse、orElseThrow</h2><p><strong><em>orElse</em></strong>：如果值不存在，则返回一个默认值<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> T <span class="title">orElse</span><span class="params">(T other)</span> </span>&#123;</div><div class="line">    <span class="keyword">return</span> value != <span class="keyword">null</span> ? value : other;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p><strong><em>orElseGet</em></strong>：如果值不存在，则通过一个Supplier提供默认值</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> T <span class="title">orElseGet</span><span class="params">(Supplier&lt;? extends T&gt; other)</span> </span>&#123;</div><div class="line">    <span class="keyword">return</span> value != <span class="keyword">null</span> ? value : other.get();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong><em>orElseThrow</em></strong>：如果值不存在，则抛出异常</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> &lt;X extends Throwable&gt; <span class="function">T <span class="title">orElseThrow</span><span class="params">(Supplier&lt;? extends X&gt; exceptionSupplier)</span> <span class="keyword">throws</span> X </span>&#123;</div><div class="line">    <span class="keyword">if</span> (value != <span class="keyword">null</span>) &#123;</div><div class="line">        <span class="keyword">return</span> value;</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        <span class="keyword">throw</span> exceptionSupplier.get();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>例如：通过订单ID查询订单，查询不到则抛出异常OrderNotExistsException<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> Order <span class="title">getOrder</span><span class="params">(String orderId)</span> </span>&#123;</div><div class="line">    <span class="keyword">return</span> Optional.ofNullable(orderId)</div><div class="line">            .map(orderReposity::findByOrderId)</div><div class="line">            .orElseThrow(OrderNotExistsException::<span class="keyword">new</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h2 id="4，范例"><a href="#4，范例" class="headerlink" title="4，范例"></a>4，范例</h2><p>从配置文件中读取整数配置项</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 以前用法</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">getIntProp</span><span class="params">(Properties props, String name)</span> </span>&#123;</div><div class="line">    String value = props.getProperty(name);</div><div class="line">    <span class="keyword">if</span> (value != <span class="keyword">null</span>) &#123;</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            <span class="keyword">int</span> i = Integer.parseInt(value);</div><div class="line">            <span class="keyword">if</span> (i &gt; <span class="number">0</span>) &#123;</div><div class="line">                <span class="keyword">return</span> i;</div><div class="line">            &#125;</div><div class="line">        &#125; <span class="keyword">catch</span> (NumberFormatException nfe) &#123; &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div><div class="line"><span class="comment">// 使用Optional</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">getIntPropWithOptional</span><span class="params">(Properties props, String name)</span> </span>&#123;</div><div class="line">    <span class="keyword">return</span> Optional.ofNullable(props.getProperty(name))</div><div class="line">            .flatMap(Main::string2int)</div><div class="line">            .filter(i -&gt; i &gt; <span class="number">0</span>).orElse(<span class="number">0</span>);</div><div class="line">&#125;</div><div class="line"><span class="comment">// String转整数</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Optional&lt;Integer&gt; <span class="title">string2int</span><span class="params">(String s)</span> </span>&#123;</div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">        <span class="keyword">return</span> Optional.of(Integer.parseInt(s));</div><div class="line">    &#125; <span class="keyword">catch</span> (NumberFormatException e) &#123;</div><div class="line">        <span class="keyword">return</span> Optional.empty();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a><strong>参考</strong></h2><ul>
+<li><a href="http://www.importnew.com/6675.html" target="_blank" rel="external">Java 8 Optional类深度解析</a></li>
+<li><a href="http://www.jianshu.com/p/1b5f4ea0074a" target="_blank" rel="external">ForkJoinPool的commonPool相关参数配置</a></li>
+</ul>
+
+        
+        </div>
+        <footer class="article-footer">
+            <div class="share-container">
+
+
+
+</div>
+
+    <a data-url="http://yoursite.com/java-completionfuture/" data-id="cj9cjojga0000jso0aoppjidp" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
+<script>
+    (function ($) {
+        // Prevent duplicate binding
+        if (typeof(__SHARE_BUTTON_BINDED__) === 'undefined' || !__SHARE_BUTTON_BINDED__) {
+            __SHARE_BUTTON_BINDED__ = true;
+        } else {
+            return;
+        }
+        $('body').on('click', function() {
+            $('.article-share-box.on').removeClass('on');
+        }).on('click', '.article-share-link', function(e) {
+            e.stopPropagation();
+
+            var $this = $(this),
+                url = $this.attr('data-url'),
+                encodedUrl = encodeURIComponent(url),
+                id = 'article-share-box-' + $this.attr('data-id'),
+                offset = $this.offset(),
+                box;
+
+            if ($('#' + id).length) {
+                box = $('#' + id);
+
+                if (box.hasClass('on')){
+                    box.removeClass('on');
+                    return;
+                }
+            } else {
+                var html = [
+                    '<div id="' + id + '" class="article-share-box">',
+                        '<input class="article-share-input" value="' + url + '">',
+                        '<div class="article-share-links">',
+                            '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="fa fa-twitter article-share-twitter" target="_blank" title="Twitter"></a>',
+                            '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="fa fa-facebook article-share-facebook" target="_blank" title="Facebook"></a>',
+                            '<a href="http://pinterest.com/pin/create/button/?url=' + encodedUrl + '" class="fa fa-pinterest article-share-pinterest" target="_blank" title="Pinterest"></a>',
+                            '<a href="https://plus.google.com/share?url=' + encodedUrl + '" class="fa fa-google article-share-google" target="_blank" title="Google+"></a>',
+                        '</div>',
+                    '</div>'
+                ].join('');
+
+              box = $(html);
+
+              $('body').append(box);
+            }
+
+            $('.article-share-box.on').hide();
+
+            box.css({
+                top: offset.top + 25,
+                left: offset.left
+            }).addClass('on');
+
+        }).on('click', '.article-share-box', function (e) {
+            e.stopPropagation();
+        }).on('click', '.article-share-box-input', function () {
+            $(this).select();
+        }).on('click', '.article-share-box-link', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            window.open(this.href, 'article-share-box-window-' + Date.now(), 'width=500,height=450');
+        });
+    })(jQuery);
+</script>
+
+            
+    
+
+        </footer>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+    
+        <a href="/jvm_start/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">下一篇</strong>
+            <div class="article-nav-title"></div>
+        </a>
+    
+</nav>
+
+
+    
+</article>
+
+
+    
+    
+
+</section>
+            
+                
+<aside id="sidebar">
+   
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">最新文章</h3>
+        <div class="widget">
+            <ul id="recent-post" class="">
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/java-completionfuture/" class="thumbnail">
+    
+    
+        <span style="background-image:url(http://www.runoob.com/wp-content/uploads/2013/12/java.jpg)" alt="Java8 之 CompletableFuture" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Java/">Java</a></p>
+                            <p class="item-title"><a href="/java-completionfuture/" class="title">Java8 之 CompletableFuture</a></p>
+                            <p class="item-date"><time datetime="2017-10-29T09:19:39.922Z" itemprop="datePublished">2017-10-29</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/jvm_start/" class="thumbnail">
+    
+    
+        <span class="thumbnail-image thumbnail-none"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"></p>
+                            <p class="item-title"><a href="/jvm_start/" class="title"></a></p>
+                            <p class="item-date"><time datetime="2017-10-29T09:19:39.922Z" itemprop="datePublished">2017-10-29</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/java-optional/" class="thumbnail">
+    
+    
+        <span style="background-image:url(http://www.runoob.com/wp-content/uploads/2013/12/java.jpg)" alt="Java8 之 Optional" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Java/">Java</a></p>
+                            <p class="item-title"><a href="/java-optional/" class="title">Java8 之 Optional</a></p>
+                            <p class="item-date"><time datetime="2017-10-25T11:47:40.000Z" itemprop="datePublished">2017-10-25</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/hexo-create-blog/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://hexo.io/logo.svg)" alt="如何使用Hexo在Github上搭建个人博客" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Hexo/">Hexo</a></p>
+                            <p class="item-title"><a href="/hexo-create-blog/" class="title">如何使用Hexo在Github上搭建个人博客</a></p>
+                            <p class="item-date"><time datetime="2017-10-15T08:48:02.240Z" itemprop="datePublished">2017-10-15</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/hexo-hello-world/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://hexo.io/logo.svg)" alt="Hello World" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Hexo/">Hexo</a></p>
+                            <p class="item-title"><a href="/hexo-hello-world/" class="title">Hello World</a></p>
+                            <p class="item-date"><time datetime="2017-10-15T07:56:19.621Z" itemprop="datePublished">2017-10-15</time></p>
+                        </div>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">分类</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Hexo/">Hexo</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">2</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">归档</h3>
+        <div class="widget">
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a><span class="archive-list-count">5</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">标签</h3>
+        <div class="widget">
+            <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/CompletableFuture/">CompletableFuture</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hexo/">Hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JDK/">JDK</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java8/">Java8</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/optional/">optional</a><span class="tag-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">标签云</h3>
+        <div class="widget tagcloud">
+            <a href="/tags/CompletableFuture/" style="font-size: 10px;">CompletableFuture</a> <a href="/tags/Hexo/" style="font-size: 20px;">Hexo</a> <a href="/tags/JDK/" style="font-size: 20px;">JDK</a> <a href="/tags/Java8/" style="font-size: 20px;">Java8</a> <a href="/tags/optional/" style="font-size: 10px;">optional</a>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">链接</h3>
+        <div class="widget">
+            <ul>
+                
+                    <li>
+                        <a href="http://hexo.io">Hexo</a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+
+    
+    <div id="toTop" class="fa fa-angle-up"></div>
+</aside>
+
+            
+        </div>
+        <footer id="footer">
+    <div class="outer">
+        <div id="footer-info" class="inner">
+            &copy; 2017 蛋黄的天空<br>
+            Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>. Theme by <a href="http://github.com/ppoffice">PPOffice</a>
+        </div>
+    </div>
+</footer>
+        
+
+
+    
+        <script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-share.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-video.min.js"></script>
+    
+    
+        <script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+    
+    
+
+
+
+<!-- Custom Scripts -->
+<script src="/js/main.js"></script>
+
+    </div>
+</body>
+</html>
