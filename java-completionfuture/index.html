@@ -14,7 +14,7 @@
 <meta property="og:description" content="使用CompletableFuture的有以下好处：  使用CompletableFuture类提供的特性可以创建异步任务、为客户提供异步API。 使用CompletableFuture可以以改善程序的性能，加快程序的响应速度。尤其是在执行比较耗时的操作时，例如调用一个或多个远程服务。 CompletableFuture类还提供了异常管理的机制，让你有机会抛出/管理异步任务执行中发生的异常。 将同">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="http://www.runoob.com/wp-content/uploads/2013/12/java.jpg">
-<meta property="og:updated_time" content="2017-10-29T09:19:46.409Z">
+<meta property="og:updated_time" content="2017-10-29T09:52:39.515Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java8 之 CompletableFuture">
 <meta name="twitter:description" content="使用CompletableFuture的有以下好处：  使用CompletableFuture类提供的特性可以创建异步任务、为客户提供异步API。 使用CompletableFuture可以以改善程序的性能，加快程序的响应速度。尤其是在执行比较耗时的操作时，例如调用一个或多个远程服务。 CompletableFuture类还提供了异常管理的机制，让你有机会抛出/管理异步任务执行中发生的异常。 将同">
@@ -161,7 +161,7 @@
         </div>
         <div class="article-info profile-block">
             <div class="article-info-block">
-                5
+                4
                 <span>文章</span>
             </div>
             <div class="article-info-block">
@@ -285,13 +285,13 @@
 <p><strong>那么下面，我们看看CompletionStage类是如何将这些都变为可能。</strong></p>
 <hr>
 <h1 id="CompletionStage"><a href="#CompletionStage" class="headerlink" title="CompletionStage"></a><strong>CompletionStage</strong></h1><p>CompletionStage是一个计算阶段（可能同步、也可能是异步），它可以在另外一个CompletionStage完成后执行一个动作(Action)或者去获取一个值，然后还可以去触发其他的CompletionStage。更多API可以参考<a href="https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/CompletionStage.html" target="_blank" rel="external">CompletionStage Docs</a></p>
-<blockquote>
-<p>CompletionStage本身可以进行compose操作。</p>
-<p>CompletionStage产生的结果可以再进行Function、Consumer、Runnable操作，使用哪个函数取决于入参和出参。例如<code>stage.thenApply(x -&gt; square(x)).thenAccept(x -&gt; System.out.print(x)).thenRun(() -&gt; System.out.println())</code></p>
-<p>一个CompletionStage的执行步骤可以由一个CompletionStage触发，或者另外两个全部完成触发，或者另外两个其中一个完成触发。例如分别对应于run、runAfterBoth、runAfterEither方法。当时用either方法时，并不能保证是哪个结果导致的下一个stage的执行。</p>
-<p>CompletionStage可以同步或者异步（Async）执行。并且提供了重载的方法，你可以使用内置的Executor或者自己提供一个。</p>
-<p>whenComplete  handle </p>
-</blockquote>
+<ol>
+<li>CompletionStage本身可以进行compose操作。</li>
+<li>CompletionStage产生的结果可以再进行Function、Consumer、Runnable操作，使用哪个函数取决于入参和出参。例如<code>stage.thenApply(x -&gt; square(x)).thenAccept(x -&gt; System.out.print(x)).thenRun(() -&gt; System.out.println())</code></li>
+<li>一个CompletionStage的执行步骤可以由一个CompletionStage触发，或者另外两个全部完成触发，或者另外两个其中一个完成触发。例如分别对应于run、runAfterBoth、runAfterEither方法。当时用either方法时，并不能保证是哪个结果导致的下一个stage的执行。</li>
+<li>CompletionStage可以同步或者异步（Async）执行。并且提供了重载的方法，你可以使用内置的Executor或者自己提供一个。</li>
+<li>whenComplete  handle</li>
+</ol>
 <p>由于CompletionStage是接口，其具体实现在CompletionFuture里，我们下面就看看CompletionStage如何应用上面的这些功能</p>
 <hr>
 <h1 id="CompletionFuture"><a href="#CompletionFuture" class="headerlink" title="CompletionFuture"></a><strong>CompletionFuture</strong></h1><h2 id="1，基本用法"><a href="#1，基本用法" class="headerlink" title="1，基本用法"></a>1，基本用法</h2><h3 id="1-1-1-使用new的方式"><a href="#1-1-1-使用new的方式" class="headerlink" title="1.1.1 使用new的方式"></a>1.1.1 使用new的方式</h3><p>启动一个线程，去获取结果。当线程执行完毕调用<code>future.complete(T value)</code>方法，此时<code>future.whenComplete</code>会收到回调.<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">CompletableFuture&lt;Double&gt; future = <span class="keyword">new</span> CompletableFuture&lt;&gt;();</div><div class="line"><span class="keyword">new</span> Thread(() -&gt; future.complete(SomeService.get())).start();</div><div class="line">System.out.println(<span class="string">"main thread -&gt; I am not blocked"</span>);</div><div class="line">future.whenComplete((v, t) -&gt; &#123;</div><div class="line">    Optional.ofNullable(v).ifPresent(System.out::println);</div><div class="line">    Optional.ofNullable(t).ifPresent(Throwable::printStackTrace);</div><div class="line">&#125;);</div><div class="line">System.out.println(<span class="string">"main thread -&gt; I am not blocked"</span>);</div></pre></td></tr></table></figure></p>
@@ -311,6 +311,22 @@
 </thead>
 <tbody>
 <tr>
+<td><code>join()</code></td>
+<td>本stage完成后，获取其结果    </td>
+</tr>
+<tr>
+<td><code>CompletionStage&lt;T&gt; whenComplete(BiConsumer&lt;? super T, ? super Throwable&gt; action);</code></td>
+<td>本stage正常完成后或出现了异常，都会进入该方法，注意函数是BiConsumer，无需返回值   </td>
+</tr>
+<tr>
+<td><code>CompletionStage&lt;T&gt; exceptionally(Function&lt;Throwable, ? extends T&gt; fn);</code></td>
+<td>本stage出现了异常，会进入本方法，可以对异常处理再返回新的CompletionStage       </td>
+</tr>
+<tr>
+<td><code>&lt;U&gt; CompletableFuture&lt;U&gt; handle(BiFunction&lt;? super T,Throwable,? extends U&gt; fn)</code></td>
+<td>handle相当于whenComplete和exceptionally的加强版，可操作空间大</td>
+</tr>
+<tr>
 <td><code>&lt;U&gt; CompletionStage&lt;U&gt; thenApply(Function&lt;? super T,? extends U&gt; fn)</code></td>
 <td>本stage完成后，执行一个Function，用其结果构建一个新的stage并返回           </td>
 </tr>
@@ -327,20 +343,28 @@
 <td>本stage和给定的stage都正常完成后，执行一个BiFunction，用其结果构建一个新的stage并返回</td>
 </tr>
 <tr>
-<td><code>&lt;U&gt; CompletableFuture&lt;U&gt;    thenCompose(Function&lt;? super T,? extends CompletionStage&lt;U&gt;&gt; fn)</code></td>
+<td><code>&lt;U&gt; CompletableFuture&lt;U&gt; thenCompose(Function&lt;? super T,? extends CompletionStage&lt;U&gt;&gt; fn)</code></td>
 <td>本stage正常完成后，用其结果构造一个新的stage，和thenApply类似，只不过这个需要自己构造stage，thenApply会自动构造</td>
 </tr>
 <tr>
-<td><code>CompletionStage&lt;Void&gt; thenAccept(Consumer&lt;? super T&gt; action)</code></td>
-<td>本stage完成后，执行一Consumer，用Void构建一个新的stage并返回</td>
+<td><code>&lt;U&gt; CompletionStage&lt;Void&gt; thenAcceptBoth(CompletionStage&lt;? extends U&gt; other,BiConsumer&lt;? super T, ? super U&gt; action)</code></td>
+<td>本stage和other stage都完成后，再执行action，其他带有Both的类似</td>
 </tr>
 <tr>
-<td><code>CompletionStage&lt;Void&gt; thenAccept(Consumer&lt;? super T&gt; action)</code></td>
-<td>本stage完成后，执行一Consumer，用Void构建一个新的stage并返回</td>
+<td><code>CompletableFuture&lt;Void&gt; runAfterEither(CompletionStage&lt;?&gt; other, Runnable action)</code></td>
+<td>本stage和other stage有一个完成后，就执行action，其他带有Either的类似</td>
+</tr>
+<tr>
+<td><code>static CompletableFuture&lt;Object&gt; anyOf(CompletableFuture&lt;?&gt;... cfs)</code></td>
+<td>本stage和other stage有一个完成后，就执行action，其他带有Either的类似</td>
+</tr>
+<tr>
+<td><code>static CompletableFuture&lt;Void&gt; allOf(CompletableFuture&lt;?&gt;... cfs)</code></td>
+<td>本stage和other stage有一个完成后，就执行action，其他带有Either的类似</td>
 </tr>
 </tbody>
 </table>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"></div><div class="line"><span class="comment">// </span></div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">// </span></div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">// </span></div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">// 本stage和other stage都完成后，再执行action，其他带有Both的类似</span></div><div class="line">&lt;U&gt; <span class="function">CompletionStage&lt;Void&gt; <span class="title">thenAcceptBoth</span><span class="params">(CompletionStage&lt;? extends U&gt; other,BiConsumer&lt;? <span class="keyword">super</span> T, ? <span class="keyword">super</span> U&gt; action)</span></span>;</div><div class="line"><span class="comment">// 本stage和other stage有一个完成后，就执行action，其他带有Either的类似</span></div><div class="line"><span class="function">CompletableFuture&lt;Void&gt;	<span class="title">runAfterEither</span><span class="params">(CompletionStage&lt;?&gt; other, Runnable action)</span></span></div><div class="line"><span class="function"><span class="comment">// 多个stage有一个完成后，就算完成</span></span></div><div class="line"><span class="function"><span class="keyword">static</span> CompletableFuture&lt;Object&gt; <span class="title">anyOf</span><span class="params">(CompletableFuture&lt;?&gt;... cfs)</span></span></div><div class="line"><span class="function"><span class="comment">// 多个stage党所有完成后，才算完成</span></span></div><div class="line"><span class="function"><span class="keyword">static</span> CompletableFuture&lt;Void&gt; <span class="title">allOf</span><span class="params">(CompletableFuture&lt;?&gt;... cfs)</span></span></div><div class="line"><span class="function">@Test</span></div><div class="line"><span class="function"> <span class="keyword">public</span> <span class="keyword">void</span> <span class="title">thenApply</span><span class="params">()</span> </span>&#123;</div><div class="line">     String result = CompletableFuture.supplyAsync(() -&gt; <span class="string">"hello"</span>).thenApply(s -&gt; s + <span class="string">" world"</span>).join();</div><div class="line">     System.out.println(result);<span class="comment">//结果 hello world</span></div><div class="line"> &#125;</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Test</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">whenCompleteAndExceptionally</span><span class="params">()</span> </span>&#123;</div><div class="line">    String result = CompletableFuture</div><div class="line">            .supplyAsync(() -&gt; &#123;</div><div class="line">                <span class="keyword">int</span> i = <span class="number">3</span> / <span class="number">0</span>;</div><div class="line">                <span class="keyword">return</span> <span class="string">"Okay"</span>;</div><div class="line">            &#125;)</div><div class="line">            .whenComplete((v, t) -&gt; &#123;</div><div class="line">                Optional.ofNullable(v).ifPresent(System.out::println);</div><div class="line">                System.out.println(<span class="string">"whenComplete t = "</span> + t);</div><div class="line">            &#125;)</div><div class="line">            .exceptionally(t -&gt; &#123;</div><div class="line">                System.out.println(<span class="string">"exceptionally t = "</span> + t);</div><div class="line">                <span class="keyword">return</span> <span class="string">"Okay after exception"</span>;</div><div class="line">            &#125;)</div><div class="line">            .join();</div><div class="line">    System.out.println(result);<span class="comment">// 结果 Okay after exception</span></div><div class="line">    <span class="comment">// 注意whenComplete和exceptionally都会打印</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="meta">@Test</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">thenApply</span><span class="params">()</span> </span>&#123;</div><div class="line">    String result = CompletableFuture.supplyAsync(() -&gt; <span class="string">"hello"</span>).thenApply(s -&gt; s + <span class="string">" world"</span>).join();</div><div class="line">    System.out.println(result);<span class="comment">//结果 hello world</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="meta">@Test</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">anyOf</span><span class="params">()</span> </span>&#123;</div><div class="line">    List&lt;CompletableFuture&lt;Double&gt;&gt; collect = Stream.of(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>)</div><div class="line">            .map(i -&gt; CompletableFuture.supplyAsync(_07_BothEitherAnyOfCompletableFuture::get))</div><div class="line">            .collect(Collectors.toList());</div><div class="line">    CompletableFuture.anyOf(collect.toArray(<span class="keyword">new</span> CompletableFuture[collect.size()]))</div><div class="line">            .thenAccept(System.out::println) <span class="comment">//结果 0.3960857305756089</span></div><div class="line">    TimeUtils.sleep5Seconds();</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <h2 id="2，CompletableFuture的线程"><a href="#2，CompletableFuture的线程" class="headerlink" title="2，CompletableFuture的线程"></a>2，CompletableFuture的线程</h2><p>一般对于CompletableFuture会有多个重载的方法，例如以下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> CompletableFuture&lt;Void&gt; <span class="title">thenRun</span><span class="params">(Runnable action)</span></span></div><div class="line"><span class="function"><span class="keyword">public</span> CompletableFuture&lt;Void&gt; <span class="title">thenRunAsync</span><span class="params">(Runnable action)</span></span></div><div class="line"><span class="function"><span class="keyword">public</span> CompletableFuture&lt;Void&gt; <span class="title">thenRunAsync</span><span class="params">(Runnable action,  Executor executor)</span></span></div></pre></td></tr></table></figure></p>
 <p>那么这三个方法中的代码，分别会处于什么线程中执行呢？（这里只以thenRun为例，其他的方法类似）测试代码如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">ExecutorService executor = Executors.newCachedThreadPool();</div><div class="line">CompletableFuture.supplyAsync(SomeService::get, executor)</div><div class="line">        .thenRun(() -&gt; System.out.println(<span class="string">"thenRun1  -&gt;"</span> + Thread.currentThread()))</div><div class="line">        .thenRunAsync(() -&gt; System.out.println(<span class="string">"thenRunAsync  -&gt;"</span> + Thread.currentThread()))</div><div class="line">        .thenRun(() -&gt; System.out.println(<span class="string">"thenRun2  -&gt;"</span> + Thread.currentThread()))</div><div class="line">        .thenRunAsync(() -&gt; System.out.println(<span class="string">"thenRunAsync in executor  -&gt;"</span> + Thread.currentThread()), executor)</div><div class="line">        .thenRun(() -&gt; System.out.println(<span class="string">"thenRun3  -&gt;"</span> + Thread.currentThread()))</div></pre></td></tr></table></figure></p>
 <p>可以看到如下结果（为了对比，格式上对输出结果加以调整，顺序未变）：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">SomeService get  -&gt;Thread[pool-1-thread-1,5,main]</div><div class="line">thenRun1         -&gt;Thread[pool-1-thread-1,5,main]</div><div class="line">thenRunAsync  -&gt;Thread[ForkJoinPool.commonPool-worker-1,5,main]</div><div class="line">thenRun2      -&gt;Thread[ForkJoinPool.commonPool-worker-1,5,main]</div><div class="line">thenRunAsync in executor  -&gt;Thread[pool-1-thread-1,5,main]</div><div class="line">thenRun3                  -&gt;Thread[pool-1-thread-1,5,main]</div></pre></td></tr></table></figure></p>
@@ -372,7 +396,7 @@
 
 </div>
 
-    <a data-url="http://yoursite.com/java-completionfuture/" data-id="cj9cjojga0000jso0aoppjidp" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
+    <a data-url="http://yoursite.com/java-completionfuture/" data-id="cj9ckui0d000498o0nyk8djz2" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
 <script>
     (function ($) {
         // Prevent duplicate binding
@@ -448,9 +472,9 @@
 <nav id="article-nav">
     
     
-        <a href="/jvm_start/" id="article-nav-older" class="article-nav-link-wrap">
+        <a href="/java-optional/" id="article-nav-older" class="article-nav-link-wrap">
             <strong class="article-nav-caption">下一篇</strong>
-            <div class="article-nav-title"></div>
+            <div class="article-nav-title">Java8 之 Optional</div>
         </a>
     
 </nav>
@@ -489,25 +513,6 @@
                         <div class="item-inner">
                             <p class="item-category"><a class="article-category-link" href="/categories/Java/">Java</a></p>
                             <p class="item-title"><a href="/java-completionfuture/" class="title">Java8 之 CompletableFuture</a></p>
-                            <p class="item-date"><time datetime="2017-10-29T09:19:39.922Z" itemprop="datePublished">2017-10-29</time></p>
-                        </div>
-                    </li>
-                
-                    <li>
-                        
-                        <div class="item-thumbnail">
-                            <a href="/jvm_start/" class="thumbnail">
-    
-    
-        <span class="thumbnail-image thumbnail-none"></span>
-    
-</a>
-
-                        </div>
-                        
-                        <div class="item-inner">
-                            <p class="item-category"></p>
-                            <p class="item-title"><a href="/jvm_start/" class="title"></a></p>
                             <p class="item-date"><time datetime="2017-10-29T09:19:39.922Z" itemprop="datePublished">2017-10-29</time></p>
                         </div>
                     </li>
@@ -587,7 +592,7 @@
     <div class="widget-wrap">
         <h3 class="widget-title">归档</h3>
         <div class="widget">
-            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a><span class="archive-list-count">5</span></li></ul>
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a><span class="archive-list-count">4</span></li></ul>
         </div>
     </div>
 
