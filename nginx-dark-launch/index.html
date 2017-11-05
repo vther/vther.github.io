@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <meta charset="utf-8">
+    
+    <title>Nginx实战 之 灰度发布 | 蛋黄的天空的博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="灰度发布（又名金丝雀发布，英文一般称为Dark launch）是为了能够让用户逐步过渡到新功能一种发布方式。 一般是产品上线一个功能，希望在线上可以进行A/B testing，即让一部分用户继续用产品特性A，一部分用户开始用产品特性B，如果用户对B没有什么反对意见，那么逐步扩大范围，把所有用户都迁移到B上面来。 优点  灰度发布可以保证整体系统的稳定，在初始灰度的时候就可以发现、调整问题，以保证其">
+<meta name="keywords" content="Nginx,灰度发布,Cookie">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Nginx实战 之 灰度发布">
+<meta property="og:url" content="http://yoursite.com/nginx-dark-launch/index.html">
+<meta property="og:site_name" content="蛋黄的天空的博客">
+<meta property="og:description" content="灰度发布（又名金丝雀发布，英文一般称为Dark launch）是为了能够让用户逐步过渡到新功能一种发布方式。 一般是产品上线一个功能，希望在线上可以进行A/B testing，即让一部分用户继续用产品特性A，一部分用户开始用产品特性B，如果用户对B没有什么反对意见，那么逐步扩大范围，把所有用户都迁移到B上面来。 优点  灰度发布可以保证整体系统的稳定，在初始灰度的时候就可以发现、调整问题，以保证其">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://www.xiazaiba.com/uploadfiles/ico/2015/0423/2015042309095276482.png">
+<meta property="og:updated_time" content="2017-11-05T10:11:39.661Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Nginx实战 之 灰度发布">
+<meta name="twitter:description" content="灰度发布（又名金丝雀发布，英文一般称为Dark launch）是为了能够让用户逐步过渡到新功能一种发布方式。 一般是产品上线一个功能，希望在线上可以进行A/B testing，即让一部分用户继续用产品特性A，一部分用户开始用产品特性B，如果用户对B没有什么反对意见，那么逐步扩大范围，把所有用户都迁移到B上面来。 优点  灰度发布可以保证整体系统的稳定，在初始灰度的时候就可以发现、调整问题，以保证其">
+<meta name="twitter:image" content="http://www.xiazaiba.com/uploadfiles/ico/2015/0423/2015042309095276482.png">
+    
+
+    
+        <link rel="alternate" href="/" title="蛋黄的天空的博客" type="application/atom+xml" />
+    
+
+    
+
+    <link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/libs/open-sans/styles.css">
+    <link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+    <link rel="stylesheet" href="/css/style.css">
+
+    <script src="/libs/jquery/2.1.3/jquery.min.js"></script>
+    
+    
+        <link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+    
+    
+        <link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+    
+    
+    
+    
+
+
+</head>
+
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/" id="logo">
+                <i class="logo"></i>
+                <span class="site-title">蛋黄的天空的博客</span>
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/.">主页</a>
+                
+                    <a class="main-nav-link" href="/archives">归档</a>
+                
+                    <a class="main-nav-link" href="/categories">分类</a>
+                
+                    <a class="main-nav-link" href="/tags">标签</a>
+                
+                    <a class="main-nav-link" href="/about">关于</a>
+                
+            </nav>
+            
+                
+                <nav id="sub-nav">
+                    <div class="profile" id="profile-nav">
+                        <a id="profile-anchor" href="javascript:;">
+                            <img class="avatar" src="/css/images/avatar.png" />
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </div>
+                </nav>
+            
+            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+</div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/.">主页</a></td>
+                
+                    <td><a class="main-nav-link" href="/archives">归档</a></td>
+                
+                    <td><a class="main-nav-link" href="/categories">分类</a></td>
+                
+                    <td><a class="main-nav-link" href="/tags">标签</a></td>
+                
+                    <td><a class="main-nav-link" href="/about">关于</a></td>
+                
+                <td>
+                    
+    <div class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        <div class="outer">
+            
+                
+
+<aside id="profile">
+    <div class="inner profile-inner">
+        <div class="base-info profile-block">
+            <img id="avatar" src="/css/images/avatar.png" />
+            <h2 id="name">蛋黄</h2>
+            <h3 id="title">Web Developer &amp; Designer</h3>
+            <span id="location"><i class="fa fa-map-marker"></i>ShenZhen, China</span>
+            <a id="follow" target="_blank" href="https://github.com/vther">关注我</a>
+        </div>
+        <div class="article-info profile-block">
+            <div class="article-info-block">
+                5
+                <span>文章</span>
+            </div>
+            <div class="article-info-block">
+                8
+                <span>标签</span>
+            </div>
+        </div>
+        
+        <div class="profile-block social-links">
+            <table>
+                <tr>
+                    
+                    
+                    <td>
+                        <a href="https://github.com/vther" target="_blank" title="github" class=tooltip>
+                            <i class="fa fa-github"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="/" target="_blank" title="twitter" class=tooltip>
+                            <i class="fa fa-twitter"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="/" target="_blank" title="facebook" class=tooltip>
+                            <i class="fa fa-facebook"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="/" target="_blank" title="dribbble" class=tooltip>
+                            <i class="fa fa-dribbble"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="/" target="_blank" title="rss" class=tooltip>
+                            <i class="fa fa-rss"></i>
+                        </a>
+                    </td>
+                    
+                </tr>
+            </table>
+        </div>
+        
+    </div>
+</aside>
+
+            
+            <section id="main"><article id="post-nginx-dark-launch" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name">
+            Nginx实战 之 灰度发布
+        </h1>
+    
+
+                
+                    <div class="article-meta">
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/nginx-dark-launch/">
+            <time datetime="2017-11-04T07:06:19.944Z" itemprop="datePublished">2017-11-04</time>
+        </a>
+    </div>
+
+
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/Nginx/">Nginx</a>
+    </div>
+
+                        
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/Cookie/">Cookie</a>, <a class="tag-link" href="/tags/Nginx/">Nginx</a>, <a class="tag-link" href="/tags/灰度发布/">灰度发布</a>
+    </div>
+
+                    </div>
+                
+            </header>
+        
+     
+        <div class="article-entry" itemprop="articleBody">
+        
+            
+            <p><strong>灰度发布（又名金丝雀发布，英文一般称为<a href="https://www.quora.com/What-is-a-dark-launch-in-terms-of-continuous-delivery-of-software" target="_blank" rel="external">Dark launch</a>）是为了能够让用户逐步过渡到新功能一种发布方式。</strong> 一般是产品上线一个功能，希望在线上可以进行A/B testing，即让一部分用户继续用产品特性A，一部分用户开始用产品特性B，如果用户对B没有什么反对意见，那么逐步扩大范围，把所有用户都迁移到B上面来。</p>
+<p><strong>优点</strong></p>
+<ul>
+<li>灰度发布可以保证整体系统的稳定，在初始灰度的时候就可以发现、调整问题，以保证其影响度。</li>
+<li>灰度发布可以让部分用户尽快体验到最新的功能，提高用户的积极性，进而收集用户反馈改善产品。</li>
+</ul>
+<p>灰度发布在谷歌和Facebook等很多公司已经使用的相当成熟，具体的分流规则也有很多，下面简单介绍下几种常见的分流规则，并分别使用nginx来配置实现。</p>
+<a id="more"></a>
+<hr>
+<h1 id="基于COOKIE分流"><a href="#基于COOKIE分流" class="headerlink" title="基于COOKIE分流"></a><strong>基于COOKIE分流</strong></h1><p>使用Cookie分流的原理为：在用户首次登录时查询该用户是否是灰度用户，并为其设置标识Cookie，后续采用Cookie标识来进行分流。<br>本文采用dark字段作为标识，如果cookie中包含dark=true则分流到灰度环境，其他情况则分流到生产环境。<br>在nginx的原生变量中，<code>$http_cookie</code>的值为所有Cookie以key=value的形式拼接，而<code>$cookie_dark</code>则只获得Cookie中dark的值。所以可以采用两种方式来判断：</p>
+<ol>
+<li>使用<code>$http_cookie</code>，则里面需要包含<code>dark=true</code>；</li>
+<li>使用<code>$cookie_dark</code>，则其值需要为<code>true</code>。</li>
+</ol>
+<p>最终nginx.conf文件中的核心配置如下：<br><figure class="highlight nginx"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="attribute">upstream</span> normal &#123;</div><div class="line">    <span class="attribute">server</span> <span class="number">127.0.0.1:8080</span>;</div><div class="line">&#125;</div><div class="line"><span class="attribute">upstream</span> dark &#123;</div><div class="line">    <span class="attribute">server</span> <span class="number">127.0.0.1:8081</span>;</div><div class="line">&#125;</div><div class="line"><span class="section">server</span> &#123;</div><div class="line">    <span class="attribute">listen</span>       <span class="number">80</span>;</div><div class="line">    <span class="attribute">server_name</span>  localhost;</div><div class="line"></div><div class="line">    <span class="attribute">set</span> <span class="variable">$group</span> normal;</div><div class="line">    <span class="comment">#或者使用 if ($cookie_dark ~* "^true&amp;") 来判断</span></div><div class="line">    <span class="attribute">if</span> (<span class="variable">$http_cookie</span> <span class="regexp">~* "dark=true")</span>&#123; </div><div class="line">        <span class="attribute">set</span> <span class="variable">$group</span> dark;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="attribute">location</span> / &#123;</div><div class="line">        <span class="attribute">proxy_pass</span> http://<span class="variable">$group</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>注意 nginx使用的正则规则如下：</p>
+<blockquote>
+<p>~&nbsp;&nbsp;表示区分大小写的正则匹配<br>~*&nbsp;表示不区分大小写的正则匹配<br>^&nbsp;&nbsp;表示以xxx结尾<br>$&nbsp;&nbsp;表示以xxx结尾</p>
+</blockquote>
+<p>分流效果演示：启动了两台Tomcat，其中8080端口作为生产环境，8081作为灰度环境，为了加以区分，我在灰度环境的index.jsp页面上加上了<code>This is dark launch page!</code>。使用<code>Postman</code>来模拟请求，大家都知道POSTMAN能够添加Header，但是却不能修改Cookie，这时候需要<code>Postman Interceptor</code>来救场了。可以看到下载并启用Postman Interceptor插件以后，在Header中直接编辑Cookie属性，即可修改请求的Cookie。最终效果如下图：</p>
+<p>可以看到带有灰度Cookie的分流到了灰度环境。<br>另外为了调试方便，可以直接access.log加上<code>$http_cookie</code>或<code>$cookie_dark</code>。<br><figure class="highlight nginx"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="attribute">log_format</span>  main  <span class="string">'dark=<span class="variable">$cookie_dark</span> - <span class="variable">$remote_addr</span> - <span class="variable">$remote_user</span> [<span class="variable">$time_local</span>] "<span class="variable">$request</span>" '</span></div><div class="line">                  <span class="string">'<span class="variable">$status</span> <span class="variable">$body_bytes_sent</span> "<span class="variable">$http_referer</span>" '</span></div><div class="line">                  <span class="string">'"<span class="variable">$http_user_agent</span>" "<span class="variable">$http_x_forwarded_for</span>"'</span>;</div><div class="line"></div><div class="line"><span class="attribute">access_log</span>  logs/access.log  main;</div></pre></td></tr></table></figure></p>
+<p>请求产生的日志打印如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">dark=true - 127.0.0.1 - - [04/Nov/2017:14:08:46 +0800] &quot;GET / HTTP/1.1&quot; 200 11452 &quot;-&quot; &quot;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.75 Safari/537.36&quot; &quot;-&quot;</div></pre></td></tr></table></figure></p>
+<h1 id="基于Header分流"><a href="#基于Header分流" class="headerlink" title="基于Header分流"></a><strong>基于Header分流</strong></h1><p>基于Header分流的原理和用法都和Cookie类似。只有两点不同：</p>
+<ol>
+<li>获取灰度标识，使用的是<code>$http_dark</code>（即<code>$http_header名</code>）的写法；</li>
+<li>Header不能像Cookie一样在客户端保留，所以一般是在多层网络中使用，即入口层给Header赋值，分流层再去分流。</li>
+</ol>
+<p>这里为了演示<a href="http://nginx.org/en/docs/http/ngx_http_map_module.html" target="_blank" rel="external">ngx_http_map_module</a>的用法，使用了map替代了上面的set if判断方法。<br><figure class="highlight nginx"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="attribute">map</span> <span class="variable">$http_dark</span> <span class="variable">$group</span> &#123;</div><div class="line">	~*true$ dark; </div><div class="line">	<span class="attribute">default</span> normal;</div><div class="line">&#125;</div><div class="line">   <span class="section">server</span> &#123;</div><div class="line">       <span class="attribute">listen</span>       <span class="number">80</span>;</div><div class="line">       <span class="attribute">server_name</span>  localhost;</div><div class="line"></div><div class="line">       <span class="attribute">location</span> / &#123;</div><div class="line">           <span class="attribute">proxy_pass</span> http://<span class="variable">$group</span>;</div><div class="line">       &#125;</div><div class="line">   &#125;</div></pre></td></tr></table></figure></p>
+<h1 id="基于IP分流"><a href="#基于IP分流" class="headerlink" title="基于IP分流"></a><strong>基于IP分流</strong></h1><p>基于IP分流原理：校验客户端的IP是否在我们的灰度IP列表中。<br>所以关键有两点：</p>
+<ol>
+<li>如何获取客户端IP？其实有很多方式。可以参考这两篇博客<a href="http://blog.csdn.net/bigtree_3721/article/details/72820081" target="_blank" rel="external">nginx 如何配置来获取用户真实IP</a> 和 <a href="http://www.cnblogs.com/diaosir/p/6890825.html" target="_blank" rel="external">HTTP 请求头中的 X-Forwarded-For，X-Real-IP</a></li>
+<li>灰度IP列表怎么保存？其实可以保存在配置文件或数据库等任意地方。</li>
+</ol>
+<p>假设我们有一张mysql的表存着配置的所有需要分发到灰度的IP地址，如果请求的IP在表中能够查到的话，则分流到灰度环境。我们这边最简单的创建了一个表，并插入一条IP地址。<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`test`</span>.<span class="string">`dark_launch_ips`</span>( <span class="string">`ip`</span> <span class="built_in">VARCHAR</span>(<span class="number">16</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span>, PRIMARY <span class="keyword">KEY</span> (<span class="string">`ip`</span>) ); </div><div class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="string">`test`</span>.<span class="string">`dark_launch_ips`</span> (<span class="string">`ip`</span>) <span class="keyword">VALUES</span> (<span class="string">'1.1.1.1'</span>);</div></pre></td></tr></table></figure></p>
+<p>本节使用了lua脚本来判断分流，在Nginx里面使用lua需要Nginx额外增加<a href="https://github.com/openresty/lua-nginx-module" target="_blank" rel="external">lua-nginx-module模块</a>，或者直接使用打包好的<a href="https://openresty.org/en/" target="_blank" rel="external">OpenResty</a>。为了演示，我们依然使用了两个location，只是不再使用upstrem，而是使用<code>content_by_lua</code>简单返回一个字符串，目的是能够在区分分流的前提下尽量简化其他细节，以突出核心逻辑。在Nginx中连接mysql的方法参考<a href="https://github.com/openresty/lua-resty-mysql" target="_blank" rel="external">lua-resty-mysql模块</a>。最终Nginx的核心配置如下：</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line"><span class="attribute">location</span> <span class="variable">@normal</span> &#123;</div><div class="line">    <span class="attribute">content_by_lua</span> <span class="string">'ngx.say("normal")'</span>;</div><div class="line">&#125;</div><div class="line"><span class="attribute">location</span> <span class="variable">@dark</span> &#123;</div><div class="line">    <span class="attribute">content_by_lua</span> <span class="string">'ngx.say("dark")'</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="attribute">location</span> /test &#123;</div><div class="line">    <span class="attribute">access_by_lua</span> <span class="string">'</span></div><div class="line"><span class="string">        local mysql = require "resty.mysql"</span></div><div class="line"><span class="string">        local db, err = mysql:new()</span></div><div class="line"><span class="string">        if not db then</span></div><div class="line"><span class="string">            ngx.log(ngx.ERR, "failed to instantiate mysql: ", err)</span></div><div class="line"><span class="string">            ngx.exec("<span class="variable">@normal</span>")</span></div><div class="line"><span class="string">        end</span></div><div class="line"><span class="string">        local ok, err, errcode, sqlstate = db:connect &#123;</span></div><div class="line"><span class="string">            host = "127.0.0.1",</span></div><div class="line"><span class="string">            port = 3306,</span></div><div class="line"><span class="string">            database = "test",</span></div><div class="line"><span class="string">            user = "root",</span></div><div class="line"><span class="string">            password = "root",</span></div><div class="line"><span class="string">            charset = "utf8",</span></div><div class="line"><span class="string">            max_packet_size = 1024 * 1024,</span></div><div class="line"><span class="string">        &#125;</span></div><div class="line"><span class="string">        if not ok then</span></div><div class="line"><span class="string">            ngx.log(ngx.ERR, "failed to connect: ", err, ": ", errcode, " ", sqlstate)</span></div><div class="line"><span class="string">            ngx.exec("<span class="variable">@normal</span>")</span></div><div class="line"><span class="string">        end</span></div><div class="line"><span class="string">        -- 以上代码是连接数据库操作，下面代码是获取IP并去数据库查询验证</span></div><div class="line"><span class="string">        local req_ip = ngx.var.http_x_real_ip or ngx.var.http_x_forwarded_for or ngx.var.remote_addr or "0.0.0.0"</span></div><div class="line"><span class="string">        local name = ngx.unescape_uri(req_ip)</span></div><div class="line"><span class="string">        local quoted_name = ngx.quote_sql_str(name) -- 防SQL注入</span></div><div class="line"><span class="string">        local res, err, errcode, sqlstate = db:query("SELECT COUNT(*) AS cnt FROM dark_launch_ips WHERE ip = " .. quoted_name)</span></div><div class="line"><span class="string">        if not res then</span></div><div class="line"><span class="string">            ngx.log(ngx.ERR, "bad result: ", err, ": ", errcode, ": ", sqlstate, ".")</span></div><div class="line"><span class="string">            ngx.exec("<span class="variable">@normal</span>")</span></div><div class="line"><span class="string">        end</span></div><div class="line"><span class="string">        if tonumber(res[1]["cnt"]) &gt; 0 then</span></div><div class="line"><span class="string">            ngx.exec("<span class="variable">@dark</span>")</span></div><div class="line"><span class="string">        end</span></div><div class="line"><span class="string">        ngx.exec("<span class="variable">@normal</span>")</span></div><div class="line"><span class="string">    '</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>注意：</p>
+<ul>
+<li>从Header中取出参数值可以通过<code>ngx.var.http_x_real_ip</code>或<code>ngx.req.get_headers()[&quot;X-Real-IP&quot;]</code>,参考<a href="https://github.com/openresty/lua-nginx-module#ngxvarvariable" target="_blank" rel="external">ngx.var.VARIABLE</a></li>
+<li>利用<code>ngx.var.http_x_real_ip or ngx.var.http_x_forwarded_for or ngx.var.remote_addr or &quot;0.0.0.0&quot;</code>获取IP，仅仅是一种使用方式，具体的IP获取方式需要根据实际使用场景来决定[例如是否有多层代理]。</li>
+<li><p><code>ngx.quote_sql_str(name)</code> 可以防SQL注入，详情参考文档<a href="https://github.com/openresty/lua-resty-mysql#sql-literal-quoting" target="_blank" rel="external">lua-resty-mysql</a>，如果不转义直接拼接，攻击者可以伪造Header来跨过校验。例如采用下面代码自行拼接SQL，则使用Header值为1.1.1.0’ or ‘1’=’1即可通过校验</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&quot;SELECT COUNT(*) AS cnt FROM dark_launch_ips WHERE ip = \&apos;&quot; .. req_ip .. &quot;\&apos;&quot;;</div></pre></td></tr></table></figure>
+</li>
+<li><p>db.query查询出的结果res是一个二维数组，可以通过以下当代查看其结构，本例中的结果为[{“cnt”:”1”}]，具体可以参考<a href="https://github.com/openresty/lua-resty-mysql#debugging" target="_blank" rel="external">Debugging</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">local cjson = require &quot;cjson&quot;</div><div class="line">local result = cjson.encode(res)</div><div class="line">ngx.log(ngx.INFO,&quot;result: &quot;, result)</div></pre></td></tr></table></figure>
+</li>
+<li><p>如果为了提高性能，可以采用<code>init_by_lua</code>将IP一次从数据库中取出放在全局变量中，在<code>access_by_lua</code>时使用全局变量判断即可。这样可以解决频繁访问数据库的问题，但是如果中间有修改（或增加删除）数据库中的IP，则可能不会立即生效，而且配置IP太多，容易占用很大内存。当然新引入的两个问题也有解决方案，比如修改IP后，触发一次Nginx的reload和采用更好的算法来解决内存问题。大家只需参考，实际使用还需根据自己的场景选择。</p>
+</li>
+<li><code>lua-resty-mysql</code>模块还提供了连接池效果的功能。详情可以参考文档<a href="https://github.com/openresty/lua-resty-mysql#set_keepalive" target="_blank" rel="external">set_keepalive函数</a></li>
+</ul>
+<h1 id="其他分流"><a href="#其他分流" class="headerlink" title="其他分流"></a><strong>其他分流</strong></h1><p>其他分流策略还有很多，如根据请求URL分流、随机分流、根据请求字段（如客户ID）的hash值分流等，一般都是与业务相关。<br>下面再介绍下URL分流，例如以下场景：如果url以dark结尾，则分流到灰度。本文继续使用一个新的模块<a href="https://github.com/openresty/lua-resty-core/blob/master/lib/ngx/balancer.md" target="_blank" rel="external">ngx.balancer</a>来做负载均衡。<br><figure class="highlight nginx"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"> <span class="attribute">upstream</span> balancer &#123;</div><div class="line">     <span class="attribute">server</span> <span class="number">0.0.0.1</span>;   <span class="comment"># 这里写一个不存在的IP，作为站位填充</span></div><div class="line"></div><div class="line">     <span class="section">balancer_by_lua_block</span> &#123;</div><div class="line">         <span class="attribute">local</span> balancer = require <span class="string">"ngx.balancer"</span></div><div class="line"></div><div class="line">         -- 下面一般是根据某些参数来计算要分流到哪里</div><div class="line">         local host = <span class="string">"127.0.0.1"</span></div><div class="line">         local port = <span class="number">8080</span></div><div class="line">local m, err = ngx.re.match(ngx.var.uri, <span class="string">"dark$"</span>)</div><div class="line">if m then</div><div class="line">	port = <span class="number">8081</span></div><div class="line">end</div><div class="line">local ok, err = balancer.set_current_peer(host, port)</div><div class="line">         if not ok then</div><div class="line">             ngx.log(ngx.ERR, <span class="string">"failed to set the current peer: "</span>, err)</div><div class="line">             return ngx.exit(<span class="number">500</span>)</div><div class="line">         end</div><div class="line">     &#125;</div><div class="line">     </div><div class="line">     keepalive <span class="number">10</span>;  <span class="comment"># connection pool</span></div><div class="line"> &#125;</div></pre></td></tr></table></figure></p>
+<p>验证：访问<a href="http://localhost/someurl-dark访问灰度节；访问http://localhost/someurl访问生产节点。" target="_blank" rel="external">http://localhost/someurl-dark访问灰度节；访问http://localhost/someurl访问生产节点。</a></p>
+
+        
+        </div>
+        <footer class="article-footer">
+            <div class="share-container">
+
+
+
+</div>
+
+    <a data-url="http://yoursite.com/nginx-dark-launch/" data-id="cj9m5ubgd0000xwo0nss81e6b" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
+<script>
+    (function ($) {
+        // Prevent duplicate binding
+        if (typeof(__SHARE_BUTTON_BINDED__) === 'undefined' || !__SHARE_BUTTON_BINDED__) {
+            __SHARE_BUTTON_BINDED__ = true;
+        } else {
+            return;
+        }
+        $('body').on('click', function() {
+            $('.article-share-box.on').removeClass('on');
+        }).on('click', '.article-share-link', function(e) {
+            e.stopPropagation();
+
+            var $this = $(this),
+                url = $this.attr('data-url'),
+                encodedUrl = encodeURIComponent(url),
+                id = 'article-share-box-' + $this.attr('data-id'),
+                offset = $this.offset(),
+                box;
+
+            if ($('#' + id).length) {
+                box = $('#' + id);
+
+                if (box.hasClass('on')){
+                    box.removeClass('on');
+                    return;
+                }
+            } else {
+                var html = [
+                    '<div id="' + id + '" class="article-share-box">',
+                        '<input class="article-share-input" value="' + url + '">',
+                        '<div class="article-share-links">',
+                            '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="fa fa-twitter article-share-twitter" target="_blank" title="Twitter"></a>',
+                            '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="fa fa-facebook article-share-facebook" target="_blank" title="Facebook"></a>',
+                            '<a href="http://pinterest.com/pin/create/button/?url=' + encodedUrl + '" class="fa fa-pinterest article-share-pinterest" target="_blank" title="Pinterest"></a>',
+                            '<a href="https://plus.google.com/share?url=' + encodedUrl + '" class="fa fa-google article-share-google" target="_blank" title="Google+"></a>',
+                        '</div>',
+                    '</div>'
+                ].join('');
+
+              box = $(html);
+
+              $('body').append(box);
+            }
+
+            $('.article-share-box.on').hide();
+
+            box.css({
+                top: offset.top + 25,
+                left: offset.left
+            }).addClass('on');
+
+        }).on('click', '.article-share-box', function (e) {
+            e.stopPropagation();
+        }).on('click', '.article-share-box-input', function () {
+            $(this).select();
+        }).on('click', '.article-share-box-link', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            window.open(this.href, 'article-share-box-window-' + Date.now(), 'width=500,height=450');
+        });
+    })(jQuery);
+</script>
+
+            
+    
+
+        </footer>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+    
+        <a href="/java-completionfuture/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">下一篇</strong>
+            <div class="article-nav-title">Java8 之 CompletableFuture</div>
+        </a>
+    
+</nav>
+
+
+    
+</article>
+
+
+    
+    
+
+</section>
+            
+                
+<aside id="sidebar">
+   
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">最新文章</h3>
+        <div class="widget">
+            <ul id="recent-post" class="">
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/nginx-dark-launch/" class="thumbnail">
+    
+    
+        <span style="background-image:url(http://www.xiazaiba.com/uploadfiles/ico/2015/0423/2015042309095276482.png)" alt="Nginx实战 之 灰度发布" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Nginx/">Nginx</a></p>
+                            <p class="item-title"><a href="/nginx-dark-launch/" class="title">Nginx实战 之 灰度发布</a></p>
+                            <p class="item-date"><time datetime="2017-11-04T07:06:19.944Z" itemprop="datePublished">2017-11-04</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/java-completionfuture/" class="thumbnail">
+    
+    
+        <span style="background-image:url(http://www.runoob.com/wp-content/uploads/2013/12/java.jpg)" alt="Java8 之 CompletableFuture" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Java/">Java</a></p>
+                            <p class="item-title"><a href="/java-completionfuture/" class="title">Java8 之 CompletableFuture</a></p>
+                            <p class="item-date"><time datetime="2017-10-29T09:19:39.922Z" itemprop="datePublished">2017-10-29</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/java-optional/" class="thumbnail">
+    
+    
+        <span style="background-image:url(http://www.runoob.com/wp-content/uploads/2013/12/java.jpg)" alt="Java8 之 Optional" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Java/">Java</a></p>
+                            <p class="item-title"><a href="/java-optional/" class="title">Java8 之 Optional</a></p>
+                            <p class="item-date"><time datetime="2017-10-25T11:47:40.000Z" itemprop="datePublished">2017-10-25</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/hexo-create-blog/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://hexo.io/logo.svg)" alt="如何使用Hexo在Github上搭建个人博客" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Hexo/">Hexo</a></p>
+                            <p class="item-title"><a href="/hexo-create-blog/" class="title">如何使用Hexo在Github上搭建个人博客</a></p>
+                            <p class="item-date"><time datetime="2017-10-15T08:48:02.240Z" itemprop="datePublished">2017-10-15</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/hexo-hello-world/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://hexo.io/logo.svg)" alt="Hello World" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Hexo/">Hexo</a></p>
+                            <p class="item-title"><a href="/hexo-hello-world/" class="title">Hello World</a></p>
+                            <p class="item-date"><time datetime="2017-10-15T07:56:19.621Z" itemprop="datePublished">2017-10-15</time></p>
+                        </div>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">分类</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Hexo/">Hexo</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Nginx/">Nginx</a><span class="category-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">归档</h3>
+        <div class="widget">
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a><span class="archive-list-count">4</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">标签</h3>
+        <div class="widget">
+            <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/CompletableFuture/">CompletableFuture</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cookie/">Cookie</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hexo/">Hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JDK/">JDK</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java8/">Java8</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nginx/">Nginx</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/optional/">optional</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/灰度发布/">灰度发布</a><span class="tag-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">标签云</h3>
+        <div class="widget tagcloud">
+            <a href="/tags/CompletableFuture/" style="font-size: 10px;">CompletableFuture</a> <a href="/tags/Cookie/" style="font-size: 10px;">Cookie</a> <a href="/tags/Hexo/" style="font-size: 20px;">Hexo</a> <a href="/tags/JDK/" style="font-size: 20px;">JDK</a> <a href="/tags/Java8/" style="font-size: 20px;">Java8</a> <a href="/tags/Nginx/" style="font-size: 10px;">Nginx</a> <a href="/tags/optional/" style="font-size: 10px;">optional</a> <a href="/tags/灰度发布/" style="font-size: 10px;">灰度发布</a>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">链接</h3>
+        <div class="widget">
+            <ul>
+                
+                    <li>
+                        <a href="http://hexo.io">Hexo</a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+
+    
+    <div id="toTop" class="fa fa-angle-up"></div>
+</aside>
+
+            
+        </div>
+        <footer id="footer">
+    <div class="outer">
+        <div id="footer-info" class="inner">
+            &copy; 2017 蛋黄的天空<br>
+            Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>. Theme by <a href="http://github.com/ppoffice">PPOffice</a>
+        </div>
+    </div>
+</footer>
+        
+
+
+    
+        <script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-share.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-video.min.js"></script>
+    
+    
+        <script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+    
+    
+
+
+
+<!-- Custom Scripts -->
+<script src="/js/main.js"></script>
+
+    </div>
+</body>
+</html>
