@@ -14,7 +14,7 @@
 <meta property="og:description" content="灰度发布（又名金丝雀发布，英文一般称为Dark launch）是为了能够让用户逐步过渡到新功能一种发布方式。 一般是产品上线一个功能，希望在线上可以进行A/B testing，即让一部分用户继续用产品特性A，一部分用户开始用产品特性B，如果用户对B没有什么反对意见，那么逐步扩大范围，把所有用户都迁移到B上面来。 优点  灰度发布可以保证整体系统的稳定，在初始灰度的时候就可以发现、调整问题，以保证其">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="http://www.xiazaiba.com/uploadfiles/ico/2015/0423/2015042309095276482.png">
-<meta property="og:updated_time" content="2017-11-05T10:11:39.661Z">
+<meta property="og:updated_time" content="2017-11-05T10:12:56.119Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Nginx实战 之 灰度发布">
 <meta name="twitter:description" content="灰度发布（又名金丝雀发布，英文一般称为Dark launch）是为了能够让用户逐步过渡到新功能一种发布方式。 一般是产品上线一个功能，希望在线上可以进行A/B testing，即让一部分用户继续用产品特性A，一部分用户开始用产品特性B，如果用户对B没有什么反对意见，那么逐步扩大范围，把所有用户都迁移到B上面来。 优点  灰度发布可以保证整体系统的稳定，在初始灰度的时候就可以发现、调整问题，以保证其">
@@ -265,7 +265,7 @@
 <p>灰度发布在谷歌和Facebook等很多公司已经使用的相当成熟，具体的分流规则也有很多，下面简单介绍下几种常见的分流规则，并分别使用nginx来配置实现。</p>
 <a id="more"></a>
 <hr>
-<h1 id="基于COOKIE分流"><a href="#基于COOKIE分流" class="headerlink" title="基于COOKIE分流"></a><strong>基于COOKIE分流</strong></h1><p>使用Cookie分流的原理为：在用户首次登录时查询该用户是否是灰度用户，并为其设置标识Cookie，后续采用Cookie标识来进行分流。<br>本文采用dark字段作为标识，如果cookie中包含dark=true则分流到灰度环境，其他情况则分流到生产环境。<br>在nginx的原生变量中，<code>$http_cookie</code>的值为所有Cookie以key=value的形式拼接，而<code>$cookie_dark</code>则只获得Cookie中dark的值。所以可以采用两种方式来判断：</p>
+<h1 id="基于COOKIE分流"><a href="#基于COOKIE分流" class="headerlink" title="基于COOKIE分流"></a><strong>基于COOKIE分流</strong></h1><p>使用Cookie分流的原理为：在用户首次登录时查询该用户是否是灰度用户，并为其设置标识Cookie，后续采用Cookie标识来进行分流。<br>本文采用dark字段作为标识，如果cookie中dark的值true则分流到灰度环境，其他情况则分流到生产环境。<br>在nginx的原生变量中，<code>$http_cookie</code>的值为所有Cookie以key=value的形式拼接，而<code>$cookie_dark</code>则只获得Cookie中dark的值。所以可以采用两种方式来判断：</p>
 <ol>
 <li>使用<code>$http_cookie</code>，则里面需要包含<code>dark=true</code>；</li>
 <li>使用<code>$cookie_dark</code>，则其值需要为<code>true</code>。</li>
@@ -318,7 +318,7 @@
 
 </div>
 
-    <a data-url="http://yoursite.com/nginx-dark-launch/" data-id="cj9m5ubgd0000xwo0nss81e6b" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
+    <a data-url="http://yoursite.com/nginx-dark-launch/" data-id="cj9mlnnnz0006j0o0ya1esawa" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
 <script>
     (function ($) {
         // Prevent duplicate binding
