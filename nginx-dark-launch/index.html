@@ -14,7 +14,7 @@
 <meta property="og:description" content="灰度发布（又名金丝雀发布，英文一般称为Dark launch）是为了能够让用户逐步过渡到新功能一种发布方式。 一般是产品上线一个功能，希望在线上可以进行A/B testing，即让一部分用户继续用产品特性A，一部分用户开始用产品特性B，如果用户对B没有什么反对意见，那么逐步扩大范围，把所有用户都迁移到B上面来。 优点  灰度发布可以保证整体系统的稳定，在初始灰度的时候就可以发现、调整问题，以保证其">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="http://www.xiazaiba.com/uploadfiles/ico/2015/0423/2015042309095276482.png">
-<meta property="og:updated_time" content="2017-11-05T11:29:40.912Z">
+<meta property="og:updated_time" content="2017-11-05T11:31:03.351Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Nginx实战 之 灰度发布">
 <meta name="twitter:description" content="灰度发布（又名金丝雀发布，英文一般称为Dark launch）是为了能够让用户逐步过渡到新功能一种发布方式。 一般是产品上线一个功能，希望在线上可以进行A/B testing，即让一部分用户继续用产品特性A，一部分用户开始用产品特性B，如果用户对B没有什么反对意见，那么逐步扩大范围，把所有用户都迁移到B上面来。 优点  灰度发布可以保证整体系统的稳定，在初始灰度的时候就可以发现、调整问题，以保证其">
@@ -275,7 +275,7 @@
 <blockquote>
 <p>~&nbsp;&nbsp;表示区分大小写的正则匹配<br>~*&nbsp;表示不区分大小写的正则匹配<br>^&nbsp;&nbsp;表示以xxx结尾<br>$&nbsp;&nbsp;表示以xxx结尾</p>
 </blockquote>
-<p>分流效果演示：启动了两台Tomcat，其中8080端口作为生产环境，8081作为灰度环境，为了加以区分，我在灰度环境的index.jsp页面上加上了<code>This is dark launch page!</code>。使用<code>Postman</code>来模拟请求，大家都知道POSTMAN能够添加Header，但是却不能修改Cookie，这时候需要<code>Postman Interceptor</code>来救场了。可以看到下载并启用Postman Interceptor插件以后，在Header中直接编辑Cookie属性，即可修改请求的Cookie。最终效果如下图：<br><img src="/imgs/nginx-dark-launch-postman-interceptor.png" alt="图片"><br>可以看到带有灰度Cookie的分流到了灰度环境。<br>另外为了调试方便，可以直接access.log加上<code>$http_cookie</code>或<code>$cookie_dark</code>。<br><figure class="highlight nginx"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="attribute">log_format</span>  main  <span class="string">'dark=<span class="variable">$cookie_dark</span> - <span class="variable">$remote_addr</span> - <span class="variable">$remote_user</span> [<span class="variable">$time_local</span>] "<span class="variable">$request</span>" '</span></div><div class="line">                  <span class="string">'<span class="variable">$status</span> <span class="variable">$body_bytes_sent</span> "<span class="variable">$http_referer</span>" '</span></div><div class="line">                  <span class="string">'"<span class="variable">$http_user_agent</span>" "<span class="variable">$http_x_forwarded_for</span>"'</span>;</div><div class="line"></div><div class="line"><span class="attribute">access_log</span>  logs/access.log  main;</div></pre></td></tr></table></figure></p>
+<p>分流效果演示：启动了两台Tomcat，其中8080端口作为生产环境，8081作为灰度环境，为了加以区分，我在灰度环境的index.jsp页面上加上了<code>This is dark launch page!</code>。使用<code>Postman</code>来模拟请求，大家都知道POSTMAN能够添加Header，但是却不能修改Cookie，这时候需要<code>Postman Interceptor</code>来救场了。可以看到下载并启用Postman Interceptor插件以后，在Header中直接编辑Cookie属性，即可修改请求的Cookie。最终效果如下图：<br><img src="/imgs/nginx-dark-launch-postman-interceptor.png" alt="使用postman-interceptor修改cookie"><br>可以看到带有灰度Cookie的分流到了灰度环境。<br>另外为了调试方便，可以直接access.log加上<code>$http_cookie</code>或<code>$cookie_dark</code>。<br><figure class="highlight nginx"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="attribute">log_format</span>  main  <span class="string">'dark=<span class="variable">$cookie_dark</span> - <span class="variable">$remote_addr</span> - <span class="variable">$remote_user</span> [<span class="variable">$time_local</span>] "<span class="variable">$request</span>" '</span></div><div class="line">                  <span class="string">'<span class="variable">$status</span> <span class="variable">$body_bytes_sent</span> "<span class="variable">$http_referer</span>" '</span></div><div class="line">                  <span class="string">'"<span class="variable">$http_user_agent</span>" "<span class="variable">$http_x_forwarded_for</span>"'</span>;</div><div class="line"></div><div class="line"><span class="attribute">access_log</span>  logs/access.log  main;</div></pre></td></tr></table></figure></p>
 <p>请求产生的日志打印如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">dark=true - 127.0.0.1 - - [04/Nov/2017:14:08:46 +0800] &quot;GET / HTTP/1.1&quot; 200 11452 &quot;-&quot; &quot;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.75 Safari/537.36&quot; &quot;-&quot;</div></pre></td></tr></table></figure></p>
 <h1 id="基于Header分流"><a href="#基于Header分流" class="headerlink" title="基于Header分流"></a><strong>基于Header分流</strong></h1><p>基于Header分流的原理和用法都和Cookie类似。只有两点不同：</p>
 <ol>
@@ -317,7 +317,7 @@
 
 </div>
 
-    <a data-url="http://yoursite.com/nginx-dark-launch/" data-id="cj9moe7o00006e4o09zjw82fb" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
+    <a data-url="http://yoursite.com/nginx-dark-launch/" data-id="cj9mofx710005ogo0dvdsqpwd" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
 <script>
     (function ($) {
         // Prevent duplicate binding
