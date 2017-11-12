@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <meta charset="utf-8">
+    
+    <title>Spring 之 重试框架[spring-retry] | 蛋黄的天空的博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="spring-retry项目实现了重试和熔断功能，目前已用于SpringBatch、Spring Integration等项目。 RetryOperations定义了重试的API；RetryTemplate提供了线程安全的模板实现，同于Spring 一贯的API风格，RetryTemplate将重试、熔断功能封装到模板中，提供健壮和不易出错的API供大家使用。RecoveryCallback定义了">
+<meta name="keywords" content="Spring,spring-retry,重试,熔断">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spring 之 重试框架[spring-retry]">
+<meta property="og:url" content="http://yoursite.com/spring-retry/index.html">
+<meta property="og:site_name" content="蛋黄的天空的博客">
+<meta property="og:description" content="spring-retry项目实现了重试和熔断功能，目前已用于SpringBatch、Spring Integration等项目。 RetryOperations定义了重试的API；RetryTemplate提供了线程安全的模板实现，同于Spring 一贯的API风格，RetryTemplate将重试、熔断功能封装到模板中，提供健壮和不易出错的API供大家使用。RecoveryCallback定义了">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://spring.io/img/homepage/icon-spring-framework.svg">
+<meta property="og:updated_time" content="2017-11-12T14:19:11.552Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Spring 之 重试框架[spring-retry]">
+<meta name="twitter:description" content="spring-retry项目实现了重试和熔断功能，目前已用于SpringBatch、Spring Integration等项目。 RetryOperations定义了重试的API；RetryTemplate提供了线程安全的模板实现，同于Spring 一贯的API风格，RetryTemplate将重试、熔断功能封装到模板中，提供健壮和不易出错的API供大家使用。RecoveryCallback定义了">
+<meta name="twitter:image" content="https://spring.io/img/homepage/icon-spring-framework.svg">
+    
+
+    
+        <link rel="alternate" href="/" title="蛋黄的天空的博客" type="application/atom+xml" />
+    
+
+    
+
+    <link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/libs/open-sans/styles.css">
+    <link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+    <link rel="stylesheet" href="/css/style.css">
+
+    <script src="/libs/jquery/2.1.3/jquery.min.js"></script>
+    
+    
+        <link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+    
+    
+        <link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+    
+    
+    
+    
+
+
+</head>
+
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/" id="logo">
+                <i class="logo"></i>
+                <span class="site-title">蛋黄的天空的博客</span>
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/.">主页</a>
+                
+                    <a class="main-nav-link" href="/archives">归档</a>
+                
+                    <a class="main-nav-link" href="/categories">分类</a>
+                
+                    <a class="main-nav-link" href="/tags">标签</a>
+                
+                    <a class="main-nav-link" href="/about">关于</a>
+                
+            </nav>
+            
+                
+                <nav id="sub-nav">
+                    <div class="profile" id="profile-nav">
+                        <a id="profile-anchor" href="javascript:;">
+                            <img class="avatar" src="/css/images/avatar.png" />
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </div>
+                </nav>
+            
+            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+</div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/.">主页</a></td>
+                
+                    <td><a class="main-nav-link" href="/archives">归档</a></td>
+                
+                    <td><a class="main-nav-link" href="/categories">分类</a></td>
+                
+                    <td><a class="main-nav-link" href="/tags">标签</a></td>
+                
+                    <td><a class="main-nav-link" href="/about">关于</a></td>
+                
+                <td>
+                    
+    <div class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        <div class="outer">
+            
+                
+
+<aside id="profile">
+    <div class="inner profile-inner">
+        <div class="base-info profile-block">
+            <img id="avatar" src="/css/images/avatar.png" />
+            <h2 id="name">蛋黄</h2>
+            <h3 id="title">Web Developer &amp; Designer</h3>
+            <span id="location"><i class="fa fa-map-marker"></i>ShenZhen, China</span>
+            <a id="follow" target="_blank" href="https://github.com/vther">关注我</a>
+        </div>
+        <div class="article-info profile-block">
+            <div class="article-info-block">
+                6
+                <span>文章</span>
+            </div>
+            <div class="article-info-block">
+                12
+                <span>标签</span>
+            </div>
+        </div>
+        
+        <div class="profile-block social-links">
+            <table>
+                <tr>
+                    
+                    
+                    <td>
+                        <a href="https://github.com/vther" target="_blank" title="github" class=tooltip>
+                            <i class="fa fa-github"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="/" target="_blank" title="twitter" class=tooltip>
+                            <i class="fa fa-twitter"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="/" target="_blank" title="facebook" class=tooltip>
+                            <i class="fa fa-facebook"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="/" target="_blank" title="dribbble" class=tooltip>
+                            <i class="fa fa-dribbble"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="/" target="_blank" title="rss" class=tooltip>
+                            <i class="fa fa-rss"></i>
+                        </a>
+                    </td>
+                    
+                </tr>
+            </table>
+        </div>
+        
+    </div>
+</aside>
+
+            
+            <section id="main"><article id="post-spring-retry" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name">
+            Spring 之 重试框架[spring-retry]
+        </h1>
+    
+
+                
+                    <div class="article-meta">
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/spring-retry/">
+            <time datetime="2017-11-12T12:07:13.596Z" itemprop="datePublished">2017-11-12</time>
+        </a>
+    </div>
+
+
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/Spring/">Spring</a>
+    </div>
+
+                        
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/Spring/">Spring</a>, <a class="tag-link" href="/tags/spring-retry/">spring-retry</a>, <a class="tag-link" href="/tags/熔断/">熔断</a>, <a class="tag-link" href="/tags/重试/">重试</a>
+    </div>
+
+                    </div>
+                
+            </header>
+        
+     
+        <div class="article-entry" itemprop="articleBody">
+        
+            
+            <p>spring-retry项目实现了重试和熔断功能，目前已用于SpringBatch、Spring Integration等项目。</p>
+<p>RetryOperations定义了重试的API；<br>RetryTemplate提供了线程安全的模板实现，同于Spring 一贯的API风格，RetryTemplate将重试、熔断功能封装到模板中，提供健壮和不易出错的API供大家使用。<br>RecoveryCallback定义了重试操作；<br>RetryState用于定义有状态的重试。</p>
+<a id="more"></a>
+<p>首先，RetryOperations接口API：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">RetryOperations</span> </span>&#123;</div><div class="line">   &lt;T, E extends Throwable&gt;<span class="function">T <span class="title">execute</span><span class="params">(RetryCallback&lt;T, E&gt;retryCallback)</span> <span class="keyword">throws</span> E</span>;</div><div class="line">   &lt;T, E extends Throwable&gt;<span class="function">T <span class="title">execute</span><span class="params">(RetryCallback&lt;T, E&gt;retryCallback, RecoveryCallback&lt;T&gt; recoveryCallback)</span> <span class="keyword">throws</span> E</span>;</div><div class="line">   &lt;T, E extends Throwable&gt;<span class="function">T <span class="title">execute</span><span class="params">(RetryCallback&lt;T, E&gt;retryCallback, RetryState retryState)</span> <span class="keyword">throws</span> E, ExhaustedRetryException</span>;</div><div class="line">   &lt;T, E extends Throwable&gt;<span class="function">T <span class="title">execute</span><span class="params">(RetryCallback&lt;T, E&gt;retryCallback, RecoveryCallback&lt;T&gt; recoveryCallback, RetryStateretryState)</span></span></div><div class="line"><span class="function">         <span class="keyword">throws</span> E</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>通过RetryCallback定义需重试的业务服务，当重试超过最大重试时间或最大重试次数后可以调用RecoveryCallback进行恢复，比如返回假数据或托底数据。</p>
+<h1 id="RetryPolicy"><a href="#RetryPolicy" class="headerlink" title="RetryPolicy"></a><strong>RetryPolicy</strong></h1><p>那什么时候需重试？spring-retry是当抛出相关异常后执行重试策略，定义重试策略时需要定义需重试的异常（如因远程调用失败的可以重试、而因入参校对失败不应该重试）。只读操作可以重试，幂等写操作可以重试，但是非幂等写操作不能重试，重试可能导致脏写，或产生重复数据。<br>重试策略有哪些呢？spring-retry提供了如下重试策略(RetryPolicy):</p>
+<ul>
+<li>NeverRetryPolicy：只允许调用RetryCallback一次，不允许重试；</li>
+<li>AlwaysRetryPolicy：允许无限重试，直到成功，此方式逻辑不当会导致死循环；</li>
+<li>SimpleRetryPolicy：固定次数重试策略，默认重试最大次数为3次，RetryTemplate默认使用的策略；</li>
+<li>TimeoutRetryPolicy：超时时间重试策略，默认超时时间为1秒，在指定的超时时间内允许重试；</li>
+<li>CircuitBreakerRetryPolicy：有熔断功能的重试策略，需设置3个参数openTimeout、resetTimeout和delegate，稍后详细介绍该策略；</li>
+<li>CompositeRetryPolicy：组合重试策略，有两种组合方式，乐观组合重试策略是指只要有一个策略允许重试即可以，悲观组合重试策略是指只要有一个策略不允许重试即可以，但不管哪种组合方式，组合中的每一个策略都会执行。</li>
+</ul>
+<h1 id="BackOffPolicy"><a href="#BackOffPolicy" class="headerlink" title="BackOffPolicy"></a><strong>BackOffPolicy</strong></h1><p>重试时的退避策略是什么？是立即重试还是等待一段时间后重试，比如是网络错误，立即重试将导致立即失败，最好等待一小段时间后重试，还要防止很多服务同时重试导致DDos。<br>BackOffPolicy提供了如下策略实现：</p>
+<ul>
+<li>NoBackOffPolicy：无退避算法策略，即当重试时是立即重试；</li>
+<li>FixedBackOffPolicy：固定时间的退避策略，需设置参数sleeper和backOffPeriod，sleeper指定等待策略，默认是Thread.sleep，即线程休眠，backOffPeriod指定休眠时间，默认1秒；</li>
+<li>UniformRandomBackOffPolicy：随机时间退避策略，需设置sleeper、minBackOffPeriod和maxBackOffPeriod，该策略在[minBackOffPeriod,maxBackOffPeriod之间取一个随机休眠时间，minBackOffPeriod默认500毫秒，maxBackOffPeriod默认1500毫秒；</li>
+<li>ExponentialBackOffPolicy：指数退避策略，需设置参数sleeper、initialInterval、maxInterval和multiplier，initialInterval指定初始休眠时间，默认100毫秒，maxInterval指定最大休眠时间，默认30秒，multiplier指定乘数，即下一次休眠时间为当前休眠时间*multiplier；</li>
+<li>ExponentialRandomBackOffPolicy：随机指数退避策略，引入随机乘数，之前说过固定乘数可能会引起很多服务同时重试导致DDos，使用随机休眠时间来避免这种情况。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">BackOffPolicy</span> </span>&#123;</div><div class="line">    <span class="function">BackOffContext <span class="title">start</span><span class="params">(RetryContext context)</span></span>;</div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">backOff</span><span class="params">(BackOffContext backOffContext)</span> <span class="keyword">throws</span> BackOffInterruptedException</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>BackOffPolicy的接口定义如上，start方法会每调用一次 <code>excute(RetryCallback callbace)</code>时候执行一次，backOff会在两次重试的间隔间执行，即每次重试期间执行一次且最后一次重试后不再执行。具体可以参考源码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">protected</span> &lt;T, E extends Throwable&gt; <span class="function">T <span class="title">doExecute</span><span class="params">(RetryCallback&lt;T, E&gt; retryCallback,</span></span></div><div class="line"><span class="function"><span class="params">        RecoveryCallback&lt;T&gt; recoveryCallback, RetryState state)</span></span></div><div class="line"><span class="function">        <span class="keyword">throws</span> E, ExhaustedRetryException </span>&#123;</div><div class="line">    RetryPolicy retryPolicy = <span class="keyword">this</span>.retryPolicy;       <span class="comment">//重试策略</span></div><div class="line">    BackOffPolicy backOffPolicy = <span class="keyword">this</span>.backOffPolicy; <span class="comment">// 退避策略        </span></div><div class="line">    <span class="comment">//重试上下文，主要记录了重试次数、上一次产生的异常、是否耗尽（例如重试是否超过最大次数）</span></div><div class="line">    RetryContext context = open(retryPolicy, state);</div><div class="line">    <span class="comment">// 将上下文放入ThreadLocal</span></div><div class="line">    RetrySynchronizationManager.register(context);</div><div class="line"></div><div class="line">    Throwable lastException = <span class="keyword">null</span>; <span class="comment">// 上一次产生的异常</span></div><div class="line">    <span class="keyword">boolean</span> exhausted = <span class="keyword">false</span>;      <span class="comment">// 是否耗尽</span></div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">        <span class="comment">//拦截器模式，执行RetryListener#open方法</span></div><div class="line">        <span class="keyword">boolean</span> running = doOpenInterceptors(retryCallback, context);</div><div class="line">        <span class="keyword">if</span> (!running) &#123;</div><div class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> TerminatedRetryException(</div><div class="line">                    <span class="string">"Retry terminated abnormally by interceptor before first attempt"</span>);</div><div class="line">        &#125;</div><div class="line">        <span class="comment">// Get or Start the backoff context...</span></div><div class="line">        BackOffContext backOffContext = <span class="keyword">null</span>;</div><div class="line">        Object resource = context.getAttribute(<span class="string">"backOffContext"</span>);</div><div class="line">        <span class="keyword">if</span> (resource <span class="keyword">instanceof</span> BackOffContext) &#123;</div><div class="line">            backOffContext = (BackOffContext) resource;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">if</span> (backOffContext == <span class="keyword">null</span>) &#123;</div><div class="line">            <span class="comment">// 调用backOffPolicy的start方法，并放入上下文，所以上面几行可以获取到。</span></div><div class="line">            backOffContext = backOffPolicy.start(context);</div><div class="line">            <span class="keyword">if</span> (backOffContext != <span class="keyword">null</span>) &#123;</div><div class="line">                context.setAttribute(<span class="string">"backOffContext"</span>, backOffContext);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="comment">/*</span></div><div class="line"><span class="comment">         * We allow the whole loop to be skipped if the policy or context already</span></div><div class="line"><span class="comment">         * forbid the first try. This is used in the case of external retry to allow a</span></div><div class="line"><span class="comment">         * recovery in handleRetryExhausted without the callback processing (which</span></div><div class="line"><span class="comment">         * would throw an exception).</span></div><div class="line"><span class="comment">         */</span></div><div class="line">         <span class="comment">//判断是否可以重试执行</span></div><div class="line">        <span class="keyword">while</span> (canRetry(retryPolicy, context) &amp;&amp; !context.isExhaustedOnly()) &#123;</div><div class="line">            <span class="keyword">try</span> &#123;</div><div class="line">                <span class="comment">// Reset the last exception, so if we are successful</span></div><div class="line">                <span class="comment">// the close interceptors will not think we failed...</span></div><div class="line">                <span class="comment">// 清除上一次的异常，执行RetryCallback回调</span></div><div class="line">                lastException = <span class="keyword">null</span>;</div><div class="line">                <span class="keyword">return</span> retryCallback.doWithRetry(context);</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">catch</span> (Throwable e) &#123;</div><div class="line">                <span class="comment">// 获得上一次的异常</span></div><div class="line">                lastException = e;</div><div class="line"></div><div class="line">                <span class="keyword">try</span> &#123;</div><div class="line">                    <span class="comment">// 遇到异常后，注册该异常的失败次数</span></div><div class="line">                    registerThrowable(retryPolicy, state, context, e);</div><div class="line">                &#125;</div><div class="line">                <span class="keyword">catch</span> (Exception ex) &#123;</div><div class="line">                    <span class="keyword">throw</span> <span class="keyword">new</span> TerminatedRetryException(<span class="string">"Could not register throwable"</span>,</div><div class="line">                            ex);</div><div class="line">                &#125;</div><div class="line">                <span class="keyword">finally</span> &#123;</div><div class="line">                    <span class="comment">// 执行RetryListener#onError</span></div><div class="line">                    doOnErrorInterceptors(retryCallback, context, e);</div><div class="line">                &#125;</div><div class="line">                <span class="comment">// 如果可以重试，执行退避算法，比如休眠一小段时间后再重试</span></div><div class="line">                <span class="keyword">if</span> (canRetry(retryPolicy, context) &amp;&amp; !context.isExhaustedOnly()) &#123;</div><div class="line">                    <span class="keyword">try</span> &#123;</div><div class="line">                        backOffPolicy.backOff(backOffContext);</div><div class="line">                    &#125;</div><div class="line">                    <span class="keyword">catch</span> (BackOffInterruptedException ex) &#123;</div><div class="line">                        lastException = e;</div><div class="line">                        <span class="keyword">throw</span> ex;</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line">                <span class="comment">// 在有状态重试时，如果是需要执行回滚操作的异常，则立即抛出异常</span></div><div class="line">                <span class="keyword">if</span> (shouldRethrow(retryPolicy, context, state)) &#123;</div><div class="line">                    <span class="keyword">throw</span> RetryTemplate.&lt;E&gt;wrapIfNecessary(e);</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">            <span class="comment">/*</span></div><div class="line"><span class="comment">             * A stateful attempt that can retry may rethrow the exception before now,</span></div><div class="line"><span class="comment">             * but if we get this far in a stateful retry there's a reason for it,</span></div><div class="line"><span class="comment">             * like a circuit breaker or a rollback classifier.</span></div><div class="line"><span class="comment">             */</span></div><div class="line">             <span class="comment">// 如果是有状态重试，且有GLOBAL_STATE属性，则立即跳出重试终止；当抛出的异常是非需要执行回滚操作的异常时，才会执行到此处，CircuitBreakerRetryPolicy会在此跳出循环；</span></div><div class="line">            <span class="keyword">if</span> (state != <span class="keyword">null</span> &amp;&amp; context.hasAttribute(GLOBAL_STATE)) &#123;</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="comment">// 清理环境</span></div><div class="line">        exhausted = <span class="keyword">true</span>;</div><div class="line">        <span class="keyword">return</span> handleRetryExhausted(recoveryCallback, context, state);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">catch</span> (Throwable e) &#123;</div><div class="line">        <span class="keyword">throw</span> RetryTemplate.&lt;E&gt;wrapIfNecessary(e);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">finally</span> &#123;</div><div class="line">        <span class="comment">// 清理环境</span></div><div class="line">        close(retryPolicy, context, state, lastException == <span class="keyword">null</span> || exhausted);</div><div class="line">        <span class="comment">// 执行RetryListener#close，比如统计重试信息</span></div><div class="line">        doCloseInterceptors(retryCallback, context, lastException);</div><div class="line">        RetrySynchronizationManager.clear();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<hr>
+<h1 id="有状态or无状态"><a href="#有状态or无状态" class="headerlink" title="有状态or无状态"></a><strong>有状态or无状态</strong></h1><p><strong>无状态重试</strong>，是在一个循环中执行完重试策略，即重试上下文保持在一个线程上下文中，在一次调用中进行完整的重试策略判断。<br>非常简单的情况，如远程调用某个查询方法时是最常见的无状态重试。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line">RetryTemplate template = <span class="keyword">new</span> RetryTemplate();</div><div class="line"><span class="comment">//重试策略：次数重试策略</span></div><div class="line">RetryPolicy retryPolicy = <span class="keyword">new</span> SimpleRetryPolicy(<span class="number">3</span>);</div><div class="line">template.setRetryPolicy(retryPolicy);</div><div class="line"><span class="comment">//退避策略：指数退避策略</span></div><div class="line">ExponentialBackOffPolicy backOffPolicy = <span class="keyword">new</span> ExponentialBackOffPolicy();</div><div class="line">backOffPolicy.setInitialInterval(<span class="number">100</span>);</div><div class="line">backOffPolicy.setMaxInterval(<span class="number">3000</span>);</div><div class="line">backOffPolicy.setMultiplier(<span class="number">2</span>);</div><div class="line">backOffPolicy.setSleeper(<span class="keyword">new</span> ThreadWaitSleeper());</div><div class="line">template.setBackOffPolicy(backOffPolicy);</div><div class="line"></div><div class="line"><span class="comment">//当重试失败后，抛出异常</span></div><div class="line">String result = template.execute(<span class="keyword">new</span> RetryCallback&lt;String, RuntimeException&gt;() &#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">doWithRetry</span><span class="params">(RetryContext context)</span> <span class="keyword">throws</span> RuntimeException </span>&#123;</div><div class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">"timeout"</span>);</div><div class="line">    &#125;</div><div class="line">&#125;);</div><div class="line"><span class="comment">//当重试失败后，执行RecoveryCallback</span></div><div class="line">String result = template.execute(<span class="keyword">new</span> RetryCallback&lt;String, RuntimeException&gt;() &#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">doWithRetry</span><span class="params">(RetryContext context)</span> <span class="keyword">throws</span> RuntimeException </span>&#123;</div><div class="line">        System.out.println(<span class="string">"retry count:"</span> + context.getRetryCount());</div><div class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">"timeout"</span>);</div><div class="line">    &#125;</div><div class="line">&#125;, <span class="keyword">new</span> RecoveryCallback&lt;String&gt;() &#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">recover</span><span class="params">(RetryContext context)</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="string">"default"</span>;</div><div class="line">    &#125;</div><div class="line">&#125;);</div></pre></td></tr></table></figure></p>
+<p><strong>有状态重试</strong>，有两种情况需要使用有状态重试，事务操作需要回滚或者熔断器模式。<br>事务操作需要回滚场景时，当整个操作中抛出的是数据库异常DataAccessException，则不能进行重试需要回滚，而抛出其他异常则可以进行重试，可以通过RetryState实现：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//当前状态的名称，当把状态放入缓存时，通过该key查询获取</span></div><div class="line">Object key = <span class="string">"mykey"</span>;</div><div class="line"><span class="comment">//是否每次都重新生成上下文还是从缓存中查询，即全局模式（如熔断器策略时从缓存中查询）</span></div><div class="line"><span class="keyword">boolean</span> isForceRefresh = <span class="keyword">true</span>;</div><div class="line"><span class="comment">//对DataAccessException进行回滚</span></div><div class="line">BinaryExceptionClassifier rollbackClassifier =</div><div class="line">        <span class="keyword">new</span> BinaryExceptionClassifier(Collections.&lt;Class&lt;? extends Throwable&gt;&gt;singleton(DataAccessException.class));</div><div class="line">RetryState state = <span class="keyword">new</span> DefaultRetryState(key, isForceRefresh, rollbackClassifier);</div><div class="line"></div><div class="line">String result = template.execute(<span class="keyword">new</span> RetryCallback&lt;String, RuntimeException&gt;() &#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">doWithRetry</span><span class="params">(RetryContext context)</span> <span class="keyword">throws</span> RuntimeException </span>&#123;</div><div class="line">        System.out.println(<span class="string">"retry count:"</span> + context.getRetryCount());</div><div class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> TypeMismatchDataAccessException(<span class="string">""</span>);</div><div class="line">    &#125;</div><div class="line">&#125;, <span class="keyword">new</span> RecoveryCallback&lt;String&gt;() &#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">recover</span><span class="params">(RetryContext context)</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="string">"default"</span>;</div><div class="line">    &#125;</div><div class="line">&#125;, state);</div></pre></td></tr></table></figure></p>
+<p>RetryTemplate中在有状态重试时，回滚场景时直接抛出异常处理代码：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//state != null &amp;&amp; state.rollbackFor(context.getLastThrowable())</span></div><div class="line"><span class="comment">//在有状态重试时，如果是需要执行回滚操作的异常，则立即抛出异常</span></div><div class="line"><span class="keyword">if</span> (shouldRethrow(retryPolicy,context, state)) &#123;</div><div class="line">    <span class="keyword">throw</span> RetryTemplate.&lt;E&gt;wrapIfNecessary(e);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>熔断器场景。在有状态重试时，且是全局模式，不在当前循环中处理重试，而是全局重试模式（不是线程上下文），如熔断器策略时测试代码如下所示。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line">RetryTemplate template = <span class="keyword">new</span> RetryTemplate();</div><div class="line">CircuitBreakerRetryPolicy retryPolicy =</div><div class="line">        <span class="keyword">new</span> CircuitBreakerRetryPolicy(<span class="keyword">new</span> SimpleRetryPolicy(<span class="number">3</span>));</div><div class="line">retryPolicy.setOpenTimeout(<span class="number">5000</span>);</div><div class="line">retryPolicy.setResetTimeout(<span class="number">20000</span>);</div><div class="line">template.setRetryPolicy(retryPolicy);</div><div class="line"></div><div class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++) &#123;</div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">        Object key = <span class="string">"circuit"</span>;</div><div class="line">        <span class="keyword">boolean</span> isForceRefresh = <span class="keyword">false</span>;</div><div class="line">        RetryState state = <span class="keyword">new</span> DefaultRetryState(key, isForceRefresh);</div><div class="line">        String result = template.execute(<span class="keyword">new</span> RetryCallback&lt;String, RuntimeException&gt;() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> String <span class="title">doWithRetry</span><span class="params">(RetryContext context)</span> <span class="keyword">throws</span> RuntimeException </span>&#123;</div><div class="line">                System.out.println(<span class="string">"retry count:"</span> + context.getRetryCount());</div><div class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">"timeout"</span>);</div><div class="line">            &#125;</div><div class="line">        &#125;, <span class="keyword">new</span> RecoveryCallback&lt;String&gt;() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> String <span class="title">recover</span><span class="params">(RetryContext context)</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">                <span class="keyword">return</span> <span class="string">"default"</span>;</div><div class="line">            &#125;</div><div class="line">        &#125;, state);</div><div class="line">        System.out.println(result);</div><div class="line">    &#125; <span class="keyword">catch</span> (Exception e) &#123;</div><div class="line">        System.out.println(e);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>为什么说是全局模式呢？我们配置了isForceRefresh为false，则在获取上下文时是根据key “circuit”从缓存中获取，从而拿到同一个上下文。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">Object key = <span class="string">"circuit"</span>;</div><div class="line"><span class="keyword">boolean</span> isForceRefresh = <span class="keyword">false</span>;</div><div class="line">RetryState state = <span class="keyword">new</span> DefaultRetryState(key,isForceRefresh);</div><div class="line"></div><div class="line">如下RetryTemplate代码说明在有状态模式下，不会在循环中进行重试。</div><div class="line"><span class="keyword">if</span> (state != <span class="keyword">null</span> &amp;&amp; context.hasAttribute(GLOBAL_STATE)) &#123;</div><div class="line">   <span class="keyword">break</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>熔断器策略配置代码，CircuitBreakerRetryPolicy需要配置三个参数：</p>
+<blockquote>
+<p>delegate：是真正判断是否重试的策略，当重试失败时，则执行熔断策略；<br>openTimeout：openWindow，配置熔断器电路打开的超时时间，当超过openTimeout之后熔断器电路变成半打开状态（主要有一次重试成功，则闭合电路）；<br>resetTimeout：timeout，配置重置熔断器重新闭合的超时时间。</p>
+</blockquote>
+<p>判断熔断器电路是否打开的代码：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isOpen</span><span class="params">()</span> </span>&#123;</div><div class="line">   <span class="keyword">long</span> time = System.currentTimeMillis() - <span class="keyword">this</span>.start;</div><div class="line">   <span class="keyword">boolean</span> retryable = <span class="keyword">this</span>.policy.canRetry(<span class="keyword">this</span>.context);</div><div class="line">   <span class="keyword">if</span> (!retryable) &#123;<span class="comment">//重试失败</span></div><div class="line">      <span class="comment">//在重置熔断器超时后，熔断器器电路闭合，重置上下文</span></div><div class="line">      <span class="keyword">if</span> (time &gt; <span class="keyword">this</span>.timeout) &#123;</div><div class="line">         <span class="keyword">this</span>.context = createDelegateContext(policy, getParent());</div><div class="line">         <span class="keyword">this</span>.start = System.currentTimeMillis();</div><div class="line">         retryable = <span class="keyword">this</span>.policy.canRetry(<span class="keyword">this</span>.context);</div><div class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (time &lt; <span class="keyword">this</span>.openWindow) &#123;</div><div class="line">         <span class="comment">//当在熔断器打开状态时，熔断器电路打开，立即熔断</span></div><div class="line">         <span class="keyword">if</span> ((Boolean) getAttribute(CIRCUIT_OPEN) == <span class="keyword">false</span>) &#123;</div><div class="line">            setAttribute(CIRCUIT_OPEN, <span class="keyword">true</span>);</div><div class="line">         &#125;</div><div class="line">         <span class="keyword">this</span>.start = System.currentTimeMillis();</div><div class="line">         <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">      &#125;</div><div class="line">   &#125; <span class="keyword">else</span> &#123;<span class="comment">//重试成功</span></div><div class="line">      <span class="comment">//在熔断器电路半打开状态时，断路器电路闭合，重置上下文</span></div><div class="line">      <span class="keyword">if</span> (time &gt; <span class="keyword">this</span>.openWindow) &#123;</div><div class="line">         <span class="keyword">this</span>.start = System.currentTimeMillis();</div><div class="line">         <span class="keyword">this</span>.context = createDelegateContext(policy, getParent());</div><div class="line">      &#125;</div><div class="line">   &#125;</div><div class="line">   setAttribute(CIRCUIT_OPEN, !retryable);</div><div class="line">   <span class="keyword">return</span> !retryable;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>从如上代码可看出spring-retry的熔断策略相对简单：</p>
+<p>当重试失败，且在熔断器打开时间窗口[0,openWindow) 内，立即熔断；<br>当重试失败，且在指定超时时间后(&gt;timeout)，熔断器电路重新闭合；<br>在熔断器半打开状态[openWindow, timeout] 时，只要重试成功则重置上下文，断路器闭合。<br>CircuitBreakerRetryPolicy的delegate应该配置基于次数的SimpleRetryPolicy或者基于超时的TimeoutRetryPolicy策略，且策略都是全局模式，而非局部模式，所以要注意次数或超时的配置合理性。</p>
+<pre><code>[请求可以通过]closed 
+        -&gt; [fail:1 fail:2 fail:3] -&gt;    
+[请求不能通过]open 
+        -&gt; [在openTimeout有成功请求] -&gt;  
+[请求部分通过]half-open
+        -&gt; [在resetTimeout没有失败请求] -&gt;  
+[请求可以通过]closed 
+</code></pre><p>比如SimpleRetryPolicy配置为3次，openWindow=5s，timeout=20s，我们来看下CircuitBreakerRetryPolicy的极端情况。</p>
+<p>特殊时间序列：</p>
+<p>1s：retryable=false，重试失败，断路器电路处于打开状态，熔断，重置start时间为当前时间；<br>2s：retryable=false，重试失败，断路器电路处于打开状态，熔断，重置start时间为当前时间；<br>7s：retryable=true，表示可以重试，但是time=5s，time &gt; this.openWindow判断为false，CIRCUIT_OPEN=false，不熔断；此时重试次数=3，等于最大重试次数了；<br>10s：retryable=false，因重试次数&gt;3，time=8s，time &lt; this.openWindow判断为false，熔断，且在timeout超时之前都处于熔断状态，这个时间段要配置好，否则熔断的时间会太长（默认timeout=20s）；<br>(7s,20s]之间的所有重试：和10s的情况一样。<br>如上是当重试次数正好等于最大重试次数，且time=openWindow时的特殊情况，不过实际场景这种情况几乎不可能发生。</p>
+<p>spring-retry的重试机制没有像Hystrix根据失败率阀值进行电路打开/关闭的判断。</p>
+<p>如果需要局部循环重试机制，需要组合多个RetryTemplate实现。</p>
+<p>spring-retry也提供了注解实现：<br>@EnableRetry、@Retryable、@Recover、@Backoff、@CircuitBreaker。具体可以参考官方文档。</p>
+<p>#<strong>统计分析</strong><br>spring-retry通过RetryListener实现拦截器模式，默认提供了StatisticsListener实现重试操作统计分析数据。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">RetryTemplatetemplate = <span class="keyword">new</span> RetryTemplate();</div><div class="line">DefaultStatisticsRepository repository = <span class="keyword">new</span> DefaultStatisticsRepository();</div><div class="line">StatisticsListener listener = <span class="keyword">new</span> StatisticsListener(repository);</div><div class="line">template.setListeners(<span class="keyword">new</span> RetryListener[]&#123;listener&#125;);</div><div class="line"></div><div class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++)&#123;</div><div class="line">    String result = template.execute(<span class="keyword">new</span> RetryCallback&lt;String, RuntimeException&gt;() &#123;</div><div class="line">        <span class="meta">@Override</span></div><div class="line">       <span class="function"><span class="keyword">public</span> String <span class="title">doWithRetry</span><span class="params">(RetryContext context)</span> <span class="keyword">throws</span> RuntimeException </span>&#123;</div><div class="line">           context.setAttribute(RetryContext.NAME,<span class="string">"method.key"</span>);</div><div class="line">            <span class="keyword">return</span> <span class="string">"ok"</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;);</div><div class="line">&#125;</div><div class="line">RetryStatistics statistics = repository.findOne(<span class="string">"method.key"</span>);</div><div class="line">System.out.println(statistics);</div></pre></td></tr></table></figure></p>
+<p>此处要给操作定义一个name如“method.key”，从而查询该操作的统计分析数据。</p>
+<p>到此spring-retry重试与熔断就介绍完了。spring-retry项目地址<a href="https://github.com/spring-projects/spring-retry。" target="_blank" rel="external">https://github.com/spring-projects/spring-retry。</a></p>
+<p>另外可以参考《亿级流量网站架构核心技术》的《第5章 降级特技》和《第6章 超时与重试机制》了解和学习更多内容。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a><strong>参考</strong></h2><ul>
+<li><a href="http://www.broadview.com.cn/article/233" target="_blank" rel="external">spring-retry重试与熔断详解—《亿级流量》内容补充</a></li>
+<li><a href="https://www.cnblogs.com/shanyou/p/CircuitBreaker.html" target="_blank" rel="external">使用熔断器设计模式保护软件</a></li>
+<li><a href="https://martinfowler.com/bliki/CircuitBreaker.html" target="_blank" rel="external">CircuitBreaker</a></li>
+</ul>
+
+        
+        </div>
+        <footer class="article-footer">
+            <div class="share-container">
+
+
+
+</div>
+
+    <a data-url="http://yoursite.com/spring-retry/" data-id="cj9wuadk90000mko0htl4juv0" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
+<script>
+    (function ($) {
+        // Prevent duplicate binding
+        if (typeof(__SHARE_BUTTON_BINDED__) === 'undefined' || !__SHARE_BUTTON_BINDED__) {
+            __SHARE_BUTTON_BINDED__ = true;
+        } else {
+            return;
+        }
+        $('body').on('click', function() {
+            $('.article-share-box.on').removeClass('on');
+        }).on('click', '.article-share-link', function(e) {
+            e.stopPropagation();
+
+            var $this = $(this),
+                url = $this.attr('data-url'),
+                encodedUrl = encodeURIComponent(url),
+                id = 'article-share-box-' + $this.attr('data-id'),
+                offset = $this.offset(),
+                box;
+
+            if ($('#' + id).length) {
+                box = $('#' + id);
+
+                if (box.hasClass('on')){
+                    box.removeClass('on');
+                    return;
+                }
+            } else {
+                var html = [
+                    '<div id="' + id + '" class="article-share-box">',
+                        '<input class="article-share-input" value="' + url + '">',
+                        '<div class="article-share-links">',
+                            '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="fa fa-twitter article-share-twitter" target="_blank" title="Twitter"></a>',
+                            '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="fa fa-facebook article-share-facebook" target="_blank" title="Facebook"></a>',
+                            '<a href="http://pinterest.com/pin/create/button/?url=' + encodedUrl + '" class="fa fa-pinterest article-share-pinterest" target="_blank" title="Pinterest"></a>',
+                            '<a href="https://plus.google.com/share?url=' + encodedUrl + '" class="fa fa-google article-share-google" target="_blank" title="Google+"></a>',
+                        '</div>',
+                    '</div>'
+                ].join('');
+
+              box = $(html);
+
+              $('body').append(box);
+            }
+
+            $('.article-share-box.on').hide();
+
+            box.css({
+                top: offset.top + 25,
+                left: offset.left
+            }).addClass('on');
+
+        }).on('click', '.article-share-box', function (e) {
+            e.stopPropagation();
+        }).on('click', '.article-share-box-input', function () {
+            $(this).select();
+        }).on('click', '.article-share-box-link', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            window.open(this.href, 'article-share-box-window-' + Date.now(), 'width=500,height=450');
+        });
+    })(jQuery);
+</script>
+
+            
+    
+
+        </footer>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+    
+        <a href="/nginx-dark-launch/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">下一篇</strong>
+            <div class="article-nav-title">Nginx实战 之 灰度发布</div>
+        </a>
+    
+</nav>
+
+
+    
+</article>
+
+
+    
+    
+
+</section>
+            
+                
+<aside id="sidebar">
+   
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">最新文章</h3>
+        <div class="widget">
+            <ul id="recent-post" class="">
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/spring-retry/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://spring.io/img/homepage/icon-spring-framework.svg)" alt="Spring 之 重试框架[spring-retry]" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Spring/">Spring</a></p>
+                            <p class="item-title"><a href="/spring-retry/" class="title">Spring 之 重试框架[spring-retry]</a></p>
+                            <p class="item-date"><time datetime="2017-11-12T12:07:13.596Z" itemprop="datePublished">2017-11-12</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/nginx-dark-launch/" class="thumbnail">
+    
+    
+        <span style="background-image:url(http://www.xiazaiba.com/uploadfiles/ico/2015/0423/2015042309095276482.png)" alt="Nginx实战 之 灰度发布" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Nginx/">Nginx</a></p>
+                            <p class="item-title"><a href="/nginx-dark-launch/" class="title">Nginx实战 之 灰度发布</a></p>
+                            <p class="item-date"><time datetime="2017-11-04T07:06:19.944Z" itemprop="datePublished">2017-11-04</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/java-completionfuture/" class="thumbnail">
+    
+    
+        <span style="background-image:url(http://www.runoob.com/wp-content/uploads/2013/12/java.jpg)" alt="Java8 之 CompletableFuture" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Java/">Java</a></p>
+                            <p class="item-title"><a href="/java-completionfuture/" class="title">Java8 之 CompletableFuture</a></p>
+                            <p class="item-date"><time datetime="2017-10-29T09:19:39.922Z" itemprop="datePublished">2017-10-29</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/java-optional/" class="thumbnail">
+    
+    
+        <span style="background-image:url(http://www.runoob.com/wp-content/uploads/2013/12/java.jpg)" alt="Java8 之 Optional" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Java/">Java</a></p>
+                            <p class="item-title"><a href="/java-optional/" class="title">Java8 之 Optional</a></p>
+                            <p class="item-date"><time datetime="2017-10-25T11:47:40.000Z" itemprop="datePublished">2017-10-25</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/hexo-create-blog/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://hexo.io/logo.svg)" alt="如何使用Hexo在Github上搭建个人博客" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Hexo/">Hexo</a></p>
+                            <p class="item-title"><a href="/hexo-create-blog/" class="title">如何使用Hexo在Github上搭建个人博客</a></p>
+                            <p class="item-date"><time datetime="2017-10-15T08:48:02.240Z" itemprop="datePublished">2017-10-15</time></p>
+                        </div>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">分类</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Hexo/">Hexo</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Nginx/">Nginx</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a><span class="category-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">归档</h3>
+        <div class="widget">
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a><span class="archive-list-count">4</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">标签</h3>
+        <div class="widget">
+            <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/CompletableFuture/">CompletableFuture</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cookie/">Cookie</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hexo/">Hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JDK/">JDK</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java8/">Java8</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nginx/">Nginx</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/">Spring</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/optional/">optional</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring-retry/">spring-retry</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/灰度发布/">灰度发布</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/熔断/">熔断</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/重试/">重试</a><span class="tag-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">标签云</h3>
+        <div class="widget tagcloud">
+            <a href="/tags/CompletableFuture/" style="font-size: 10px;">CompletableFuture</a> <a href="/tags/Cookie/" style="font-size: 10px;">Cookie</a> <a href="/tags/Hexo/" style="font-size: 20px;">Hexo</a> <a href="/tags/JDK/" style="font-size: 20px;">JDK</a> <a href="/tags/Java8/" style="font-size: 20px;">Java8</a> <a href="/tags/Nginx/" style="font-size: 10px;">Nginx</a> <a href="/tags/Spring/" style="font-size: 10px;">Spring</a> <a href="/tags/optional/" style="font-size: 10px;">optional</a> <a href="/tags/spring-retry/" style="font-size: 10px;">spring-retry</a> <a href="/tags/灰度发布/" style="font-size: 10px;">灰度发布</a> <a href="/tags/熔断/" style="font-size: 10px;">熔断</a> <a href="/tags/重试/" style="font-size: 10px;">重试</a>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">链接</h3>
+        <div class="widget">
+            <ul>
+                
+                    <li>
+                        <a href="http://hexo.io">Hexo</a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+
+    
+    <div id="toTop" class="fa fa-angle-up"></div>
+</aside>
+
+            
+        </div>
+        <footer id="footer">
+    <div class="outer">
+        <div id="footer-info" class="inner">
+            &copy; 2017 蛋黄的天空<br>
+            Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>. Theme by <a href="http://github.com/ppoffice">PPOffice</a>
+        </div>
+    </div>
+</footer>
+        
+
+
+    
+        <script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-share.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-video.min.js"></script>
+    
+    
+        <script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+    
+    
+
+
+
+<!-- Custom Scripts -->
+<script src="/js/main.js"></script>
+
+    </div>
+</body>
+</html>
