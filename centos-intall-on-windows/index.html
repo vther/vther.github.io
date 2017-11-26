@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <meta charset="utf-8">
+    
+    <title>在Window下安装CentOS并安装Nginx、OpenResty | 蛋黄的天空的博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="本文记录了在window上利用VMware虚拟机安装CentOS并且在CentOS里面安装Nginx、OpenResty的过程  主要分为以下四步： 1，在Windows上安装VMware Workstation2，图解在VMware上安装CentOS3，在CentOS上安装OpenResty4，解决Windows下无法访问虚拟机的问题（通过配置iptables）5，最后介绍使用make方式安装n">
+<meta name="keywords" content="Centos,OpenResty,VMware,Nginx">
+<meta property="og:type" content="article">
+<meta property="og:title" content="在Window下安装CentOS并安装Nginx、OpenResty">
+<meta property="og:url" content="http://yoursite.com/centos-intall-on-windows/index.html">
+<meta property="og:site_name" content="蛋黄的天空的博客">
+<meta property="og:description" content="本文记录了在window上利用VMware虚拟机安装CentOS并且在CentOS里面安装Nginx、OpenResty的过程  主要分为以下四步： 1，在Windows上安装VMware Workstation2，图解在VMware上安装CentOS3，在CentOS上安装OpenResty4，解决Windows下无法访问虚拟机的问题（通过配置iptables）5，最后介绍使用make方式安装n">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://openresty.org/images/logo.png">
+<meta property="og:updated_time" content="2017-11-26T07:26:46.934Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="在Window下安装CentOS并安装Nginx、OpenResty">
+<meta name="twitter:description" content="本文记录了在window上利用VMware虚拟机安装CentOS并且在CentOS里面安装Nginx、OpenResty的过程  主要分为以下四步： 1，在Windows上安装VMware Workstation2，图解在VMware上安装CentOS3，在CentOS上安装OpenResty4，解决Windows下无法访问虚拟机的问题（通过配置iptables）5，最后介绍使用make方式安装n">
+<meta name="twitter:image" content="http://openresty.org/images/logo.png">
+    
+
+    
+        <link rel="alternate" href="/" title="蛋黄的天空的博客" type="application/atom+xml" />
+    
+
+    
+
+    <link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/libs/open-sans/styles.css">
+    <link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+    <link rel="stylesheet" href="/css/style.css">
+
+    <script src="/libs/jquery/2.1.3/jquery.min.js"></script>
+    
+    
+        <link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+    
+    
+        <link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+    
+    
+    
+    
+
+
+</head>
+
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/" id="logo">
+                <i class="logo"></i>
+                <span class="site-title">蛋黄的天空的博客</span>
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/.">主页</a>
+                
+                    <a class="main-nav-link" href="/archives">归档</a>
+                
+                    <a class="main-nav-link" href="/categories">分类</a>
+                
+                    <a class="main-nav-link" href="/tags">标签</a>
+                
+                    <a class="main-nav-link" href="/about">关于</a>
+                
+            </nav>
+            
+                
+                <nav id="sub-nav">
+                    <div class="profile" id="profile-nav">
+                        <a id="profile-anchor" href="javascript:;">
+                            <img class="avatar" src="/css/images/avatar.png" />
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </div>
+                </nav>
+            
+            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+</div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/.">主页</a></td>
+                
+                    <td><a class="main-nav-link" href="/archives">归档</a></td>
+                
+                    <td><a class="main-nav-link" href="/categories">分类</a></td>
+                
+                    <td><a class="main-nav-link" href="/tags">标签</a></td>
+                
+                    <td><a class="main-nav-link" href="/about">关于</a></td>
+                
+                <td>
+                    
+    <div class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        <div class="outer">
+            
+                
+
+<aside id="profile">
+    <div class="inner profile-inner">
+        <div class="base-info profile-block">
+            <img id="avatar" src="/css/images/avatar.png" />
+            <h2 id="name">蛋黄</h2>
+            <h3 id="title">Web Developer &amp; Designer</h3>
+            <span id="location"><i class="fa fa-map-marker"></i>ShenZhen, China</span>
+            <a id="follow" target="_blank" href="https://github.com/vther">关注我</a>
+        </div>
+        <div class="article-info profile-block">
+            <div class="article-info-block">
+                9
+                <span>文章</span>
+            </div>
+            <div class="article-info-block">
+                20
+                <span>标签</span>
+            </div>
+        </div>
+        
+        <div class="profile-block social-links">
+            <table>
+                <tr>
+                    
+                    
+                    <td>
+                        <a href="https://github.com/vther" target="_blank" title="github" class=tooltip>
+                            <i class="fa fa-github"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="/" target="_blank" title="twitter" class=tooltip>
+                            <i class="fa fa-twitter"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="/" target="_blank" title="facebook" class=tooltip>
+                            <i class="fa fa-facebook"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="/" target="_blank" title="dribbble" class=tooltip>
+                            <i class="fa fa-dribbble"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="/" target="_blank" title="rss" class=tooltip>
+                            <i class="fa fa-rss"></i>
+                        </a>
+                    </td>
+                    
+                </tr>
+            </table>
+        </div>
+        
+    </div>
+</aside>
+
+            
+            <section id="main"><article id="post-centos-intall-on-windows" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name">
+            在Window下安装CentOS并安装Nginx、OpenResty
+        </h1>
+    
+
+                
+                    <div class="article-meta">
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/centos-intall-on-windows/">
+            <time datetime="2017-11-26T05:52:25.904Z" itemprop="datePublished">2017-11-26</time>
+        </a>
+    </div>
+
+
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/OpenResty/">OpenResty</a><i class="fa fa-angle-right"></i><a class="article-category-link" href="/categories/OpenResty/Nginx/">Nginx</a>
+    </div>
+
+                        
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/Centos/">Centos</a>, <a class="tag-link" href="/tags/Nginx/">Nginx</a>, <a class="tag-link" href="/tags/OpenResty/">OpenResty</a>, <a class="tag-link" href="/tags/VMware/">VMware</a>
+    </div>
+
+                    </div>
+                
+            </header>
+        
+     
+        <div class="article-entry" itemprop="articleBody">
+        
+            
+            <p><strong>本文记录了在window上利用VMware虚拟机安装CentOS并且在CentOS里面安装Nginx、OpenResty的过程</strong> </p>
+<p>主要分为以下四步：</p>
+<p>1，在Windows上安装VMware Workstation<br>2，图解在VMware上安装CentOS<br>3，在CentOS上安装OpenResty<br>4，解决Windows下无法访问虚拟机的问题（通过配置iptables）<br>5，最后介绍使用make方式安装nginx</p>
+<a id="more"></a>
+<hr>
+<h1 id="安装CentOS"><a href="#安装CentOS" class="headerlink" title="安装CentOS"></a><strong>安装CentOS</strong></h1><p>先安装<code>VMware Workstation</code>软件，搜索后在Windows自行下载安装。比较简单，这里不再记录。<br>安装完成后，在<code>VMware Workstation</code>中安装CentOS，步骤参考下图</p>
+<p><img src="/imgs/centos-install-on-window-1.png" alt="安装CentOS-1"><br><img src="/imgs/centos-install-on-window-2.png" alt="安装CentOS-2"><br><img src="/imgs/centos-install-on-window-3.png" alt="安装CentOS-3"><br><img src="/imgs/centos-install-on-window-4.png" alt="安装CentOS-4"><br><img src="/imgs/centos-install-on-window-5.png" alt="安装CentOS-5"><br><img src="/imgs/centos-install-on-window-6.png" alt="安装CentOS-6"><br>网络选择桥接模式，具体可以参考：<a href="http://blog.csdn.net/noob_f/article/details/51099040" target="_blank" rel="external">Vmware虚拟机三种网络模式详解</a><br><img src="/imgs/centos-install-on-window-7.png" alt="安装CentOS-7-配置网络"><br><img src="/imgs/centos-install-on-window-8.png" alt="安装CentOS-8-配置内存"></p>
+<p>最后点击确定，等待一会后，就可以进入CentOS了。首次进入需要配置网络、语言、用户，配置完成后，使用<code>ifconfig</code>命令可以查看Linux的IP，用于在外部使用<code>XShell</code>软件访问。</p>
+<h1 id="安装OpenResty"><a href="#安装OpenResty" class="headerlink" title="安装OpenResty"></a><strong>安装OpenResty</strong></h1><p>本文只介绍CentOS下安装步骤，其他系统请参考 <a href="http://openresty.org/cn/linux-packages.html" target="_blank" rel="external">官网中文安装说明</a>：</p>
+<ol>
+<li><p>添加openresty仓库：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">sudo yum install yum-utils</div><div class="line">sudo yum-config-manager --add-repo https://openresty.org/package/centos/openresty.repo</div></pre></td></tr></table></figure>
+</li>
+<li><p>安装openresty软件包：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo yum install openresty</div></pre></td></tr></table></figure>
+</li>
+<li><p>启动OpenResty：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">cd /usr/local/openresty/nginx/sbin/</div><div class="line">./nginx</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<h1 id="配置iptablse：在windows下访问虚拟机中的OpenResty"><a href="#配置iptablse：在windows下访问虚拟机中的OpenResty" class="headerlink" title="配置iptablse：在windows下访问虚拟机中的OpenResty"></a><strong>配置iptablse：在windows下访问虚拟机中的OpenResty</strong></h1><p>安装<code>iptables-services</code><br><figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">yum install iptables-services</div></pre></td></tr></table></figure></p>
+<p>设置开机启动：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">systemctl enable iptables  </div><div class="line"></div><div class="line"><span class="meta">#</span> 其他命令 参考</div><div class="line">systemctl stop iptables  </div><div class="line">systemctl start iptables  </div><div class="line">systemctl restart iptables  </div><div class="line">systemctl reload iptables</div></pre></td></tr></table></figure></p>
+<p>保存设置：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">service iptables save</div></pre></td></tr></table></figure></p>
+<p>修改iptablse配置，按照格式，添加80端口（下面第10行为添加内容）<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">vi /etc/sysconfig/iptables</div></pre></td></tr></table></figure></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span> Generated by iptables-save v1.4.21 on Sat Nov 25 21:44:44 2017</div><div class="line">*filter</div><div class="line">:INPUT ACCEPT [0:0]</div><div class="line">:FORWARD ACCEPT [0:0]</div><div class="line">:OUTPUT ACCEPT [6:592]</div><div class="line">-A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT</div><div class="line">-A INPUT -p icmp -j ACCEPT</div><div class="line">-A INPUT -i lo -j ACCEPT</div><div class="line">-A INPUT -p tcp -m state --state NEW -m tcp --dport 22 -j ACCEPT</div><div class="line">-A INPUT -p tcp -m state --state NEW -m tcp --dport 80 -j ACCEPT</div><div class="line">-A INPUT -j REJECT --reject-with icmp-host-prohibited</div><div class="line">-A FORWARD -j REJECT --reject-with icmp-host-prohibited</div><div class="line">COMMIT</div><div class="line"><span class="meta">#</span> Completed on Sat Nov 25 21:44:44 2017</div></pre></td></tr></table></figure>
+<p>最后重启iptables使配置生效：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">service iptables restart</div></pre></td></tr></table></figure></p>
+<p>然后就能在windows下访问页面了</p>
+<h1 id="遇到的问题"><a href="#遇到的问题" class="headerlink" title="遇到的问题"></a><strong>遇到的问题</strong></h1><p>1，执行<code>sudo yum install yum-utils</code>报错：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">Another app is currently holding the yum lock; waiting for it to exit...</div><div class="line">  The other application is: PackageKit</div><div class="line">    Memory : 132 M RSS (1.0 GB VSZ)</div><div class="line">    Started: Sat Nov 25 21:37:18 2017 - 01:40 ago</div><div class="line">State  : Running, pid: 11166</div></pre></td></tr></table></figure></p>
+<p>解决办法：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">ps -ef|grep yum</div><div class="line">kill -9 &#123;上一步得到的进程号&#125;</div></pre></td></tr></table></figure></p>
+<p>2，Nginx 80端口被占用<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">netstat -lnp|grep 80  </div><div class="line">ps &#123;上一步得到的进程号&#125; # 根据进程号查看进程详情</div><div class="line">kill -9 &#123;上一步得到的进程号&#125;</div></pre></td></tr></table></figure></p>
+<h1 id="使用make方式安装nginx"><a href="#使用make方式安装nginx" class="headerlink" title="使用make方式安装nginx"></a><strong>使用make方式安装nginx</strong></h1><p>1，    下载Nginx安装包，注意不要放在下载到/usr/local/nginx下，因为nginx会安装在该目录：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">cd /usr/local/ &amp;&amp; mkdir install &amp;&amp; cd install</div><div class="line"><span class="meta">#</span> 下载nginx包</div><div class="line">wget http://nginx.org/download/nginx-1.12.2.tar.gz</div><div class="line"><span class="meta">#</span> 解压</div><div class="line">tar zxvf nginx-1.12.2.tar.gz</div><div class="line">cd nginx-1.12.2</div><div class="line"><span class="meta">#</span> 配置</div><div class="line">./configure</div></pre></td></tr></table></figure></p>
+<p>2，安装如果提示缺少PCRE，需要安装PCRE<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">checking for PCRE library ... not found</div><div class="line">checking for PCRE library in /usr/local/ ... not found</div><div class="line">checking for PCRE library in /usr/include/pcre/ ... not found</div><div class="line">checking for PCRE library in /usr/pkg/ ... not found</div><div class="line">checking for PCRE library in /opt/local/ ... not found</div><div class="line"></div><div class="line">./configure: error: the HTTP rewrite module requires the PCRE library.</div><div class="line">You can either disable the module by using --without-http_rewrite_module</div><div class="line">option, or install the PCRE library into the system, or build the PCRE library</div><div class="line">statically from the source with nginx by using --with-pcre=&lt;path&gt; option</div><div class="line"></div><div class="line"><span class="meta">#</span> 如果有以上提示，说明机器未安装pcre，nginx http_rewrite_module 需要pcre正则功能</div><div class="line">yum -y install pcre pcre-devel</div><div class="line">./configure</div></pre></td></tr></table></figure></p>
+<p>3，安装如果提示缺少zlib，需要安装zlib<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">checking for zlib library ... not found</div><div class="line"></div><div class="line">./configure: error: the HTTP gzip module requires the zlib library.</div><div class="line">You can either disable the module by using --without-http_gzip_module</div><div class="line">option, or install the zlib library into the system, or build the zlib library</div><div class="line">statically from the source with nginx by using --with-zlib=&lt;path&gt; option.</div><div class="line"></div><div class="line"><span class="meta">#</span> 如果有以上提示，说明机器未安装zlib，nginx http_gzip_module 需要zlib压缩功能</div><div class="line">yum -y install zlib zlib-devel</div><div class="line">./configure</div></pre></td></tr></table></figure></p>
+<p>4，配置成功后make &amp;&amp; make install<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span> 配置成功后有如下提示，列出了nginx的主要文件所在路径</div><div class="line">Configuration summary</div><div class="line">  + using system PCRE library</div><div class="line">  + OpenSSL library is not used</div><div class="line">  + using system zlib library</div><div class="line"></div><div class="line">  nginx path prefix: "/usr/local/nginx"</div><div class="line">  nginx binary file: "/usr/local/nginx/sbin/nginx"</div><div class="line">  nginx modules path: "/usr/local/nginx/modules"</div><div class="line">  nginx configuration prefix: "/usr/local/nginx/conf"</div><div class="line">  nginx configuration file: "/usr/local/nginx/conf/nginx.conf"</div><div class="line">  nginx pid file: "/usr/local/nginx/logs/nginx.pid"</div><div class="line">  nginx error log file: "/usr/local/nginx/logs/error.log"</div><div class="line">  nginx http access log file: "/usr/local/nginx/logs/access.log"</div><div class="line">  nginx http client request body temporary files: "client_body_temp"</div><div class="line">  nginx http proxy temporary files: "proxy_temp"</div><div class="line">  nginx http fastcgi temporary files: "fastcgi_temp"</div><div class="line">  nginx http uwsgi temporary files: "uwsgi_temp"</div><div class="line">  nginx http scgi temporary files: "scgi_temp"</div><div class="line"></div><div class="line"></div><div class="line">make</div><div class="line">make install</div></pre></td></tr></table></figure></p>
+<p>5，最后启动nginx<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">cd /usr/local/nginx/sbin </div><div class="line">./nginx</div></pre></td></tr></table></figure></p>
+<p>备注：注意使用<code>./configure --help</code>可以查看nginx的可配置路径和模块，列出如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div><div class="line">145</div><div class="line">146</div><div class="line">147</div><div class="line">148</div><div class="line">149</div><div class="line">150</div><div class="line">151</div><div class="line">152</div><div class="line">153</div><div class="line">154</div><div class="line">155</div><div class="line">156</div><div class="line">157</div><div class="line">158</div><div class="line">159</div><div class="line">160</div><div class="line">161</div><div class="line">162</div><div class="line">163</div><div class="line">164</div><div class="line">165</div><div class="line">166</div><div class="line">167</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">--help                             print this message</div><div class="line"></div><div class="line">--prefix=PATH                      set installation prefix</div><div class="line">--sbin-path=PATH                   set nginx binary pathname</div><div class="line">--modules-path=PATH                set modules path</div><div class="line">--conf-path=PATH                   set nginx.conf pathname</div><div class="line">--error-log-path=PATH              set error log pathname</div><div class="line">--pid-path=PATH                    set nginx.pid pathname</div><div class="line">--lock-path=PATH                   set nginx.lock pathname</div><div class="line"></div><div class="line">--user=USER                        set non-privileged user for</div><div class="line">                                   worker processes</div><div class="line">--group=GROUP                      set non-privileged group for</div><div class="line">                                   worker processes</div><div class="line"></div><div class="line">--build=NAME                       set build name</div><div class="line">--builddir=DIR                     set build directory</div><div class="line"></div><div class="line">--with-select_module               enable select module</div><div class="line">--without-select_module            disable select module</div><div class="line">--with-poll_module                 enable poll module</div><div class="line">--without-poll_module              disable poll module</div><div class="line"></div><div class="line">--with-threads                     enable thread pool support</div><div class="line"></div><div class="line">--with-file-aio                    enable file AIO support</div><div class="line"></div><div class="line">--with-http_ssl_module             enable ngx_http_ssl_module</div><div class="line">--with-http_v2_module              enable ngx_http_v2_module</div><div class="line">--with-http_realip_module          enable ngx_http_realip_module</div><div class="line">--with-http_addition_module        enable ngx_http_addition_module</div><div class="line">--with-http_xslt_module            enable ngx_http_xslt_module</div><div class="line">--with-http_xslt_module=dynamic    enable dynamic ngx_http_xslt_module</div><div class="line">--with-http_image_filter_module    enable ngx_http_image_filter_module</div><div class="line">--with-http_image_filter_module=dynamic</div><div class="line">                                   enable dynamic ngx_http_image_filter_module</div><div class="line">--with-http_geoip_module           enable ngx_http_geoip_module</div><div class="line">--with-http_geoip_module=dynamic   enable dynamic ngx_http_geoip_module</div><div class="line">--with-http_sub_module             enable ngx_http_sub_module</div><div class="line">--with-http_dav_module             enable ngx_http_dav_module</div><div class="line">--with-http_flv_module             enable ngx_http_flv_module</div><div class="line">--with-http_mp4_module             enable ngx_http_mp4_module</div><div class="line">--with-http_gunzip_module          enable ngx_http_gunzip_module</div><div class="line">--with-http_gzip_static_module     enable ngx_http_gzip_static_module</div><div class="line">--with-http_auth_request_module    enable ngx_http_auth_request_module</div><div class="line">--with-http_random_index_module    enable ngx_http_random_index_module</div><div class="line">--with-http_secure_link_module     enable ngx_http_secure_link_module</div><div class="line">--with-http_degradation_module     enable ngx_http_degradation_module</div><div class="line">--with-http_slice_module           enable ngx_http_slice_module</div><div class="line">--with-http_stub_status_module     enable ngx_http_stub_status_module</div><div class="line"></div><div class="line">--without-http_charset_module      disable ngx_http_charset_module</div><div class="line">--without-http_gzip_module         disable ngx_http_gzip_module</div><div class="line">--without-http_ssi_module          disable ngx_http_ssi_module</div><div class="line">--without-http_userid_module       disable ngx_http_userid_module</div><div class="line">--without-http_access_module       disable ngx_http_access_module</div><div class="line">--without-http_auth_basic_module   disable ngx_http_auth_basic_module</div><div class="line">--without-http_autoindex_module    disable ngx_http_autoindex_module</div><div class="line">--without-http_geo_module          disable ngx_http_geo_module</div><div class="line">--without-http_map_module          disable ngx_http_map_module</div><div class="line">--without-http_split_clients_module disable ngx_http_split_clients_module</div><div class="line">--without-http_referer_module      disable ngx_http_referer_module</div><div class="line">--without-http_rewrite_module      disable ngx_http_rewrite_module</div><div class="line">--without-http_proxy_module        disable ngx_http_proxy_module</div><div class="line">--without-http_fastcgi_module      disable ngx_http_fastcgi_module</div><div class="line">--without-http_uwsgi_module        disable ngx_http_uwsgi_module</div><div class="line">--without-http_scgi_module         disable ngx_http_scgi_module</div><div class="line">--without-http_memcached_module    disable ngx_http_memcached_module</div><div class="line">--without-http_limit_conn_module   disable ngx_http_limit_conn_module</div><div class="line">--without-http_limit_req_module    disable ngx_http_limit_req_module</div><div class="line">--without-http_empty_gif_module    disable ngx_http_empty_gif_module</div><div class="line">--without-http_browser_module      disable ngx_http_browser_module</div><div class="line">--without-http_upstream_hash_module</div><div class="line">                                   disable ngx_http_upstream_hash_module</div><div class="line">--without-http_upstream_ip_hash_module</div><div class="line">                                   disable ngx_http_upstream_ip_hash_module</div><div class="line">--without-http_upstream_least_conn_module</div><div class="line">                                   disable ngx_http_upstream_least_conn_module</div><div class="line">--without-http_upstream_keepalive_module</div><div class="line">                                   disable ngx_http_upstream_keepalive_module</div><div class="line">--without-http_upstream_zone_module</div><div class="line">                                   disable ngx_http_upstream_zone_module</div><div class="line"></div><div class="line">--with-http_perl_module            enable ngx_http_perl_module</div><div class="line">--with-http_perl_module=dynamic    enable dynamic ngx_http_perl_module</div><div class="line">--with-perl_modules_path=PATH      set Perl modules path</div><div class="line">--with-perl=PATH                   set perl binary pathname</div><div class="line"></div><div class="line">--http-log-path=PATH               set http access log pathname</div><div class="line">--http-client-body-temp-path=PATH  set path to store</div><div class="line">                                   http client request body temporary files</div><div class="line">--http-proxy-temp-path=PATH        set path to store</div><div class="line">                                   http proxy temporary files</div><div class="line">--http-fastcgi-temp-path=PATH      set path to store</div><div class="line">                                   http fastcgi temporary files</div><div class="line">--http-uwsgi-temp-path=PATH        set path to store</div><div class="line">                                   http uwsgi temporary files</div><div class="line">--http-scgi-temp-path=PATH         set path to store</div><div class="line">                                   http scgi temporary files</div><div class="line"></div><div class="line">--without-http                     disable HTTP server</div><div class="line">--without-http-cache               disable HTTP cache</div><div class="line"></div><div class="line">--with-mail                        enable POP3/IMAP4/SMTP proxy module</div><div class="line">--with-mail=dynamic                enable dynamic POP3/IMAP4/SMTP proxy module</div><div class="line">--with-mail_ssl_module             enable ngx_mail_ssl_module</div><div class="line">--without-mail_pop3_module         disable ngx_mail_pop3_module</div><div class="line">--without-mail_imap_module         disable ngx_mail_imap_module</div><div class="line">--without-mail_smtp_module         disable ngx_mail_smtp_module</div><div class="line"></div><div class="line">--with-stream                      enable TCP/UDP proxy module</div><div class="line">--with-stream=dynamic              enable dynamic TCP/UDP proxy module</div><div class="line">--with-stream_ssl_module           enable ngx_stream_ssl_module</div><div class="line">--with-stream_realip_module        enable ngx_stream_realip_module</div><div class="line">--with-stream_geoip_module         enable ngx_stream_geoip_module</div><div class="line">--with-stream_geoip_module=dynamic enable dynamic ngx_stream_geoip_module</div><div class="line">--with-stream_ssl_preread_module   enable ngx_stream_ssl_preread_module</div><div class="line">--without-stream_limit_conn_module disable ngx_stream_limit_conn_module</div><div class="line">--without-stream_access_module     disable ngx_stream_access_module</div><div class="line">--without-stream_geo_module        disable ngx_stream_geo_module</div><div class="line">--without-stream_map_module        disable ngx_stream_map_module</div><div class="line">--without-stream_split_clients_module</div><div class="line">                                   disable ngx_stream_split_clients_module</div><div class="line">--without-stream_return_module     disable ngx_stream_return_module</div><div class="line">--without-stream_upstream_hash_module</div><div class="line">                                   disable ngx_stream_upstream_hash_module</div><div class="line">--without-stream_upstream_least_conn_module</div><div class="line">                                   disable ngx_stream_upstream_least_conn_module</div><div class="line">--without-stream_upstream_zone_module</div><div class="line">                                   disable ngx_stream_upstream_zone_module</div><div class="line"></div><div class="line">--with-google_perftools_module     enable ngx_google_perftools_module</div><div class="line">--with-cpp_test_module             enable ngx_cpp_test_module</div><div class="line"></div><div class="line">--add-module=PATH                  enable external module</div><div class="line">--add-dynamic-module=PATH          enable dynamic external module</div><div class="line"></div><div class="line">--with-compat                      dynamic modules compatibility</div><div class="line"></div><div class="line">--with-cc=PATH                     set C compiler pathname</div><div class="line">--with-cpp=PATH                    set C preprocessor pathname</div><div class="line">--with-cc-opt=OPTIONS              set additional C compiler options</div><div class="line">--with-ld-opt=OPTIONS              set additional linker options</div><div class="line">--with-cpu-opt=CPU                 build for the specified CPU, valid values:</div><div class="line">                                   pentium, pentiumpro, pentium3, pentium4,</div><div class="line">                                   athlon, opteron, sparc32, sparc64, ppc64</div><div class="line"></div><div class="line">--without-pcre                     disable PCRE library usage</div><div class="line">--with-pcre                        force PCRE library usage</div><div class="line">--with-pcre=DIR                    set path to PCRE library sources</div><div class="line">--with-pcre-opt=OPTIONS            set additional build options for PCRE</div><div class="line">--with-pcre-jit                    build PCRE with JIT compilation support</div><div class="line"></div><div class="line">--with-zlib=DIR                    set path to zlib library sources</div><div class="line">--with-zlib-opt=OPTIONS            set additional build options for zlib</div><div class="line">--with-zlib-asm=CPU                use zlib assembler sources optimized</div><div class="line">                                   for the specified CPU, valid values:</div><div class="line">                                   pentium, pentiumpro</div><div class="line"></div><div class="line">--with-libatomic                   force libatomic_ops library usage</div><div class="line">--with-libatomic=DIR               set path to libatomic_ops library sources</div><div class="line"></div><div class="line">--with-openssl=DIR                 set path to OpenSSL library sources</div><div class="line">--with-openssl-opt=OPTIONS         set additional build options for OpenSSL</div><div class="line"></div><div class="line">--with-debug                       enable debug logging</div></pre></td></tr></table></figure>
+        
+        </div>
+        <footer class="article-footer">
+            <div class="share-container">
+
+
+
+</div>
+
+    <a data-url="http://yoursite.com/centos-intall-on-windows/" data-id="cjagdzfde000168o0rkblbhl6" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
+<script>
+    (function ($) {
+        // Prevent duplicate binding
+        if (typeof(__SHARE_BUTTON_BINDED__) === 'undefined' || !__SHARE_BUTTON_BINDED__) {
+            __SHARE_BUTTON_BINDED__ = true;
+        } else {
+            return;
+        }
+        $('body').on('click', function() {
+            $('.article-share-box.on').removeClass('on');
+        }).on('click', '.article-share-link', function(e) {
+            e.stopPropagation();
+
+            var $this = $(this),
+                url = $this.attr('data-url'),
+                encodedUrl = encodeURIComponent(url),
+                id = 'article-share-box-' + $this.attr('data-id'),
+                offset = $this.offset(),
+                box;
+
+            if ($('#' + id).length) {
+                box = $('#' + id);
+
+                if (box.hasClass('on')){
+                    box.removeClass('on');
+                    return;
+                }
+            } else {
+                var html = [
+                    '<div id="' + id + '" class="article-share-box">',
+                        '<input class="article-share-input" value="' + url + '">',
+                        '<div class="article-share-links">',
+                            '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="fa fa-twitter article-share-twitter" target="_blank" title="Twitter"></a>',
+                            '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="fa fa-facebook article-share-facebook" target="_blank" title="Facebook"></a>',
+                            '<a href="http://pinterest.com/pin/create/button/?url=' + encodedUrl + '" class="fa fa-pinterest article-share-pinterest" target="_blank" title="Pinterest"></a>',
+                            '<a href="https://plus.google.com/share?url=' + encodedUrl + '" class="fa fa-google article-share-google" target="_blank" title="Google+"></a>',
+                        '</div>',
+                    '</div>'
+                ].join('');
+
+              box = $(html);
+
+              $('body').append(box);
+            }
+
+            $('.article-share-box.on').hide();
+
+            box.css({
+                top: offset.top + 25,
+                left: offset.left
+            }).addClass('on');
+
+        }).on('click', '.article-share-box', function (e) {
+            e.stopPropagation();
+        }).on('click', '.article-share-box-input', function () {
+            $(this).select();
+        }).on('click', '.article-share-box-link', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            window.open(this.href, 'article-share-box-window-' + Date.now(), 'width=500,height=450');
+        });
+    })(jQuery);
+</script>
+
+            
+    
+
+        </footer>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+        <a href="/nginx-certificate-configuration/" id="article-nav-newer" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">上一篇</strong>
+            <div class="article-nav-title">
+                
+                    使用Openssl为Nginx生成证书
+                
+            </div>
+        </a>
+    
+    
+        <a href="/docker-start/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">下一篇</strong>
+            <div class="article-nav-title">Docker 入门</div>
+        </a>
+    
+</nav>
+
+
+    
+</article>
+
+
+    
+    
+
+</section>
+            
+                
+<aside id="sidebar">
+   
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">最新文章</h3>
+        <div class="widget">
+            <ul id="recent-post" class="">
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/nginx-certificate-configuration/" class="thumbnail">
+    
+    
+        <span style="background-image:url(http://www.xiazaiba.com/uploadfiles/ico/2015/0423/2015042309095276482.png)" alt="使用Openssl为Nginx生成证书" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Nginx/">Nginx</a></p>
+                            <p class="item-title"><a href="/nginx-certificate-configuration/" class="title">使用Openssl为Nginx生成证书</a></p>
+                            <p class="item-date"><time datetime="2017-11-26T12:16:14.465Z" itemprop="datePublished">2017-11-26</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/centos-intall-on-windows/" class="thumbnail">
+    
+    
+        <span style="background-image:url(http://openresty.org/images/logo.png)" alt="在Window下安装CentOS并安装Nginx、OpenResty" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/OpenResty/">OpenResty</a><i class="fa fa-angle-right"></i><a class="article-category-link" href="/categories/OpenResty/Nginx/">Nginx</a></p>
+                            <p class="item-title"><a href="/centos-intall-on-windows/" class="title">在Window下安装CentOS并安装Nginx、OpenResty</a></p>
+                            <p class="item-date"><time datetime="2017-11-26T05:52:25.904Z" itemprop="datePublished">2017-11-26</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/docker-start/" class="thumbnail">
+    
+    
+        <span style="background-image:url(http://blog.phusion.nl/wp-content/uploads/2013/11/docker.png)" alt="Docker 入门" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Docker/">Docker</a></p>
+                            <p class="item-title"><a href="/docker-start/" class="title">Docker 入门</a></p>
+                            <p class="item-date"><time datetime="2017-11-19T11:45:49.854Z" itemprop="datePublished">2017-11-19</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/spring-retry/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://spring.io/img/homepage/icon-spring-framework.svg)" alt="Spring 之 重试框架[spring-retry]" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Spring/">Spring</a></p>
+                            <p class="item-title"><a href="/spring-retry/" class="title">Spring 之 重试框架[spring-retry]</a></p>
+                            <p class="item-date"><time datetime="2017-11-12T12:07:13.596Z" itemprop="datePublished">2017-11-12</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/nginx-dark-launch/" class="thumbnail">
+    
+    
+        <span style="background-image:url(http://www.xiazaiba.com/uploadfiles/ico/2015/0423/2015042309095276482.png)" alt="Nginx实战 之 灰度发布" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Nginx/">Nginx</a></p>
+                            <p class="item-title"><a href="/nginx-dark-launch/" class="title">Nginx实战 之 灰度发布</a></p>
+                            <p class="item-date"><time datetime="2017-11-04T07:06:19.944Z" itemprop="datePublished">2017-11-04</time></p>
+                        </div>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">分类</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/">Docker</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Hexo/">Hexo</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Nginx/">Nginx</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OpenResty/">OpenResty</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/OpenResty/Nginx/">Nginx</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a><span class="category-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">归档</h3>
+        <div class="widget">
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a><span class="archive-list-count">4</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">标签</h3>
+        <div class="widget">
+            <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Centos/">Centos</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CompletableFuture/">CompletableFuture</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cookie/">Cookie</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/">Docker</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hexo/">Hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Https/">Https</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JDK/">JDK</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java8/">Java8</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mysql/">Mysql</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nginx/">Nginx</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OpenResty/">OpenResty</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Openssl/">Openssl</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/">Spring</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VMware/">VMware</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/optional/">optional</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring-retry/">spring-retry</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/灰度发布/">灰度发布</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/熔断/">熔断</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/证书/">证书</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/重试/">重试</a><span class="tag-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">标签云</h3>
+        <div class="widget tagcloud">
+            <a href="/tags/Centos/" style="font-size: 10px;">Centos</a> <a href="/tags/CompletableFuture/" style="font-size: 10px;">CompletableFuture</a> <a href="/tags/Cookie/" style="font-size: 10px;">Cookie</a> <a href="/tags/Docker/" style="font-size: 10px;">Docker</a> <a href="/tags/Hexo/" style="font-size: 15px;">Hexo</a> <a href="/tags/Https/" style="font-size: 10px;">Https</a> <a href="/tags/JDK/" style="font-size: 15px;">JDK</a> <a href="/tags/Java8/" style="font-size: 15px;">Java8</a> <a href="/tags/Mysql/" style="font-size: 10px;">Mysql</a> <a href="/tags/Nginx/" style="font-size: 20px;">Nginx</a> <a href="/tags/OpenResty/" style="font-size: 10px;">OpenResty</a> <a href="/tags/Openssl/" style="font-size: 10px;">Openssl</a> <a href="/tags/Spring/" style="font-size: 10px;">Spring</a> <a href="/tags/VMware/" style="font-size: 10px;">VMware</a> <a href="/tags/optional/" style="font-size: 10px;">optional</a> <a href="/tags/spring-retry/" style="font-size: 10px;">spring-retry</a> <a href="/tags/灰度发布/" style="font-size: 10px;">灰度发布</a> <a href="/tags/熔断/" style="font-size: 10px;">熔断</a> <a href="/tags/证书/" style="font-size: 10px;">证书</a> <a href="/tags/重试/" style="font-size: 10px;">重试</a>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">链接</h3>
+        <div class="widget">
+            <ul>
+                
+                    <li>
+                        <a href="http://hexo.io">Hexo</a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+
+    
+    <div id="toTop" class="fa fa-angle-up"></div>
+</aside>
+
+            
+        </div>
+        <footer id="footer">
+    <div class="outer">
+        <div id="footer-info" class="inner">
+            &copy; 2017 蛋黄的天空<br>
+            Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>. Theme by <a href="http://github.com/ppoffice">PPOffice</a>
+        </div>
+    </div>
+</footer>
+        
+
+
+    
+        <script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-share.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-video.min.js"></script>
+    
+    
+        <script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+    
+    
+
+
+
+<!-- Custom Scripts -->
+<script src="/js/main.js"></script>
+
+    </div>
+</body>
+</html>
