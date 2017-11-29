@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <meta charset="utf-8">
+    
+    <title>Spring Cache 入门 | 蛋黄的天空的博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="缓存在很多场景下都是相当有用的。例如，计算或检索一个值的代价很高，并且对同样的输入需要不止一次获取值的时候，就应当考虑使用缓存。 通常来说，缓存适用于：  你愿意消耗一些内存空间来提升速度。 你预料到某些键会被查询一次以上。 缓存中存放的数据总量不会超出内存容量。 如果你的场景符合上述的每一条，就适合使用缓存。  Spring Cache 可以基于注释（annotation）配置，对业务代码侵入极">
+<meta name="keywords" content="Spring,Spring Cache">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spring Cache 入门">
+<meta property="og:url" content="http://yoursite.com/spring-cache-intro/index.html">
+<meta property="og:site_name" content="蛋黄的天空的博客">
+<meta property="og:description" content="缓存在很多场景下都是相当有用的。例如，计算或检索一个值的代价很高，并且对同样的输入需要不止一次获取值的时候，就应当考虑使用缓存。 通常来说，缓存适用于：  你愿意消耗一些内存空间来提升速度。 你预料到某些键会被查询一次以上。 缓存中存放的数据总量不会超出内存容量。 如果你的场景符合上述的每一条，就适合使用缓存。  Spring Cache 可以基于注释（annotation）配置，对业务代码侵入极">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://spring.io/img/homepage/icon-spring-framework.svg">
+<meta property="og:updated_time" content="2017-11-29T15:55:22.990Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Spring Cache 入门">
+<meta name="twitter:description" content="缓存在很多场景下都是相当有用的。例如，计算或检索一个值的代价很高，并且对同样的输入需要不止一次获取值的时候，就应当考虑使用缓存。 通常来说，缓存适用于：  你愿意消耗一些内存空间来提升速度。 你预料到某些键会被查询一次以上。 缓存中存放的数据总量不会超出内存容量。 如果你的场景符合上述的每一条，就适合使用缓存。  Spring Cache 可以基于注释（annotation）配置，对业务代码侵入极">
+<meta name="twitter:image" content="https://spring.io/img/homepage/icon-spring-framework.svg">
+    
+
+    
+        <link rel="alternate" href="/" title="蛋黄的天空的博客" type="application/atom+xml" />
+    
+
+    
+
+    <link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/libs/open-sans/styles.css">
+    <link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+    <link rel="stylesheet" href="/css/style.css">
+
+    <script src="/libs/jquery/2.1.3/jquery.min.js"></script>
+    
+    
+        <link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+    
+    
+        <link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+    
+    
+    
+    
+
+
+</head>
+
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/" id="logo">
+                <i class="logo"></i>
+                <span class="site-title">蛋黄的天空的博客</span>
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/.">主页</a>
+                
+                    <a class="main-nav-link" href="/archives">归档</a>
+                
+                    <a class="main-nav-link" href="/categories">分类</a>
+                
+                    <a class="main-nav-link" href="/tags">标签</a>
+                
+                    <a class="main-nav-link" href="/about">关于</a>
+                
+            </nav>
+            
+                
+                <nav id="sub-nav">
+                    <div class="profile" id="profile-nav">
+                        <a id="profile-anchor" href="javascript:;">
+                            <img class="avatar" src="/css/images/avatar.png" />
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </div>
+                </nav>
+            
+            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+</div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/.">主页</a></td>
+                
+                    <td><a class="main-nav-link" href="/archives">归档</a></td>
+                
+                    <td><a class="main-nav-link" href="/categories">分类</a></td>
+                
+                    <td><a class="main-nav-link" href="/tags">标签</a></td>
+                
+                    <td><a class="main-nav-link" href="/about">关于</a></td>
+                
+                <td>
+                    
+    <div class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        <div class="outer">
+            
+                
+
+<aside id="profile">
+    <div class="inner profile-inner">
+        <div class="base-info profile-block">
+            <img id="avatar" src="/css/images/avatar.png" />
+            <h2 id="name">蛋黄</h2>
+            <h3 id="title">Web Developer &amp; Designer</h3>
+            <span id="location"><i class="fa fa-map-marker"></i>ShenZhen, China</span>
+            <a id="follow" target="_blank" href="https://github.com/vther">关注我</a>
+        </div>
+        <div class="article-info profile-block">
+            <div class="article-info-block">
+                10
+                <span>文章</span>
+            </div>
+            <div class="article-info-block">
+                21
+                <span>标签</span>
+            </div>
+        </div>
+        
+        <div class="profile-block social-links">
+            <table>
+                <tr>
+                    
+                    
+                    <td>
+                        <a href="https://github.com/vther" target="_blank" title="github" class=tooltip>
+                            <i class="fa fa-github"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="/" target="_blank" title="twitter" class=tooltip>
+                            <i class="fa fa-twitter"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="/" target="_blank" title="facebook" class=tooltip>
+                            <i class="fa fa-facebook"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="/" target="_blank" title="dribbble" class=tooltip>
+                            <i class="fa fa-dribbble"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="/" target="_blank" title="rss" class=tooltip>
+                            <i class="fa fa-rss"></i>
+                        </a>
+                    </td>
+                    
+                </tr>
+            </table>
+        </div>
+        
+    </div>
+</aside>
+
+            
+            <section id="main"><article id="post-spring-cache-intro" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name">
+            Spring Cache 入门
+        </h1>
+    
+
+                
+                    <div class="article-meta">
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/spring-cache-intro/">
+            <time datetime="2017-11-29T15:16:55.568Z" itemprop="datePublished">2017-11-29</time>
+        </a>
+    </div>
+
+
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/Spring/">Spring</a>
+    </div>
+
+                        
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/Spring/">Spring</a>, <a class="tag-link" href="/tags/Spring-Cache/">Spring Cache</a>
+    </div>
+
+                    </div>
+                
+            </header>
+        
+     
+        <div class="article-entry" itemprop="articleBody">
+        
+            
+            <p>缓存在很多场景下都是相当有用的。例如，计算或检索一个值的代价很高，并且对同样的输入需要不止一次获取值的时候，就应当考虑使用缓存。</p>
+<p>通常来说，缓存适用于：</p>
+<ol>
+<li>你愿意消耗一些内存空间来提升速度。</li>
+<li>你预料到某些键会被查询一次以上。</li>
+<li>缓存中存放的数据总量不会超出内存容量。</li>
+<li>如果你的场景符合上述的每一条，就适合使用缓存。</li>
+</ol>
+<p>Spring Cache 可以基于注释（annotation）配置，对业务代码侵入极小，但却具备相当的灵活性，不仅能够使用 SpEL（Spring Expression Language）来定义缓存的 key 和各种 condition，还提供开箱即用的缓存临时存储方案，也支持和主流的专业缓存例如 EHCache 集成。</p>
+<a id="more"></a>
+<h2 id="缓存名词解释"><a href="#缓存名词解释" class="headerlink" title="缓存名词解释"></a>缓存名词解释</h2><h4 id="缓存命中率（Hit-rate）"><a href="#缓存命中率（Hit-rate）" class="headerlink" title="缓存命中率（Hit rate）"></a>缓存命中率（Hit rate）</h4><p>即从缓存中读取数据的次数 与 总读取次数的比率，命中率越高越好：</p>
+<blockquote>
+<p>命中率 = 从缓存中读取次数 / (总读取次数[从缓存中读取次数 + 从慢速设备上读取的次数])<br>Miss率 = 没有从缓存中读取的次数 /(总读取次数[从缓存中读取次数 + 从慢速设备上读取的次数])</p>
+</blockquote>
+<p>这是一个非常重要的监控指标，如果做缓存一定要健康这个指标来看缓存是否工作良好；</p>
+<h4 id="缓存策略（Eviction-policy）"><a href="#缓存策略（Eviction-policy）" class="headerlink" title="缓存策略（Eviction policy）"></a>缓存策略（Eviction policy）</h4><p>移除策略，即如果缓存满了，从缓存中移除数据的策略；常见的有LFU、LRU、FIFO：<br>FIFO（First In First Out）：先进先出算法，即先放入缓存的先被移除；<br>LRU（Least Recently Used）：最久未使用算法，使用时间距离现在最久的那个被移除；<br>LFU（Least Frequently Used）：最近最少使用算法，一定时间段内使用次数（频率）最少的那个被移除；</p>
+<h4 id="TTL（Time-To-Live-）"><a href="#TTL（Time-To-Live-）" class="headerlink" title="TTL（Time To Live ）"></a>TTL（Time To Live ）</h4><p>存活期，即从缓存中创建时间点开始直到它到期的一个时间段（不管在这个时间段内有没有访问都将过期）</p>
+<h4 id="TTI（Time-To-Idle）"><a href="#TTI（Time-To-Idle）" class="headerlink" title="TTI（Time To Idle）"></a>TTI（Time To Idle）</h4><p>空闲期，即一个数据多久没被访问将从缓存中移除的时间。</p>
+<h2 id="Spring-Cache-配置和使用"><a href="#Spring-Cache-配置和使用" class="headerlink" title="Spring Cache 配置和使用"></a>Spring Cache 配置和使用</h2><p>最简单的配置只需要两步：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 启用缓存</span></div><div class="line"><span class="meta">@Configuration</span></div><div class="line"><span class="meta">@EnableCaching</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CacheConfig</span> </span>&#123;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 使用缓存</span></div><div class="line"><span class="meta">@Component</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CacheService</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="comment">// 查询后，只要缓存不过期，即可略过函数方法，直接返回结果</span></div><div class="line">    <span class="meta">@Cacheable</span>(cacheNames = &#123;<span class="string">"books"</span>&#125;, key = <span class="string">"#id"</span>)</div><div class="line">    <span class="function"><span class="keyword">public</span> Book <span class="title">findBook</span><span class="params">(<span class="keyword">int</span> id)</span> </span>&#123;</div><div class="line">        <span class="comment">// Do find </span></div><div class="line">        <span class="keyword">return</span> book;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">// 不管有无缓存，方法每次都执行，适用于更新的场景（可以避免去重新查询一次）</span></div><div class="line">    <span class="meta">@CachePut</span>(cacheNames = &#123;<span class="string">"books"</span>, <span class="string">"books2"</span>&#125;, key = <span class="string">"#book.id"</span>)</div><div class="line">    <span class="function"><span class="keyword">public</span> Book <span class="title">updateBook</span><span class="params">(Book book)</span> </span>&#123;</div><div class="line">        <span class="comment">// Do update</span></div><div class="line">        <span class="keyword">return</span> book;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">// 清除缓存</span></div><div class="line">    <span class="meta">@CacheEvict</span>(cacheNames = &#123;<span class="string">"books"</span>, <span class="string">"books2"</span>&#125;, key = <span class="string">"#book.id"</span>)</div><div class="line">    <span class="function"><span class="keyword">public</span> Book <span class="title">deleteBook</span><span class="params">(Book book)</span> </span>&#123;</div><div class="line">        <span class="comment">// Do delete</span></div><div class="line">        <span class="keyword">return</span> book;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h2 id="Spring-Cache-注解详解"><a href="#Spring-Cache-注解详解" class="headerlink" title="Spring Cache 注解详解"></a>Spring Cache 注解详解</h2><table>
+<thead>
+<tr>
+<th>注解</th>
+<th style="text-align:left">释义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>@EnableCaching</td>
+<td style="text-align:left">启用缓存</td>
+</tr>
+<tr>
+<td>@CacheConfig</td>
+<td style="text-align:left">主要用于配置该类中会用到的一些共用的缓存配置。在这里@CacheConfig(cacheNames = “users”)：配置了该数据访问对象中返回的内容将存储于名为users的缓存对象中，我们也可以不使用该注解，直接通过@Cacheable自己配置缓存集的名字来定义。</td>
+</tr>
+<tr>
+<td>@Cacheable</td>
+<td style="text-align:left">配置了函数的返回值将被加入缓存。同时在查询时，会先从缓存中获取，若不存在才再发起对数据库的访问。</td>
+</tr>
+<tr>
+<td>@CachePut</td>
+<td style="text-align:left">配置于函数上，能够根据参数定义条件来进行缓存，它与@Cacheable不同的是，它每次都会真是调用函数，所以主要用于数据新增和修改操作上。它的参数与@Cacheable类似，具体功能可参考上面对@Cacheable参数的解析</td>
+</tr>
+<tr>
+<td>@CacheEvict</td>
+<td style="text-align:left">配置于函数上，通常用在删除方法上，用来从缓存中移除相应数据。</td>
+</tr>
+<tr>
+<td>@Caching</td>
+<td style="text-align:left">@Cacheable @CachePut @CacheEvict的复合（combine）操作</td>
+</tr>
+</tbody>
+</table>
+<p>拥有属性详解：</p>
+<table>
+<thead>
+<tr>
+<th>注解</th>
+<th style="text-align:left">拥有属性</th>
+<th>释义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>@Cacheable @CachePut @CacheEvict</td>
+<td style="text-align:left">value</td>
+<td>用于指定缓存存储的集合名。如果使用@CacheConfig指定缓存名，则可不填</td>
+</tr>
+<tr>
+<td>@CacheConfig @Cacheable @CachePut @CacheEvict</td>
+<td style="text-align:left">cacheNames</td>
+<td>cacheNames为value的别名</td>
+</tr>
+<tr>
+<td>@Cacheable @CachePut @CacheEvict</td>
+<td style="text-align:left">key</td>
+<td>缓存对象存储在Map集合中的key值，非必需，缺省按照函数的所有参数组合作为key值，若自己配置需使用SpEL表达式，比如：@Cacheable(key &gt; = “#p0”)：使用函数第一个参数作为缓存的key值，更多关于SpEL表达式的详细内容可参考<a href="https://docs.spring.io/spring-framework/docs/4.3.9.RELEASE/spring-framework-reference/htmlsingle/#cache-spel-context" target="_blank" rel="external">官方文档</a></td>
+</tr>
+<tr>
+<td>@Cacheable @CachePut @CacheEvict</td>
+<td style="text-align:left">condition</td>
+<td>缓存对象的条件，非必需，也需使用SpEL表达式，只有满足表达式条件的内容才会被缓存，比如：@Cacheable(key= “#p0”, condition = “#p0.length() &lt; 3”)，表示只有当第一个参数的长度小于3的时候才会被缓存，若做此配置上面的AAA用户就不会被缓存</td>
+</tr>
+<tr>
+<td>@Cacheable @CachePut @CacheEvict</td>
+<td style="text-align:left">unless</td>
+<td>另外一个缓存条件参数，非必需，需使用SpEL表达式。它不同于condition参数的地方在于它的判断时机，该条件是在函数被调用之后才做判断的，所以它可以通过对result进行判断。</td>
+</tr>
+<tr>
+<td>@CacheConfig @Cacheable @CachePut @CacheEvict</td>
+<td style="text-align:left">keyGenerator</td>
+<td>用于指定key生成器，非必需。若需要指定一个自定义的key生成器，我们需要去实现org.springframework.cache.interceptor.KeyGenerator接口，并使用该参数来指定。需要注意的是：该参数与key是互斥的</td>
+</tr>
+<tr>
+<td>@CacheConfig @Cacheable @CachePut @CacheEvict</td>
+<td style="text-align:left">cacheManager</td>
+<td>用于指定使用哪个缓存管理器，非必需。只有当有多个时才需要使用</td>
+</tr>
+<tr>
+<td>@CacheConfig @Cacheable @CachePut @CacheEvict</td>
+<td style="text-align:left">cacheResolver</td>
+<td>用于指定使用那个缓存解析器，非必需。需通过org.springframework.cache.interceptor.CacheResolver接口来实现自己的缓存解析器，并用该参数指定。</td>
+</tr>
+<tr>
+<td>@Cacheable</td>
+<td style="text-align:left">sync</td>
+<td>多个线程并发加载同一个key，控制是否同步，默认false，设为ture有以下三点限制：不能使用unless、只能指定一个cache，不允许和其他缓存操作合并使用</td>
+</tr>
+<tr>
+<td>@CacheEvict</td>
+<td style="text-align:left">beforeInvocation</td>
+<td>非必需，默认为false，会在调用方法之后移除数据。当为true时，会在调用方法之前移除数据。</td>
+</tr>
+<tr>
+<td>@CacheEvict</td>
+<td style="text-align:left">allEntries</td>
+<td>非必需，默认为false。当为true时，会移除所有数据</td>
+</tr>
+</tbody>
+</table>
+<h2 id="擦除缓存"><a href="#擦除缓存" class="headerlink" title="擦除缓存"></a>擦除缓存</h2><p><strong>手动清除</strong>：我们可以自行调用如下方法<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Component</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CacheService</span> </span>&#123;</div><div class="line">    <span class="comment">// 全部清除</span></div><div class="line">    <span class="meta">@CacheEvict</span>(cacheNames = &#123;<span class="string">"books"</span>&#125;, allEntries = <span class="keyword">true</span>)</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">evictAllCache</span><span class="params">()</span> </span>&#123;&#125;</div><div class="line">    </div><div class="line">    <span class="comment">// 指定key清除</span></div><div class="line">    <span class="meta">@CacheEvict</span>(cacheNames = &#123;<span class="string">"books"</span>&#125;, key = <span class="string">"#id"</span>)</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">evictCacheById</span><span class="params">()</span> </span>&#123;<span class="keyword">int</span> id&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p><strong>自动清除</strong>：我们可以使用定时清除、或者为缓存设置过期策略等<br>例如，如下代码可以完成定时清除的功能。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 引入定时功能</span></div><div class="line"><span class="meta">@Configuration</span></div><div class="line"><span class="meta">@EnableScheduling</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CacheConfig</span> </span>&#123;&#125;</div><div class="line"></div><div class="line"><span class="comment">// 自动清除</span></div><div class="line"><span class="meta">@Component</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CacheService</span> </span>&#123;</div><div class="line">    <span class="meta">@Scheduled</span>(fixDelay = <span class="number">1000</span>)</div><div class="line">    <span class="meta">@CacheEvict</span>(cacheNames = &#123;<span class="string">"books"</span>&#125;, allEntries = <span class="keyword">true</span>)</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">scheduledEvict</span><span class="params">()</span> </span>&#123;&#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>当然我们可以使用多个CacheManager，为每一个指定不同的定时执行频率来清除缓存。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Configuration</span></div><div class="line"><span class="meta">@EnableCaching</span></div><div class="line"><span class="meta">@EnableScheduling</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CacheConfig</span> </span>&#123;</div><div class="line">    <span class="comment">// 主缓存管理器</span></div><div class="line">    <span class="meta">@Primary</span></div><div class="line">    <span class="meta">@Bean</span></div><div class="line">    <span class="function"><span class="keyword">public</span> CacheManager <span class="title">cacheManager</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">new</span> ConcurrentMapCacheManager(<span class="string">"books"</span>, <span class="string">"books2"</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Bean</span></div><div class="line">    <span class="function"><span class="keyword">public</span> CacheManager <span class="title">cacheManager2</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">new</span> ConcurrentMapCacheManager(<span class="string">"books3"</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="meta">@Component</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CacheService</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="meta">@Scheduled</span>(fixedDelay = <span class="number">1000</span>)</div><div class="line">    <span class="meta">@CacheEvict</span>(cacheManager = <span class="string">"cacheManager"</span>, cacheNames = &#123;<span class="string">"books"</span>, <span class="string">"books2"</span>&#125;, allEntries = <span class="keyword">true</span>)</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">scheduledEvict</span><span class="params">()</span> </span>&#123;&#125;</div><div class="line"></div><div class="line">    <span class="meta">@Scheduled</span>(fixedDelay = <span class="number">2000</span>)</div><div class="line">    <span class="meta">@CacheEvict</span>(cacheManager = <span class="string">"cacheManager2"</span>, cacheNames = &#123;<span class="string">"books3"</span>&#125;, allEntries = <span class="keyword">true</span>)</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">scheduledEvict2</span><span class="params">()</span> </span>&#123;&#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>虽然<code>@Scheduled</code>支持固定频率（fixRate）、固定延时（fixDelay）、cron表达式，但是带有<code>@Scheduled</code>注解的函数不能添加入参，所以在自动清除方面我们只能实现集合级别的清除，不能实现key级别的清除。其原因是Spring默认使用的的<code>CacheManager</code>是<code>ConcurrentMapCacheManager</code>，其功能有限。<br><strong>后续我将说明如何使用第三方缓存实现为Spring Cache（如Guava Cache，Redis等）实现该功能。</strong></p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ol>
+<li><a href="https://docs.spring.io/spring/docs/current/spring-framework-reference/integration.html#cache" target="_blank" rel="external">Spring Cache官网文档</a></li>
+<li><a href="http://jinnianshilongnian.iteye.com/blog/2001040" target="_blank" rel="external">Spring Cache抽象详解</a></li>
+<li><a href="https://www.ibm.com/developerworks/cn/opensource/os-cn-spring-cache/" target="_blank" rel="external">注释驱动的 Spring cache 缓存介绍</a></li>
+<li><a href="http://blog.csdn.net/applebomb/article/details/52400154" target="_blank" rel="external">一张图让你秒懂Spring @Scheduled定时任务的fixedRate,fixedDelay,cron执行差异</a></li>
+</ol>
+
+        
+        </div>
+        <footer class="article-footer">
+            <div class="share-container">
+
+
+
+</div>
+
+    <a data-url="http://yoursite.com/spring-cache-intro/" data-id="cjal8j0hb000gsgo0r2pp0utu" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
+<script>
+    (function ($) {
+        // Prevent duplicate binding
+        if (typeof(__SHARE_BUTTON_BINDED__) === 'undefined' || !__SHARE_BUTTON_BINDED__) {
+            __SHARE_BUTTON_BINDED__ = true;
+        } else {
+            return;
+        }
+        $('body').on('click', function() {
+            $('.article-share-box.on').removeClass('on');
+        }).on('click', '.article-share-link', function(e) {
+            e.stopPropagation();
+
+            var $this = $(this),
+                url = $this.attr('data-url'),
+                encodedUrl = encodeURIComponent(url),
+                id = 'article-share-box-' + $this.attr('data-id'),
+                offset = $this.offset(),
+                box;
+
+            if ($('#' + id).length) {
+                box = $('#' + id);
+
+                if (box.hasClass('on')){
+                    box.removeClass('on');
+                    return;
+                }
+            } else {
+                var html = [
+                    '<div id="' + id + '" class="article-share-box">',
+                        '<input class="article-share-input" value="' + url + '">',
+                        '<div class="article-share-links">',
+                            '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="fa fa-twitter article-share-twitter" target="_blank" title="Twitter"></a>',
+                            '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="fa fa-facebook article-share-facebook" target="_blank" title="Facebook"></a>',
+                            '<a href="http://pinterest.com/pin/create/button/?url=' + encodedUrl + '" class="fa fa-pinterest article-share-pinterest" target="_blank" title="Pinterest"></a>',
+                            '<a href="https://plus.google.com/share?url=' + encodedUrl + '" class="fa fa-google article-share-google" target="_blank" title="Google+"></a>',
+                        '</div>',
+                    '</div>'
+                ].join('');
+
+              box = $(html);
+
+              $('body').append(box);
+            }
+
+            $('.article-share-box.on').hide();
+
+            box.css({
+                top: offset.top + 25,
+                left: offset.left
+            }).addClass('on');
+
+        }).on('click', '.article-share-box', function (e) {
+            e.stopPropagation();
+        }).on('click', '.article-share-box-input', function () {
+            $(this).select();
+        }).on('click', '.article-share-box-link', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            window.open(this.href, 'article-share-box-window-' + Date.now(), 'width=500,height=450');
+        });
+    })(jQuery);
+</script>
+
+            
+    
+
+        </footer>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+    
+        <a href="/nginx-certificate-configuration/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">下一篇</strong>
+            <div class="article-nav-title">使用Openssl为Nginx生成证书</div>
+        </a>
+    
+</nav>
+
+
+    
+</article>
+
+
+    
+    
+
+</section>
+            
+                
+<aside id="sidebar">
+   
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">最新文章</h3>
+        <div class="widget">
+            <ul id="recent-post" class="">
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/spring-cache-intro/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://spring.io/img/homepage/icon-spring-framework.svg)" alt="Spring Cache 入门" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Spring/">Spring</a></p>
+                            <p class="item-title"><a href="/spring-cache-intro/" class="title">Spring Cache 入门</a></p>
+                            <p class="item-date"><time datetime="2017-11-29T15:16:55.568Z" itemprop="datePublished">2017-11-29</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/nginx-certificate-configuration/" class="thumbnail">
+    
+    
+        <span style="background-image:url(http://www.xiazaiba.com/uploadfiles/ico/2015/0423/2015042309095276482.png)" alt="使用Openssl为Nginx生成证书" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Nginx/">Nginx</a></p>
+                            <p class="item-title"><a href="/nginx-certificate-configuration/" class="title">使用Openssl为Nginx生成证书</a></p>
+                            <p class="item-date"><time datetime="2017-11-26T12:16:14.465Z" itemprop="datePublished">2017-11-26</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/centos-intall-on-windows/" class="thumbnail">
+    
+    
+        <span style="background-image:url(http://openresty.org/images/logo.png)" alt="在Window下安装CentOS并安装Nginx、OpenResty" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/OpenResty/">OpenResty</a><i class="fa fa-angle-right"></i><a class="article-category-link" href="/categories/OpenResty/Nginx/">Nginx</a></p>
+                            <p class="item-title"><a href="/centos-intall-on-windows/" class="title">在Window下安装CentOS并安装Nginx、OpenResty</a></p>
+                            <p class="item-date"><time datetime="2017-11-26T05:52:25.904Z" itemprop="datePublished">2017-11-26</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/docker-start/" class="thumbnail">
+    
+    
+        <span style="background-image:url(http://blog.phusion.nl/wp-content/uploads/2013/11/docker.png)" alt="Docker 入门" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Docker/">Docker</a></p>
+                            <p class="item-title"><a href="/docker-start/" class="title">Docker 入门</a></p>
+                            <p class="item-date"><time datetime="2017-11-19T11:45:49.854Z" itemprop="datePublished">2017-11-19</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/spring-retry/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://spring.io/img/homepage/icon-spring-framework.svg)" alt="Spring 之 重试框架[spring-retry]" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Spring/">Spring</a></p>
+                            <p class="item-title"><a href="/spring-retry/" class="title">Spring 之 重试框架[spring-retry]</a></p>
+                            <p class="item-date"><time datetime="2017-11-12T12:07:13.596Z" itemprop="datePublished">2017-11-12</time></p>
+                        </div>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">分类</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/">Docker</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Hexo/">Hexo</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Nginx/">Nginx</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OpenResty/">OpenResty</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/OpenResty/Nginx/">Nginx</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a><span class="category-list-count">2</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">归档</h3>
+        <div class="widget">
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a><span class="archive-list-count">4</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">标签</h3>
+        <div class="widget">
+            <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Centos/">Centos</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CompletableFuture/">CompletableFuture</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cookie/">Cookie</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/">Docker</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hexo/">Hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Https/">Https</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JDK/">JDK</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java8/">Java8</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mysql/">Mysql</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nginx/">Nginx</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OpenResty/">OpenResty</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Openssl/">Openssl</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/">Spring</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Cache/">Spring Cache</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VMware/">VMware</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/optional/">optional</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring-retry/">spring-retry</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/灰度发布/">灰度发布</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/熔断/">熔断</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/证书/">证书</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/重试/">重试</a><span class="tag-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">标签云</h3>
+        <div class="widget tagcloud">
+            <a href="/tags/Centos/" style="font-size: 10px;">Centos</a> <a href="/tags/CompletableFuture/" style="font-size: 10px;">CompletableFuture</a> <a href="/tags/Cookie/" style="font-size: 10px;">Cookie</a> <a href="/tags/Docker/" style="font-size: 10px;">Docker</a> <a href="/tags/Hexo/" style="font-size: 15px;">Hexo</a> <a href="/tags/Https/" style="font-size: 10px;">Https</a> <a href="/tags/JDK/" style="font-size: 15px;">JDK</a> <a href="/tags/Java8/" style="font-size: 15px;">Java8</a> <a href="/tags/Mysql/" style="font-size: 10px;">Mysql</a> <a href="/tags/Nginx/" style="font-size: 20px;">Nginx</a> <a href="/tags/OpenResty/" style="font-size: 10px;">OpenResty</a> <a href="/tags/Openssl/" style="font-size: 10px;">Openssl</a> <a href="/tags/Spring/" style="font-size: 15px;">Spring</a> <a href="/tags/Spring-Cache/" style="font-size: 10px;">Spring Cache</a> <a href="/tags/VMware/" style="font-size: 10px;">VMware</a> <a href="/tags/optional/" style="font-size: 10px;">optional</a> <a href="/tags/spring-retry/" style="font-size: 10px;">spring-retry</a> <a href="/tags/灰度发布/" style="font-size: 10px;">灰度发布</a> <a href="/tags/熔断/" style="font-size: 10px;">熔断</a> <a href="/tags/证书/" style="font-size: 10px;">证书</a> <a href="/tags/重试/" style="font-size: 10px;">重试</a>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">链接</h3>
+        <div class="widget">
+            <ul>
+                
+                    <li>
+                        <a href="http://hexo.io">Hexo</a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+
+    
+    <div id="toTop" class="fa fa-angle-up"></div>
+</aside>
+
+            
+        </div>
+        <footer id="footer">
+    <div class="outer">
+        <div id="footer-info" class="inner">
+            &copy; 2017 蛋黄的天空<br>
+            Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>. Theme by <a href="http://github.com/ppoffice">PPOffice</a>
+        </div>
+    </div>
+</footer>
+        
+
+
+    
+        <script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-share.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-video.min.js"></script>
+    
+    
+        <script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+    
+    
+
+
+
+<!-- Custom Scripts -->
+<script src="/js/main.js"></script>
+
+    </div>
+</body>
+</html>
