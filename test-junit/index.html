@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <meta charset="utf-8">
+    
+    <title>单元测试 之 JUnit | 蛋黄的天空的博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="单元测试是在编程和重构中被极力推荐使用的，可以大大的提高开发的效率（这里的效率需要综合计算后续可维护性，已经出现BUG重复修改等下，而不简单单是开发时间）。但是实际上编写测试代码也是需要耗费很多的时间和精力的，有的时候甚至要比编写代码本身花费的时间还要多，所以如何写好单元测试用例是一门很深奥的学问。 好的测试用例应该具有以下四种特性：  正确性程序中的每一项功能都是测试来验证它的正确性，是后续维护">
+<meta name="keywords" content="单元测试,JUnit">
+<meta property="og:type" content="article">
+<meta property="og:title" content="单元测试 之 JUnit">
+<meta property="og:url" content="http://yoursite.com/test-junit/index.html">
+<meta property="og:site_name" content="蛋黄的天空的博客">
+<meta property="og:description" content="单元测试是在编程和重构中被极力推荐使用的，可以大大的提高开发的效率（这里的效率需要综合计算后续可维护性，已经出现BUG重复修改等下，而不简单单是开发时间）。但是实际上编写测试代码也是需要耗费很多的时间和精力的，有的时候甚至要比编写代码本身花费的时间还要多，所以如何写好单元测试用例是一门很深奥的学问。 好的测试用例应该具有以下四种特性：  正确性程序中的每一项功能都是测试来验证它的正确性，是后续维护">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://junit.org/junit4/images/junit-logo.png">
+<meta property="og:updated_time" content="2017-12-03T13:14:47.678Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="单元测试 之 JUnit">
+<meta name="twitter:description" content="单元测试是在编程和重构中被极力推荐使用的，可以大大的提高开发的效率（这里的效率需要综合计算后续可维护性，已经出现BUG重复修改等下，而不简单单是开发时间）。但是实际上编写测试代码也是需要耗费很多的时间和精力的，有的时候甚至要比编写代码本身花费的时间还要多，所以如何写好单元测试用例是一门很深奥的学问。 好的测试用例应该具有以下四种特性：  正确性程序中的每一项功能都是测试来验证它的正确性，是后续维护">
+<meta name="twitter:image" content="http://junit.org/junit4/images/junit-logo.png">
+    
+
+    
+        <link rel="alternate" href="/" title="蛋黄的天空的博客" type="application/atom+xml" />
+    
+
+    
+
+    <link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/libs/open-sans/styles.css">
+    <link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+    <link rel="stylesheet" href="/css/style.css">
+
+    <script src="/libs/jquery/2.1.3/jquery.min.js"></script>
+    
+    
+        <link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+    
+    
+        <link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+    
+    
+    
+    
+
+
+</head>
+
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/" id="logo">
+                <i class="logo"></i>
+                <span class="site-title">蛋黄的天空的博客</span>
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/.">主页</a>
+                
+                    <a class="main-nav-link" href="/archives">归档</a>
+                
+                    <a class="main-nav-link" href="/categories">分类</a>
+                
+                    <a class="main-nav-link" href="/tags">标签</a>
+                
+                    <a class="main-nav-link" href="/about">关于</a>
+                
+            </nav>
+            
+                
+                <nav id="sub-nav">
+                    <div class="profile" id="profile-nav">
+                        <a id="profile-anchor" href="javascript:;">
+                            <img class="avatar" src="/css/images/avatar.png" />
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </div>
+                </nav>
+            
+            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+</div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/.">主页</a></td>
+                
+                    <td><a class="main-nav-link" href="/archives">归档</a></td>
+                
+                    <td><a class="main-nav-link" href="/categories">分类</a></td>
+                
+                    <td><a class="main-nav-link" href="/tags">标签</a></td>
+                
+                    <td><a class="main-nav-link" href="/about">关于</a></td>
+                
+                <td>
+                    
+    <div class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        <div class="outer">
+            
+                
+
+<aside id="profile">
+    <div class="inner profile-inner">
+        <div class="base-info profile-block">
+            <img id="avatar" src="/css/images/avatar.png" />
+            <h2 id="name">蛋黄</h2>
+            <h3 id="title">Web Developer &amp; Designer</h3>
+            <span id="location"><i class="fa fa-map-marker"></i>ShenZhen, China</span>
+            <a id="follow" target="_blank" href="https://github.com/vther">关注我</a>
+        </div>
+        <div class="article-info profile-block">
+            <div class="article-info-block">
+                12
+                <span>文章</span>
+            </div>
+            <div class="article-info-block">
+                24
+                <span>标签</span>
+            </div>
+        </div>
+        
+        <div class="profile-block social-links">
+            <table>
+                <tr>
+                    
+                    
+                    <td>
+                        <a href="https://github.com/vther" target="_blank" title="github" class=tooltip>
+                            <i class="fa fa-github"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="/" target="_blank" title="twitter" class=tooltip>
+                            <i class="fa fa-twitter"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="/" target="_blank" title="facebook" class=tooltip>
+                            <i class="fa fa-facebook"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="/" target="_blank" title="dribbble" class=tooltip>
+                            <i class="fa fa-dribbble"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="/" target="_blank" title="rss" class=tooltip>
+                            <i class="fa fa-rss"></i>
+                        </a>
+                    </td>
+                    
+                </tr>
+            </table>
+        </div>
+        
+    </div>
+</aside>
+
+            
+            <section id="main"><article id="post-test-junit" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name">
+            单元测试 之 JUnit
+        </h1>
+    
+
+                
+                    <div class="article-meta">
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/test-junit/">
+            <time datetime="2017-12-03T07:07:22.530Z" itemprop="datePublished">2017-12-03</time>
+        </a>
+    </div>
+
+
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/单元测试/">单元测试</a>
+    </div>
+
+                        
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/JUnit/">JUnit</a>, <a class="tag-link" href="/tags/单元测试/">单元测试</a>
+    </div>
+
+                    </div>
+                
+            </header>
+        
+     
+        <div class="article-entry" itemprop="articleBody">
+        
+            
+            <p>单元测试是在编程和重构中被极力推荐使用的，可以大大的提高开发的效率（这里的效率需要综合计算后续可维护性，已经出现BUG重复修改等下，而不简单单是开发时间）。但是实际上编写测试代码也是需要耗费很多的时间和精力的，有的时候甚至要比编写代码本身花费的时间还要多，所以如何写好单元测试用例是一门很深奥的学问。</p>
+<p>好的测试用例应该具有以下四种特性：</p>
+<ol>
+<li>正确性<br>程序中的每一项功能都是测试来验证它的正确性，是后续维护代码、重构代码的保证。</li>
+<li>设计性<br>编写单元测试将使我们从调用者观察、思考。特别是先写测试（test-first），迫使我们把程序设计成易于调用和可测试的，即迫使我们解除软件中的耦合。</li>
+<li>指导性<br>单元测试应该具有指导性，类似于文档，是对函数或类使用的最佳实践。而且，这份文档是可编译、可运行的，并且它保持最新，永远与代码同步。</li>
+<li>回归性<br>自动化的单元测试避免了代码出现回归，编写完成之后，可以随时随地的快速运行测试。</li>
+</ol>
+<p>后续我将用一系列的博客，来记录如何对于Java代码来做单元测试，本文先从最基础的JUnit做起，先来学习基本的工具的使用。<br><a id="more"></a></p>
+<h3 id="JUnit-功能点"><a href="#JUnit-功能点" class="headerlink" title="JUnit 功能点"></a>JUnit 功能点</h3><h4 id="1，断言-Assertions"><a href="#1，断言-Assertions" class="headerlink" title="1，断言 - Assertions"></a>1，断言 - <a href="https://github.com/junit-team/junit4/wiki/Assertions" target="_blank" rel="external">Assertions</a></h4><p>JUnit支持对数组、对象的断言,可以通过<code>assertArrayEquals</code>、<code>assertEquals</code>、<code>assertFalse</code>、<code>assertNotNull</code>、<code>assertNotSame</code>、<code>assertNull</code>、<code>assertSame</code> 等方法进行比较，<br>JUnit还支持更复杂的Matchers用法，是通过集成了<a href="http://mvnrepository.com/artifact/junit/junit/4.12" target="_blank" rel="external">hamcrest</a>的jar包来实现了如下功能，源码如下，可见，采用直接调用调用的方式：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">static</span> &lt;T&gt; <span class="function"><span class="keyword">void</span> <span class="title">assertThat</span><span class="params">(String reason, T actual, Matcher&lt;? <span class="keyword">super</span> T&gt; matcher)</span> </span>&#123;</div><div class="line">    MatcherAssert.assertThat(reason, actual, matcher);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>示例<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> <span class="keyword">static</span> org.hamcrest.CoreMatchers.*;</div><div class="line"><span class="keyword">import</span> <span class="keyword">static</span> org.junit.Assert.*;</div><div class="line"><span class="keyword">import</span> org.hamcrest.core.CombinableMatcher;</div><div class="line"><span class="keyword">import</span> org.junit.Test;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AssertionsTest</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="comment">// Simple use</span></div><div class="line">    <span class="meta">@Test</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testAssert</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">byte</span>[] expected = <span class="string">"trial"</span>.getBytes();</div><div class="line">        <span class="keyword">byte</span>[] actual = <span class="string">"trial"</span>.getBytes();</div><div class="line">        assertArrayEquals(<span class="string">"failure - byte arrays not same"</span>, expected, actual);</div><div class="line">        </div><div class="line">        assertNotSame(<span class="string">"should not be same Object"</span>, <span class="keyword">new</span> Object(), <span class="keyword">new</span> Object());</div><div class="line">    &#125;</div><div class="line"> </div><div class="line">    <span class="comment">// Core Hamcrest Matchers with assertThat</span></div><div class="line">    <span class="meta">@Test</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testAssertThatBothContainsString</span><span class="params">()</span> </span>&#123;</div><div class="line">        assertThat(<span class="string">"albumen"</span>, both(containsString(<span class="string">"a"</span>)).and(containsString(<span class="string">"b"</span>)));</div><div class="line">        assertThat(Arrays.asList(<span class="string">"one"</span>, <span class="string">"two"</span>, <span class="string">"three"</span>), hasItems(<span class="string">"one"</span>, <span class="string">"three"</span>));</div><div class="line">        assertThat(Arrays.asList(<span class="string">"fun"</span>, <span class="string">"ban"</span>, <span class="string">"net"</span>), everyItem(containsString(<span class="string">"n"</span>)));</div><div class="line">        assertThat(<span class="string">"good"</span>, allOf(equalTo(<span class="string">"good"</span>), startsWith(<span class="string">"good"</span>)));</div><div class="line">        assertThat(<span class="string">"good"</span>, not(allOf(equalTo(<span class="string">"bad"</span>), equalTo(<span class="string">"good"</span>))));</div><div class="line">        assertThat(<span class="string">"good"</span>, anyOf(equalTo(<span class="string">"bad"</span>), equalTo(<span class="string">"good"</span>)));</div><div class="line">        assertThat(<span class="number">7</span>, not(CombinableMatcher.&lt;Integer&gt;either(equalTo(<span class="number">3</span>)).or(equalTo(<span class="number">4</span>))));</div><div class="line">        assertThat(<span class="keyword">new</span> Object(), not(sameInstance(<span class="keyword">new</span> Object())));</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p><strong>TIPS:</strong></p>
+<ol>
+<li>关于<a href="https://github.com/junit-team/junit4/wiki/Matchers-and-assertthat" target="_blank" rel="external">Matchers and assertThat</a>，这里提供了更细致的分析。</li>
+<li>有些第三方的扩展Mather也很有意思，例如<a href="https://github.com/hertzsprung/hamcrest-json" target="_blank" rel="external">JSON Matcher</a><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">assertThat(<span class="string">"&#123;\"age\":43, \"friend_ids\":[16, 52, 23]&#125;"</span>,</div><div class="line">            sameJSONAs(<span class="string">"&#123;\"friend_ids\":[52, 23, 16]&#125;"</span>)</div><div class="line">                .allowingExtraUnexpectedFields()<span class="comment">// 允许不识别的额外字段</span></div><div class="line">                .allowingAnyArrayOrdering());<span class="comment">// 允许任意顺序</span></div></pre></td></tr></table></figure>
+</li>
+</ol>
+<h4 id="2，测试执行器-Test-runners"><a href="#2，测试执行器-Test-runners" class="headerlink" title="2，测试执行器 - Test runners"></a>2，测试执行器 - <a href="https://github.com/junit-team/junit4/wiki/Test-runners" target="_blank" rel="external">Test runners</a></h4><p>当一个测试类使用@RunWith注解时，JUnit会调用注解中的类执行测试用例。JUnit默认使用的Runner是<code>JUnit4.class</code>，还提供了<code>Suite.class</code>、<code>Parameterized.class</code>、<code>Categories.class</code>，我将在本文依次介绍。当然我们还有其他常用的来自于第三方提供的如<code>SpringJUnit4ClassRunner.class</code>、<code>MockitoJUnitRunner.class</code>、<code>PowerMockRunner.class</code>，我们后续也会说到。</p>
+<h4 id="3，打包执行器-Aggregating-tests-in-Suites"><a href="#3，打包执行器-Aggregating-tests-in-Suites" class="headerlink" title="3，打包执行器 - Aggregating tests in Suites"></a>3，打包执行器 - <a href="https://github.com/junit-team/junit4/wiki/Aggregating-tests-in-suites" target="_blank" rel="external">Aggregating tests in Suites</a></h4><p>使用<code>@RunWith(Suite.class)</code>可以将多个用例打包，放在一起执行。示例如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> org.junit.runner.RunWith;</div><div class="line"><span class="keyword">import</span> org.junit.runners.Suite;</div><div class="line"></div><div class="line"><span class="meta">@RunWith</span>(Suite.class)</div><div class="line"><span class="meta">@Suite</span>.SuiteClasses(&#123;</div><div class="line">  TestFeatureLogin.class,</div><div class="line">  TestFeatureLogout.class,</div><div class="line">  TestFeatureNavigate.class,</div><div class="line">  TestFeatureUpdate.class</div><div class="line">&#125;)</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FeatureTestSuite</span> </span>&#123;</div><div class="line">  <span class="comment">// 这个类留空即可，仅仅是最为上述注解的容器使用</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h4 id="4，参数化执行器-Parameterized-tests"><a href="#4，参数化执行器-Parameterized-tests" class="headerlink" title="4，参数化执行器 - Parameterized tests"></a>4，参数化执行器 - <a href="https://github.com/junit-team/junit4/wiki/Parameterized-tests" target="_blank" rel="external">Parameterized tests</a></h4><p>使用<code>@RunWith(Parameterized.class)</code>可以像函数一样，传入多个入参和出参的对应，并逐一校验是否正确。例如，下面的取和函数<code>int sum(int a, int b)</code>，我们可能想测试1+2=3,2+3=5,3+6=9等多种，如果要一个一个写@Test，比较繁琐，这时候可以使用参数化来简化代码书写。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line">@RunWith(Parameterized.class)</div><div class="line">public class ParameterizedTest &#123;</div><div class="line">    @Parameters</div><div class="line">    public static Collection&lt;Object[]&gt; data() &#123;</div><div class="line">        return Arrays.asList(new Object[][]&#123;</div><div class="line">                &#123;1, 2, 3&#125;, &#123;2, 3, 5&#125;, &#123;3, 6, 9&#125;</div><div class="line">        &#125;);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    private int a;</div><div class="line">    private int b;</div><div class="line">    private int result;</div><div class="line">    // 构造函数和@Parameters注解标注的集合的赋值顺序必须一致</div><div class="line">    public ParameterizedTest(int a, int b, int result) &#123;</div><div class="line">        this.a = a;</div><div class="line">        this.b = b;</div><div class="line">        this.result = result;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    @Test</div><div class="line">    public void test() &#123;</div><div class="line">        assertEquals(result, sum(a, b));</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    private int sum(int a, int b) &#123;</div><div class="line">        return a + b;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p><strong>TIPS：</strong><br>1，如果不想使用构造函数，还可以使用<code>@Parameter</code>注解来替代构造函数，但<strong>需要被注解的参数是public的</strong><br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Parameter</span> <span class="comment">// 相当于@Parameter(0)</span></div><div class="line"><span class="keyword">public</span> <span class="keyword">int</span> fInput;</div><div class="line"><span class="meta">@Parameter</span>(<span class="number">1</span>)</div><div class="line"><span class="keyword">public</span> <span class="keyword">int</span> fExpected;</div></pre></td></tr></table></figure></p>
+<p>2，单个参数的时候，<code>@Parameters</code>标注的方法可以稍作简化(版本要大于4.12-beta-3)。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">@Parameters</div><div class="line">public static Iterable&lt;? extends Object&gt; data() &#123;</div><div class="line">    return Arrays.asList(&quot;first test&quot;, &quot;second test&quot;);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h4 id="5，分类执行器-Categories"><a href="#5，分类执行器-Categories" class="headerlink" title="5，分类执行器 - Categories"></a>5，分类执行器 - <a href="https://github.com/junit-team/junit4/wiki/Categories" target="_blank" rel="external">Categories</a></h4><p>使用<code>@RunWith(Categories.class)</code>可以分类，使用方法类似Hibernate Validator的Group，fastxml的MixInAnnotations.<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">FastTests</span> </span>&#123; <span class="comment">/* 定义空接口，用于分类标记 */</span>&#125;</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">SlowTests</span> </span>&#123; <span class="comment">/* 定义空接口，用于分类标记 */</span>&#125;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">A</span> </span>&#123;</div><div class="line">    <span class="meta">@Test</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">a</span><span class="params">()</span> </span>&#123;</div><div class="line">        fail();</div><div class="line">    &#125;</div><div class="line">    <span class="meta">@Category</span>(SlowTests.class)</div><div class="line">    <span class="meta">@Test</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">b</span><span class="params">()</span> </span>&#123;&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="meta">@Category</span>(&#123;SlowTests.class, FastTests.class&#125;)</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">B</span> </span>&#123;</div><div class="line">    <span class="meta">@Test</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">c</span><span class="params">()</span> </span>&#123;&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="meta">@RunWith</span>(Categories.class)</div><div class="line"><span class="meta">@Categories</span>.IncludeCategory(SlowTests.class)</div><div class="line"><span class="meta">@Suite</span>.SuiteClasses(&#123;A.class, B.class&#125;) <span class="comment">// Categories也是一种Suite</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SlowTestSuite</span> </span>&#123;</div><div class="line">    <span class="comment">// A.b 和 B.c 会执行，A.a不会</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="meta">@RunWith</span>(Categories.class)</div><div class="line"><span class="meta">@Categories</span>.IncludeCategory(SlowTests.class)</div><div class="line"><span class="meta">@Categories</span>.ExcludeCategory(FastTests.class)</div><div class="line"><span class="meta">@Suite</span>.SuiteClasses(&#123;A.class, B.class&#125;) <span class="comment">// Categories也是一种Suite</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SlowTestSuite</span> </span>&#123;</div><div class="line">    <span class="comment">// A.b会执行, A.a 和 B.c 不会</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h4 id="6，用例执行顺序-Test-execution-order"><a href="#6，用例执行顺序-Test-execution-order" class="headerlink" title="6，用例执行顺序 - Test execution order"></a>6，用例执行顺序 - <a href="https://github.com/junit-team/junit4/wiki/Test-execution-order" target="_blank" rel="external">Test execution order</a></h4><p>自动JUnit4.11，使用<code>@FixMethodOrder</code>可以标改变用例的执行顺序，但是一般不会使用，因为如果用例有执行依赖，那么用例必定设定的不太合适。JUnit目前提供了以下几种默认实现：<br><code>MethodSorters.DEFAULT</code> ： 默认是按照用例函数名的hashcode比较<br><code>MethodSorters.JVM</code> : 让JVM决定顺序<br><code>MethodSorters.NAME_ASCENDING</code> ： 按照用例函数名称升序</p>
+<h4 id="7，异常测试-Exception-testing"><a href="#7，异常测试-Exception-testing" class="headerlink" title="7，异常测试 - Exception testing"></a>7，异常测试 - <a href="https://github.com/junit-team/junit4/wiki/Exception-testing" target="_blank" rel="external">Exception testing</a></h4><p>使用<code>@RunWith(Categories.class)</code>可以分类，使用方法类似Hibernate Validator的Group，fastxml的MixInAnnotations.<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Test</span>(expected = IndexOutOfBoundsException.class) </div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">empty</span><span class="params">()</span> </span>&#123; </div><div class="line">     <span class="keyword">new</span> ArrayList&lt;Object&gt;().get(<span class="number">0</span>); </div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>或者使用try catch<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Test</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testExceptionMessage</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">        <span class="keyword">new</span> ArrayList&lt;Object&gt;().get(<span class="number">0</span>);</div><div class="line">        fail(<span class="string">"Expected an IndexOutOfBoundsException to be thrown"</span>);</div><div class="line">    &#125; <span class="keyword">catch</span> (IndexOutOfBoundsException anIndexOutOfBoundsException) &#123;</div><div class="line">        assertThat(anIndexOutOfBoundsException.getMessage(), is(<span class="string">"Index: 0, Size: 0"</span>));</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>或者使用<code>ExpectedException Rule</code>，Rule的作用会在下面说，暂时可以理解为，一种加在所有测试方法上的校验，下面的每一个用例都得满足这个条件。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Rule</span> <span class="keyword">public</span> ExpectedException thrown = ExpectedException.none();</div><div class="line"></div><div class="line"><span class="meta">@Test</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">shouldTestExceptionMessage</span><span class="params">()</span> <span class="keyword">throws</span> IndexOutOfBoundsException </span>&#123;</div><div class="line">    List&lt;Object&gt; list = <span class="keyword">new</span> ArrayList&lt;Object&gt;();</div><div class="line"> </div><div class="line">    thrown.expect(IndexOutOfBoundsException.class);</div><div class="line">    thrown.expectMessage(<span class="string">"Index: 0, Size: 0"</span>);</div><div class="line">    <span class="comment">// 或者可以使用Matchers来匹配</span></div><div class="line">    <span class="comment">// thrown.expectMessage(Matchers.containsString("Size: 0"));</span></div><div class="line">    list.get(<span class="number">0</span>); <span class="comment">// execution will never get past this line</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h4 id="8，超时测试-Timeout-for-tests"><a href="#8，超时测试-Timeout-for-tests" class="headerlink" title="8，超时测试 - Timeout for tests"></a>8，超时测试 - <a href="https://github.com/junit-team/junit4/wiki/Timeout-for-tests" target="_blank" rel="external">Timeout for tests</a></h4><p>很简单，直接看代码喽<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Test</span>(timeout=<span class="number">1000</span>)</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testWithTimeout</span><span class="params">()</span> </span>&#123;&#125;</div></pre></td></tr></table></figure></p>
+<p>使用<code>Timeout Rule</code>，校验这个类的所有方法的运行时间都不能超过10秒钟，不然就会标志为失败。<br>这里需要注意的一点是Rule需要是public field<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HasGlobalTimeout</span> </span>&#123;</div><div class="line">    <span class="meta">@Rule</span> <span class="keyword">public</span> Timeout globalTimeout = Timeout.seconds(<span class="number">10</span>); <span class="comment">// 每个方法10s超时</span></div><div class="line"></div><div class="line">    <span class="meta">@Test</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testSleepForTooLong</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">        TimeUnit.SECONDS.sleep(<span class="number">100</span>); <span class="comment">// 休眠100s，会执行失败</span></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Test</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testBlockForever</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">        CountDownLatch latch = <span class="keyword">new</span> CountDownLatch(<span class="number">1</span>);</div><div class="line">        latch.await(); <span class="comment">// 永久阻塞 ，会执行失败</span></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p><strong>TIPS：</strong><br>1，需要注意的是，Timeout Rule的时间是包括@Before和@After的时间的，所以，<strong>@After方法是存在不被执行的可能的。如果想在@After里面清空或者释放资源，要注意了。</strong></p>
+<h4 id="9，规则-Rules"><a href="#9，规则-Rules" class="headerlink" title="9，规则 - Rules"></a>9，规则 - <a href="https://github.com/junit-team/junit4/wiki/Rules" target="_blank" rel="external">Rules</a></h4><p>一个JUnit Rule就是一个实现了TestRule的类，这些类的作用有点类似于@Before、@After（是用来在每个测试方法的执行前后执行一些代码的一个方法），但是Rule更倾向于校验。是指满足某种条件用例才会执行成功的一种校验。例如上面提到的<code>ExpectedException Rule</code>,<code>Timeout Rule</code>，分别致力于异常校验、超时校验，JUnit还提供了其他的Rule，如：</p>
+<ul>
+<li><code>TemporaryFolder</code>：规则允许创建文件或文件夹，在测试方法(无论是通过还是失败)执行完成时会被删除。默认情况下，如果资源无法被删除是不会抛出异常的。<a href="http://www.importnew.com/15887.html" target="_blank" rel="external">参考</a></li>
+<li><code>ExternalResource</code>：ExternalResource是规则(例如TemporaryFolder)的基础类，在测试之前建立一个外部资源(一个文件，套接字[socket]，服务[server]，数据库连接，等等),并且保证tear it down.</li>
+<li><code>ErrorCollector</code>：ErrorCollector 规则允许在第一个问题发现之后继续运行(例如，收集下面不正确的行到一个表中，然后一次性报告所有错误。)</li>
+<li><code>Verifier</code>：Verifier是规则(例如ErrorCollector)的一个基类，无论测试的执行情况是什么，只要验证框架不通过，则视为测试失败。</li>
+<li><code>TestWatchman/TestWatcher</code>：TestWatchman 是JUnit 4.7引入的，但是已经过时，被 TestWatcher [4.9引入] 所取代。TestWatcher 是一个规则的基础类,that take note of the testing action，而不用修改测试类。例如，这个类将保存一个日志在一个通过以及失败的测试：</li>
+<li><code>TestName</code>：TestName 规则使得当前测试的名字在测试内部是可利用的：</li>
+<li><code>ClassRule</code>：The ClassRule annotation extends the idea of method-level Rules, adding static fields that can affect the operation of a whole class. Any subclass of ParentRunner, including the standard BlockJUnit4ClassRunner and Suite classes, will support ClassRules.</li>
+<li><code>RuleChain</code>：规则链，多个规则的组合</li>
+<li><code>Custom Rules</code>：自定义规则</li>
+</ul>
+<h4 id="10，忽略测试-Ignoring-tests"><a href="#10，忽略测试-Ignoring-tests" class="headerlink" title="10，忽略测试 - Ignoring tests"></a>10，忽略测试 - <a href="https://github.com/junit-team/junit4/wiki/Ignoring-tests" target="_blank" rel="external">Ignoring tests</a></h4><p>使用@Ignore注解即可</p>
+<h4 id="11，假设-Assumptions-with-assume"><a href="#11，假设-Assumptions-with-assume" class="headerlink" title="11，假设 - Assumptions with assume"></a>11，假设 - <a href="https://github.com/junit-team/junit4/wiki/Assumptions-with-assume" target="_blank" rel="external">Assumptions with assume</a></h4><p>假设有点类似于java里面的if，如果<code>assumeThat</code>不成立，<strong>后面的代码将不会执行，且UT不会报错。</strong><br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> <span class="keyword">static</span> org.hamcrest.CoreMatchers.is;</div><div class="line"><span class="keyword">import</span> <span class="keyword">static</span> org.junit.Assume.assumeThat;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AssumptionsTest</span> </span>&#123;</div><div class="line">    <span class="meta">@Test</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">assume</span><span class="params">()</span> </span>&#123;</div><div class="line">        String filePath = <span class="string">"parent"</span> + File.separator + <span class="string">"child.cfg"</span>;</div><div class="line">        assumeThat(File.separatorChar, is(<span class="string">"/"</span>));</div><div class="line">        <span class="comment">// 只有assumeThat成立的时候，才能执行这里的断言，assumeThat失败了，则用例不会失败</span></div><div class="line">        assertThat(filePath, is(<span class="string">"parent/child.cfg"</span>));</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h4 id="12，测试夹具-Test-fixtures"><a href="#12，测试夹具-Test-fixtures" class="headerlink" title="12，测试夹具 - Test fixtures"></a>12，测试夹具 - <a href="https://github.com/junit-team/junit4/wiki/Test-fixtures" target="_blank" rel="external">Test fixtures</a></h4><p>Test fixtures，一般用于在测试前后：<br>1，准备输入数据、创建Mock对象<br>2，从数据库中取数据<br>3，做一些公用的操作</p>
+<p>其执行流程一般为：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@BeforeClass</span></div><div class="line"></div><div class="line"><span class="meta">@Before</span></div><div class="line"><span class="meta">@Test</span>   <span class="comment">// test2()方法</span></div><div class="line"><span class="meta">@After</span></div><div class="line"></div><div class="line"><span class="meta">@Before</span> </div><div class="line"><span class="meta">@Test</span>   <span class="comment">// test1()方法</span></div><div class="line"><span class="meta">@After</span> </div><div class="line"></div><div class="line"><span class="meta">@AfterClass</span></div></pre></td></tr></table></figure></p>
+<h4 id="13，Theories-Theories"><a href="#13，Theories-Theories" class="headerlink" title="13，Theories - Theories"></a>13，Theories - <a href="https://github.com/junit-team/junit4/wiki/Theories" target="_blank" rel="external">Theories</a></h4><p>Theories是指更灵活且富有表现力的断言(assertions)和假设(assumptions)。@Test集中于一种特定的场景，而@Theory则可能覆盖无限的潜在场景。很多情况下，Theories会比<code>Parameterized.class</code>更好用，因为写法更简单。</p>
+<p>例如如下测试，每一个<code>@DataPoint</code>标注的变量都会去执行<code>@Theory</code>标注的测试，所以，该方法执行了两次。带有<code>/</code>的名字是不测试无法通过<code>assumeThat</code>,其测试结果被忽略<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">import</span> org.junit.experimental.theories.DataPoint;</div><div class="line"><span class="keyword">import</span> org.junit.experimental.theories.Theories;</div><div class="line"><span class="keyword">import</span> org.junit.experimental.theories.Theory;</div><div class="line"><span class="keyword">import</span> org.junit.runner.RunWith;</div><div class="line"></div><div class="line"><span class="keyword">import</span> <span class="keyword">static</span> org.hamcrest.CoreMatchers.containsString;</div><div class="line"><span class="keyword">import</span> <span class="keyword">static</span> org.hamcrest.MatcherAssert.assertThat;</div><div class="line"><span class="keyword">import</span> <span class="keyword">static</span> org.hamcrest.core.IsNot.not;</div><div class="line"><span class="keyword">import</span> <span class="keyword">static</span> org.junit.Assume.assumeThat;</div><div class="line"></div><div class="line"><span class="meta">@RunWith</span>(Theories.class)</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TheoriesTest</span> </span>&#123;</div><div class="line">    <span class="meta">@DataPoint</span></div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> String GOOD_USERNAME = <span class="string">"optimus"</span>;</div><div class="line">    <span class="meta">@DataPoint</span></div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> String USERNAME_WITH_SLASH = <span class="string">"optimus/prime"</span>;</div><div class="line"></div><div class="line">    <span class="meta">@Theory</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">filenameIncludesUsername</span><span class="params">(String username)</span> </span>&#123;</div><div class="line">        assumeThat(username, not(containsString(<span class="string">"/"</span>)));</div><div class="line">        assertThat(<span class="keyword">new</span> User(username).configFileName(), containsString(username));</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="class"><span class="keyword">class</span> <span class="title">User</span> </span>&#123;</div><div class="line">        String username;</div><div class="line">        String configFileName;</div><div class="line"></div><div class="line">        User(String username) &#123;</div><div class="line">            <span class="keyword">this</span>.username = username;</div><div class="line">            <span class="keyword">this</span>.configFileName = <span class="string">"config/"</span> + username;</div><div class="line">        &#125;</div><div class="line">        <span class="function">String <span class="title">configFileName</span><span class="params">()</span> </span>&#123;</div><div class="line">            <span class="keyword">return</span> configFileName;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>多参数测试<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> com.vther.junit;</div><div class="line"></div><div class="line"><span class="keyword">import</span> org.junit.Test;</div><div class="line"><span class="keyword">import</span> org.junit.experimental.theories.Theories;</div><div class="line"><span class="keyword">import</span> org.junit.experimental.theories.Theory;</div><div class="line"><span class="keyword">import</span> org.junit.experimental.theories.suppliers.TestedOn;</div><div class="line"><span class="keyword">import</span> org.junit.runner.RunWith;</div><div class="line"></div><div class="line"><span class="keyword">import</span> <span class="keyword">static</span> org.hamcrest.CoreMatchers.not;</div><div class="line"><span class="keyword">import</span> <span class="keyword">static</span> org.hamcrest.core.Is.is;</div><div class="line"><span class="keyword">import</span> <span class="keyword">static</span> org.junit.Assert.assertThat;</div><div class="line"><span class="keyword">import</span> <span class="keyword">static</span> org.junit.Assume.assumeThat;</div><div class="line"></div><div class="line"><span class="meta">@RunWith</span>(Theories.class)</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DollarTest</span> </span>&#123;</div><div class="line">    <span class="comment">// 普通测试</span></div><div class="line">    <span class="meta">@Test</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">multiplyByAnInteger</span><span class="params">()</span> </span>&#123;</div><div class="line">        assertThat(<span class="keyword">new</span> Dollar(<span class="number">5</span>).times(<span class="number">2</span>).getAmount(), is(<span class="number">10</span>));</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// Theory测试，会测试3*3=9次，m=0的会略过</span></div><div class="line">    <span class="meta">@Theory</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">multiplyIsInverseOfDivideWithInlineDataPoints</span><span class="params">(</span></span></div><div class="line"><span class="function"><span class="params">            @TestedOn(ints = &#123;<span class="number">0</span>, <span class="number">5</span>, <span class="number">10</span>&#125;)</span> <span class="keyword">int</span> amount,</span></div><div class="line"><span class="function">            @<span class="title">TestedOn</span><span class="params">(ints = &#123;<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>&#125;)</span> <span class="keyword">int</span> m) </span>&#123;</div><div class="line">        assumeThat(m, not(<span class="number">0</span>));</div><div class="line">        assertThat(<span class="keyword">new</span> Dollar(amount).times(m).divideBy(m).getAmount(), is(amount));</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Dollar</span> </span>&#123;</div><div class="line">        <span class="keyword">private</span> <span class="keyword">int</span> amount;</div><div class="line">        Dollar(<span class="keyword">int</span> amount) &#123;</div><div class="line">            <span class="keyword">this</span>.amount = amount;</div><div class="line">        &#125;</div><div class="line">        <span class="function">Dollar <span class="title">times</span><span class="params">(<span class="keyword">int</span> i)</span> </span>&#123;</div><div class="line">            amount = amount * i;</div><div class="line">            <span class="keyword">return</span> <span class="keyword">this</span>;</div><div class="line">        &#125;</div><div class="line">        <span class="function">Dollar <span class="title">divideBy</span><span class="params">(<span class="keyword">int</span> m)</span> </span>&#123;</div><div class="line">            <span class="keyword">this</span>.amount = amount / m;</div><div class="line">            <span class="keyword">return</span> <span class="keyword">this</span>;</div><div class="line">        &#125;        </div><div class="line">        <span class="function"><span class="keyword">int</span> <span class="title">getAmount</span><span class="params">()</span> </span>&#123;</div><div class="line">            <span class="keyword">return</span> amount;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>当然我们可以使用自定义注解来测试一个区间，比如金额在-100到100的金额测试，我们需要按照以下步骤来做：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">// 1，自定义一个注解，使用@ParametersSuppliedBy定义其参数来源</div><div class="line">@Retention(RetentionPolicy.RUNTIME)</div><div class="line">@ParametersSuppliedBy(BetweenSupplier.class)</div><div class="line">public @interface Between &#123;</div><div class="line">    int first(); // 起始值</div><div class="line">    int last(); // 结束值</div><div class="line">&#125;</div><div class="line">// 2，定义参数来源</div><div class="line">public static class BetweenSupplier extends ParameterSupplier &#123;</div><div class="line">    @Override</div><div class="line">    public List&lt;PotentialAssignment&gt; getValueSources(ParameterSignature sig) &#123;</div><div class="line">        Between annotation = sig.getAnnotation(Between.class);</div><div class="line">        return IntStream.rangeClosed(annotation.first(), annotation.last())</div><div class="line">                .mapToObj(i -&gt; PotentialAssignment.forValue(&quot;ints&quot;, i))</div><div class="line">                .collect(Collectors.toList());</div><div class="line"></div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">// 3，进行测试</div><div class="line">@Theory</div><div class="line">public void multiplyIsInverseOfDivideWithInlineDataPointsByCustomAnnotation(</div><div class="line">        @Between(first = -100, last = 100) int amount,</div><div class="line">        @Between(first = -100, last = 100) int m) &#123;</div><div class="line">    assumeThat(m, not(0));</div><div class="line">    assertThat(new Dollar(amount).times(m).divideBy(m).getAmount(), is(amount));</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h4 id="14，多线程并发测试-Multithreaded-code-and-concurrency"><a href="#14，多线程并发测试-Multithreaded-code-and-concurrency" class="headerlink" title="14，多线程并发测试 - Multithreaded code and concurrency"></a>14，多线程并发测试 - <a href="https://github.com/junit-team/junit4/wiki/Multithreaded-code-and-concurrency" target="_blank" rel="external">Multithreaded code and concurrency</a></h4><p>JUnit对多线程的支持很差，我们可以使用<a href="https://github.com/jhalterman/concurrentunit" target="_blank" rel="external">ConcurrentUnit</a>来测试。但是如果只是简单测试多个线程能不能在固定时间内完成，可以使用以下方法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line">public static void assertConcurrent(final String message, final List&lt;? extends Runnable&gt; runnables, final int maxTimeoutSeconds) throws InterruptedException &#123;</div><div class="line">    final int numThreads = runnables.size();</div><div class="line">    final List&lt;Throwable&gt; exceptions = Collections.synchronizedList(new ArrayList&lt;Throwable&gt;());</div><div class="line">    final ExecutorService threadPool = Executors.newFixedThreadPool(numThreads);</div><div class="line">    try &#123;</div><div class="line">        final CountDownLatch allExecutorThreadsReady = new CountDownLatch(numThreads);</div><div class="line">        final CountDownLatch afterInitBlocker = new CountDownLatch(1);</div><div class="line">        final CountDownLatch allDone = new CountDownLatch(numThreads);</div><div class="line">        for (final Runnable submittedTestRunnable : runnables) &#123;</div><div class="line">            threadPool.submit(new Runnable() &#123;</div><div class="line">                public void run() &#123;</div><div class="line">                    allExecutorThreadsReady.countDown();</div><div class="line">                    try &#123;</div><div class="line">                        afterInitBlocker.await();</div><div class="line">                        submittedTestRunnable.run();</div><div class="line">                    &#125; catch (final Throwable e) &#123;</div><div class="line">                        exceptions.add(e);</div><div class="line">                    &#125; finally &#123;</div><div class="line">                        allDone.countDown();</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line">            &#125;);</div><div class="line">        &#125;</div><div class="line">        // wait until all threads are ready</div><div class="line">        assertTrue(&quot;Timeout initializing threads! Perform long lasting initializations before passing runnables to assertConcurrent&quot;, allExecutorThreadsReady.await(runnables.size() * 10, TimeUnit.MILLISECONDS));</div><div class="line">        // start all test runners</div><div class="line">        afterInitBlocker.countDown();</div><div class="line">        assertTrue(message +&quot; timeout! More than&quot; + maxTimeoutSeconds + &quot;seconds&quot;, allDone.await(maxTimeoutSeconds, TimeUnit.SECONDS));</div><div class="line">    &#125; finally &#123;</div><div class="line">        threadPool.shutdownNow();</div><div class="line">    &#125;</div><div class="line">    assertTrue(message + &quot;failed with exception(s)&quot; + exceptions, exceptions.isEmpty());</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h4 id="14，测试用例统计-maven-surefire-plugin"><a href="#14，测试用例统计-maven-surefire-plugin" class="headerlink" title="14，测试用例统计 - maven-surefire-plugin"></a>14，测试用例统计 - <a href="http://maven.apache.org/surefire/maven-surefire-plugin/" target="_blank" rel="external">maven-surefire-plugin</a></h4><p>使用maven-surefire-plugin可以完成对JUnit的用例覆盖率统计等功能。具体可以参考maven插件说明。</p>
+<h4 id="15，持续集成-Continuous-testing"><a href="#15，持续集成-Continuous-testing" class="headerlink" title="15，持续集成 - Continuous testing"></a>15，持续集成 - <a href="https://github.com/junit-team/junit4/wiki/Continuous-testing" target="_blank" rel="external">Continuous testing</a></h4><p>使用<a href="http://infinitest.github.io/" target="_blank" rel="external">Infinitest插件</a>即可完成每次修改代码都进行UT测试。</p>
+
+        
+        </div>
+        <footer class="article-footer">
+            <div class="share-container">
+
+
+
+</div>
+
+    <a data-url="http://yoursite.com/test-junit/" data-id="cjaqrwlr90005eco0dxy4lkk6" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
+<script>
+    (function ($) {
+        // Prevent duplicate binding
+        if (typeof(__SHARE_BUTTON_BINDED__) === 'undefined' || !__SHARE_BUTTON_BINDED__) {
+            __SHARE_BUTTON_BINDED__ = true;
+        } else {
+            return;
+        }
+        $('body').on('click', function() {
+            $('.article-share-box.on').removeClass('on');
+        }).on('click', '.article-share-link', function(e) {
+            e.stopPropagation();
+
+            var $this = $(this),
+                url = $this.attr('data-url'),
+                encodedUrl = encodeURIComponent(url),
+                id = 'article-share-box-' + $this.attr('data-id'),
+                offset = $this.offset(),
+                box;
+
+            if ($('#' + id).length) {
+                box = $('#' + id);
+
+                if (box.hasClass('on')){
+                    box.removeClass('on');
+                    return;
+                }
+            } else {
+                var html = [
+                    '<div id="' + id + '" class="article-share-box">',
+                        '<input class="article-share-input" value="' + url + '">',
+                        '<div class="article-share-links">',
+                            '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="fa fa-twitter article-share-twitter" target="_blank" title="Twitter"></a>',
+                            '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="fa fa-facebook article-share-facebook" target="_blank" title="Facebook"></a>',
+                            '<a href="http://pinterest.com/pin/create/button/?url=' + encodedUrl + '" class="fa fa-pinterest article-share-pinterest" target="_blank" title="Pinterest"></a>',
+                            '<a href="https://plus.google.com/share?url=' + encodedUrl + '" class="fa fa-google article-share-google" target="_blank" title="Google+"></a>',
+                        '</div>',
+                    '</div>'
+                ].join('');
+
+              box = $(html);
+
+              $('body').append(box);
+            }
+
+            $('.article-share-box.on').hide();
+
+            box.css({
+                top: offset.top + 25,
+                left: offset.left
+            }).addClass('on');
+
+        }).on('click', '.article-share-box', function (e) {
+            e.stopPropagation();
+        }).on('click', '.article-share-box-input', function () {
+            $(this).select();
+        }).on('click', '.article-share-box-link', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            window.open(this.href, 'article-share-box-window-' + Date.now(), 'width=500,height=450');
+        });
+    })(jQuery);
+</script>
+
+            
+    
+
+        </footer>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+        <a href="/test-mockito/" id="article-nav-newer" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">上一篇</strong>
+            <div class="article-nav-title">
+                
+                    单元测试 之 Mockito
+                
+            </div>
+        </a>
+    
+    
+        <a href="/spring-cache-intro/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">下一篇</strong>
+            <div class="article-nav-title">Spring Cache 入门</div>
+        </a>
+    
+</nav>
+
+
+    
+</article>
+
+
+    
+    
+
+</section>
+            
+                
+<aside id="sidebar">
+   
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">最新文章</h3>
+        <div class="widget">
+            <ul id="recent-post" class="">
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/test-mockito/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://github.com/mockito/mockito.github.io/raw/master/img/logo%402x.png)" alt="单元测试 之 Mockito" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/单元测试/">单元测试</a></p>
+                            <p class="item-title"><a href="/test-mockito/" class="title">单元测试 之 Mockito</a></p>
+                            <p class="item-date"><time datetime="2017-12-03T13:15:23.212Z" itemprop="datePublished">2017-12-03</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/test-junit/" class="thumbnail">
+    
+    
+        <span style="background-image:url(http://junit.org/junit4/images/junit-logo.png)" alt="单元测试 之 JUnit" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/单元测试/">单元测试</a></p>
+                            <p class="item-title"><a href="/test-junit/" class="title">单元测试 之 JUnit</a></p>
+                            <p class="item-date"><time datetime="2017-12-03T07:07:22.530Z" itemprop="datePublished">2017-12-03</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/spring-cache-intro/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://spring.io/img/homepage/icon-spring-framework.svg)" alt="Spring Cache 入门" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Spring/">Spring</a></p>
+                            <p class="item-title"><a href="/spring-cache-intro/" class="title">Spring Cache 入门</a></p>
+                            <p class="item-date"><time datetime="2017-11-29T15:16:55.568Z" itemprop="datePublished">2017-11-29</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/nginx-certificate-configuration/" class="thumbnail">
+    
+    
+        <span style="background-image:url(http://www.xiazaiba.com/uploadfiles/ico/2015/0423/2015042309095276482.png)" alt="使用Openssl为Nginx生成证书" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Nginx/">Nginx</a></p>
+                            <p class="item-title"><a href="/nginx-certificate-configuration/" class="title">使用Openssl为Nginx生成证书</a></p>
+                            <p class="item-date"><time datetime="2017-11-26T12:16:14.465Z" itemprop="datePublished">2017-11-26</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/centos-intall-on-windows/" class="thumbnail">
+    
+    
+        <span style="background-image:url(http://openresty.org/images/logo.png)" alt="在Window下安装CentOS并安装Nginx、OpenResty" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/OpenResty/">OpenResty</a><i class="fa fa-angle-right"></i><a class="article-category-link" href="/categories/OpenResty/Nginx/">Nginx</a></p>
+                            <p class="item-title"><a href="/centos-intall-on-windows/" class="title">在Window下安装CentOS并安装Nginx、OpenResty</a></p>
+                            <p class="item-date"><time datetime="2017-11-26T05:52:25.904Z" itemprop="datePublished">2017-11-26</time></p>
+                        </div>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">分类</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/">Docker</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Hexo/">Hexo</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Nginx/">Nginx</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OpenResty/">OpenResty</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/OpenResty/Nginx/">Nginx</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/单元测试/">单元测试</a><span class="category-list-count">2</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">归档</h3>
+        <div class="widget">
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a><span class="archive-list-count">4</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">标签</h3>
+        <div class="widget">
+            <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Centos/">Centos</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CompletableFuture/">CompletableFuture</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cookie/">Cookie</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/">Docker</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hexo/">Hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Https/">Https</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JDK/">JDK</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JUnit/">JUnit</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java8/">Java8</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mockito/">Mockito</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Mysql/">Mysql</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nginx/">Nginx</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OpenResty/">OpenResty</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Openssl/">Openssl</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/">Spring</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Cache/">Spring Cache</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VMware/">VMware</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/optional/">optional</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring-retry/">spring-retry</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/单元测试/">单元测试</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/灰度发布/">灰度发布</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/熔断/">熔断</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/证书/">证书</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/重试/">重试</a><span class="tag-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">标签云</h3>
+        <div class="widget tagcloud">
+            <a href="/tags/Centos/" style="font-size: 10px;">Centos</a> <a href="/tags/CompletableFuture/" style="font-size: 10px;">CompletableFuture</a> <a href="/tags/Cookie/" style="font-size: 10px;">Cookie</a> <a href="/tags/Docker/" style="font-size: 10px;">Docker</a> <a href="/tags/Hexo/" style="font-size: 15px;">Hexo</a> <a href="/tags/Https/" style="font-size: 10px;">Https</a> <a href="/tags/JDK/" style="font-size: 15px;">JDK</a> <a href="/tags/JUnit/" style="font-size: 10px;">JUnit</a> <a href="/tags/Java8/" style="font-size: 15px;">Java8</a> <a href="/tags/Mockito/" style="font-size: 10px;">Mockito</a> <a href="/tags/Mysql/" style="font-size: 10px;">Mysql</a> <a href="/tags/Nginx/" style="font-size: 20px;">Nginx</a> <a href="/tags/OpenResty/" style="font-size: 10px;">OpenResty</a> <a href="/tags/Openssl/" style="font-size: 10px;">Openssl</a> <a href="/tags/Spring/" style="font-size: 15px;">Spring</a> <a href="/tags/Spring-Cache/" style="font-size: 10px;">Spring Cache</a> <a href="/tags/VMware/" style="font-size: 10px;">VMware</a> <a href="/tags/optional/" style="font-size: 10px;">optional</a> <a href="/tags/spring-retry/" style="font-size: 10px;">spring-retry</a> <a href="/tags/单元测试/" style="font-size: 15px;">单元测试</a> <a href="/tags/灰度发布/" style="font-size: 10px;">灰度发布</a> <a href="/tags/熔断/" style="font-size: 10px;">熔断</a> <a href="/tags/证书/" style="font-size: 10px;">证书</a> <a href="/tags/重试/" style="font-size: 10px;">重试</a>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">链接</h3>
+        <div class="widget">
+            <ul>
+                
+                    <li>
+                        <a href="http://hexo.io">Hexo</a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+
+    
+    <div id="toTop" class="fa fa-angle-up"></div>
+</aside>
+
+            
+        </div>
+        <footer id="footer">
+    <div class="outer">
+        <div id="footer-info" class="inner">
+            &copy; 2017 蛋黄的天空<br>
+            Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>. Theme by <a href="http://github.com/ppoffice">PPOffice</a>
+        </div>
+    </div>
+</footer>
+        
+
+
+    
+        <script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-share.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-video.min.js"></script>
+    
+    
+        <script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+    
+    
+
+
+
+<!-- Custom Scripts -->
+<script src="/js/main.js"></script>
+
+    </div>
+</body>
+</html>
